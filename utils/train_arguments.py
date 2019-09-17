@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('--verbose', action='store_true', help='Verbose mode')
 parser.add_argument('--optimizer', type=str, default='sgd',
-                    choices=['adam', 'sgd', 'rmsprop'],
+                    choices=['adam', 'sgd', 'sgd_momentum', 'rmsprop'],
                     help='Training Optimizer')
 
 parser.add_argument('--epochs', type=int, default=150, help='Total number epochs for training')
@@ -28,7 +28,7 @@ parser.add_argument('--min_learning_rate', type=float, default=0.0001, help='Min
 
 parser.add_argument('--plateau_scheduler', action='store_true',
                     help='Use a Plateau LR scheduler to control LR based on Accuracy metric')
-parser.add_argument('--steps_best', action='store_true', help='Load best cehckpoint when Scheduler Steps')
+parser.add_argument('--steps_best', action='store_true', help='Load best checkpoint when Scheduler Steps')
 parser.add_argument('--steps_scheduler', action='store_true',
                     help='Use a LR Steps scheduler to control LR based on epochs')
 

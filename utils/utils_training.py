@@ -4,8 +4,10 @@ import torch
 
 def get_optimizer(optmizer_type, model, lr=0.1):
     # Funcion para rehacer el optmizador -> Ayuda para cambiar learning rate
-    if optmizer_type == "sgd":
+    if optmizer_type == "sgd_momentum":
         return torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9, weight_decay=5e-4)
+    if optmizer_type == "sgd":
+        return torch.optim.SGD(model.parameters(), lr=lr)
     elif optmizer_type == "adam":
         return torch.optim.Adam(model.parameters(), lr=lr)
     elif optmizer_type == "rmsprop":
