@@ -22,7 +22,7 @@ parser.add_argument('--optimizer', type=str, default='sgd',
                     help='Training Optimizer')
 
 parser.add_argument('--epochs', type=int, default=150, help='Total number epochs for training')
-parser.add_argument('--batch_size', type=int, default=64, help='Batch Size for training')
+parser.add_argument('--batch_size', type=int, default=32, help='Batch Size for training')
 parser.add_argument('--learning_rate', type=float, default=0.01, help='Learning rate')
 parser.add_argument('--min_learning_rate', type=float, default=0.0001, help='Minimum Learning rate - Early stopping')
 
