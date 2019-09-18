@@ -87,7 +87,10 @@ for epoch in range(args.epochs):
     elif args.plateau_scheduler:
         scheduler.step(current_val_accuracy)
 
-print("\n---------------")
+print("\n------------------------------------------------")
 print("Best Validation Accuracy {:.4f} at epoch {}".format(progress_val_accuracy.max(),
                                                            progress_val_accuracy.argmax() + 1))
-print("---------------\n")
+print("------------------------------------------------\n")
+
+print("---------------- Train Analysis ----------------")
+train_analysis(model, val_loader, args.output_dir, LABELS2TARGETS, TARGETS2LABELS)
