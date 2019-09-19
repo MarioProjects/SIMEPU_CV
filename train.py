@@ -26,7 +26,6 @@ else:
         transforms.ToPILImage(),  # because the input dtype is numpy.ndarray
         transforms.Resize((args.img_size, args.img_size)),
         transforms.RandomCrop((args.crop_size, args.crop_size)),
-        transforms.RandomHorizontalFlip(0.5),  # because this method is used for PIL Image dtype
         transforms.ToTensor(),  # because inpus dtype is PIL Image
     ])
 
