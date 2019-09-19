@@ -1,10 +1,9 @@
 import os
 import pickle
-import sys
-import cv2
-from skimage import io
+
+import numpy as np
 import pandas as pd
-import torch
+from skimage import io
 from torch.utils import data
 from torch.utils.data import DataLoader
 
@@ -31,14 +30,18 @@ class SIMEPU_Dataset(data.Dataset):
              -> Si es "validation" devuelve 'validation_size' muestras del TRAIN set
         """
 
-        if data_partition == "train":
-            self.data_paths = SIMEPU_PATHS.sample(frac=1 - validation_size, random_state=seed)
-        elif data_partition == "validation":
-            self.data_paths = SIMEPU_PATHS.sample(frac=validation_size, random_state=seed)
-        elif data_partition == "":
+        np.random.seed(seed=seed)
+
+        if data_partition == "":
             self.data_paths = SIMEPU_PATHS
         else:
-            assert False, "Wrong data partition!"
+            msk = np.random.rand(len(SIMEPU_PATHS)) < validation_size
+            if data_partition == "train":
+                self.data_paths = SIMEPU_PATHS[msk]
+            elif data_partition == "validation":
+                self.data_paths = SIMEPU_PATHS[~msk]
+            else:
+                assert False, "Wrong data partition: {}".format(data_partition)
 
         self.data_partition = data_partition
         self.transform = transform
@@ -63,5 +66,4 @@ def test():
     xbatch, ybatch = next(iter(train_loader))
     print("Batch shape: {} / Min: {:.2f} / Max: {:.4f}".format(xbatch.shape, xbatch.min(), xbatch.max()))
 
-
-#test()
+# test()
