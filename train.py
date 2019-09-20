@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+# coding: utf-8
 from time import gmtime, strftime
 
 import albumentations
+from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 import torch
 import torch.nn as nn
@@ -58,7 +61,7 @@ scheduler = get_scheduler(optimizer, args.steps_scheduler, args.plateau_schedule
 print("\n--------------------------------------------")
 for argument in args.__dict__:
     print("{}: {}".format(argument, args.__dict__[argument]))
-
+writer = SummaryWriter(log_dir='results/logs/{}'.format(args.output_dir[args.output_dir.find("results/")+8:-1]))
 print("\n-------------- START TRAINING --------------")
 for epoch in range(args.epochs):
 
@@ -70,7 +73,7 @@ for epoch in range(args.epochs):
     progress_train_accuracy = np.append(progress_train_accuracy, current_train_accuracy)
     progress_val_accuracy = np.append(progress_val_accuracy, current_val_accuracy)
 
-    save_progress(progress_train_loss, progress_val_loss, progress_train_accuracy, progress_val_accuracy, model, args.output_dir)
+    save_progress(epoch, progress_train_loss, progress_val_loss, progress_train_accuracy, progress_val_accuracy, model, writer, args.output_dir)
 
     if current_val_accuracy >= progress_val_accuracy.max():
         torch.save(model.state_dict(), args.output_dir + "/model_best_accuracy.pt")

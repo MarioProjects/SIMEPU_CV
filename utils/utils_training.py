@@ -1,3 +1,6 @@
+from torch.utils.tensorboard import SummaryWriter
+import numpy as np
+import time
 import pickle
 import numpy as np
 import torch
@@ -34,15 +37,21 @@ def get_current_lr(optimizer):
         return param_group['lr']
 
 
-def save_progress(progress_train_loss, progress_val_loss, progress_train_accuracy, progress_val_accuracy, model,
-                  output_dir):
+def save_progress(epoch, progress_train_loss, progress_val_loss, progress_train_accuracy, progress_val_accuracy, model,
+                  writer, output_dir, save_pickle=False):
     torch.save(model.state_dict(), output_dir + "/model_last.pt")
 
-    progress = {"train_loss": progress_train_loss, "val_loss": progress_val_loss,
-                "train_accuracy": progress_train_accuracy, "val_accuracy": progress_val_accuracy}
+    writer.add_scalar('Loss/train', progress_train_loss[-1], epoch)
+    writer.add_scalar('Loss/validation', progress_val_loss[-1], epoch)
+    writer.add_scalar('Accuracy/train', progress_train_accuracy[-1], epoch)
+    writer.add_scalar('Accuracy/validation', progress_val_accuracy[-1], epoch)
 
-    with open(output_dir + 'progress.pickle', 'wb') as handle:
-        pickle.dump(progress, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    if save_pickle:
+        progress = {"train_loss": progress_train_loss, "val_loss": progress_val_loss,
+                    "train_accuracy": progress_train_accuracy, "val_accuracy": progress_val_accuracy}
+
+        with open(output_dir + 'progress.pickle', 'wb') as handle:
+            pickle.dump(progress, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def train_step(train_loader, model, criterion, optimizer):
@@ -106,14 +115,16 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
 
     accuracy_per_class = 100 * np.array(class_correct) / np.array(class_total)
 
+    LABELS = []
     for i in range(len(LABELS2TARGETS)):
         print('Accuracy of {} : {:.2f}% '.format(TARGETS2LABELS[i], accuracy_per_class[i]))
+        LABELS.append(TARGETS2LABELS[i])
 
     sns.set(style="whitegrid")
     a4_dims = (11.7, 8.27)
     fig, ax = plt.subplots(figsize=a4_dims)
     ax = sns.barplot(ax=ax, x=np.arange(len(LABELS2TARGETS)), y=accuracy_per_class)
-    plt.xticks(np.arange(len(LABELS2TARGETS)), list(LABELS2TARGETS.keys()))
+    plt.xticks(np.arange(len(LABELS)), LABELS)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=75)
     plt.xlabel("Clase")
     plt.ylabel("Accuracy (%)")
@@ -135,7 +146,6 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
             for t, p in zip(classes.view(-1), preds.view(-1)):
                 confusion_matrix[t.long(), p.long()] += 1
 
-    print(confusion_matrix)
 
     a4_dims = (11.7, 8.27)
     fig, ax = plt.subplots(figsize=a4_dims)
@@ -143,9 +153,9 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
     ax = sns.heatmap(confusion_matrix.data.cpu().numpy() / np.array(class_total), cmap="YlGnBu", annot=True,
                      linewidths=.5)
     ax.set_yticklabels(ax.get_xticklabels(), rotation=0)
-    plt.yticks(np.arange(len(LABELS2TARGETS)), list(LABELS2TARGETS.keys()))
+    plt.yticks(np.arange(len(LABELS)), LABELS)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
-    plt.xticks(np.arange(len(LABELS2TARGETS)), list(LABELS2TARGETS.keys()))
+    plt.xticks(np.arange(len(LABELS)), LABELS)
 
     trans = mtrans.Affine2D().translate(30, 0)
     for t in ax.get_xticklabels():
