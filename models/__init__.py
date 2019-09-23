@@ -13,6 +13,9 @@ def model_selector(model_name, num_classes=9, pretrained=False):
         else:
             resnet18 = models.resnet18(pretrained=True)
             resnet18.fc = nn.Linear(resnet18.fc.in_features, num_classes)
+            for param in resnet18.parameters(): # Defrost model
+                param.requires_grad = True
+            print(resnet18)
             return resnet18.cuda()
     if model_name == "resnet34":
         return ResNet34(num_classes=num_classes).cuda()

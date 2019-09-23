@@ -1,12 +1,10 @@
-from torch.utils.tensorboard import SummaryWriter
-import numpy as np
-import time
 import pickle
-import numpy as np
-import torch
-import seaborn as sns
+
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtrans
+import numpy as np
+import seaborn as sns
+import torch
 
 
 def get_optimizer(optmizer_type, model, lr=0.1):
@@ -145,7 +143,6 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
             _, preds = torch.max(outputs, 1)
             for t, p in zip(classes.view(-1), preds.view(-1)):
                 confusion_matrix[t.long(), p.long()] += 1
-
 
     a4_dims = (11.7, 8.27)
     fig, ax = plt.subplots(figsize=a4_dims)

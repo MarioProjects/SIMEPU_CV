@@ -1,0 +1,18 @@
+{
+  "pretrained": false,
+  "verbose": false,
+  "learning_rate": 0.01,
+  "validation_size": 0.15,
+  "crop_size": 224,
+  "steps_best": false,
+  "steps_scheduler": true,
+  "plateau_scheduler": false,
+  "optimizer": "sgd",
+  "epochs": 200,
+  "output_dir": "results/resnet18_sgd_256to224_lr0.01_DA/",
+  "model_name": "resnet18",
+  "data_augmentation": true,
+  "batch_size": 32,
+  "min_learning_rate": 1e-05,
+  "img_size": 256
+}

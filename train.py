@@ -17,33 +17,39 @@ from utils.utils_data import *
 from utils.utils_training import *
 
 if args.data_augmentation:
-    train_aug = transforms.Compose([
-        transforms.ToPILImage(), # because the input dtype is numpy.ndarray
-        transforms.Resize((args.img_size, args.img_size)),
-        transforms.RandomCrop((args.crop_size, args.crop_size)),
-        transforms.RandomHorizontalFlip(0.5), # because this method is used for PIL Image dtype
-        transforms.ToTensor(), # because inpus dtype is PIL Image
-    ])
-else:
-    train_aug = transforms.Compose([
+    train_aug = [
         transforms.ToPILImage(),  # because the input dtype is numpy.ndarray
         transforms.Resize((args.img_size, args.img_size)),
         transforms.RandomCrop((args.crop_size, args.crop_size)),
+        transforms.RandomHorizontalFlip(0.5),  # because this method is used for PIL Image dtype
+        transforms.RandomVerticalFlip(0.5),  # because this method is used for PIL Image dtype
+        transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4),
         transforms.ToTensor(),  # because inpus dtype is PIL Image
-    ])
+    ]
+else:
+    train_aug = [
+        transforms.ToPILImage(),  # because the input dtype is numpy.ndarray
+        transforms.Resize((args.img_size, args.img_size)),
+        transforms.CenterCrop((args.crop_size, args.crop_size)),
+        transforms.ToTensor(),  # because inpus dtype is PIL Image
+    ]
 
-val_aug = transforms.Compose([
+val_aug = [
     transforms.ToPILImage(), # because the input dtype is numpy.ndarray
     transforms.Resize((args.img_size, args.img_size)),
     transforms.CenterCrop((args.crop_size, args.crop_size)),
     transforms.ToTensor(), # because inpus dtype is PIL Image
-])
+]
+
+if args.pretrained:
+    train_aug.append(transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
+    val_aug.append(transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
 
 # data_partition='', data_augmentation=None, validation_size=0.15, seed=42
-train_dataset = SIMEPU_Dataset(data_partition='train', transform=train_aug, validation_size=args.validation_size)
+train_dataset = SIMEPU_Dataset(data_partition='train', transform=transforms.Compose(train_aug), validation_size=args.validation_size)
 train_loader = DataLoader(train_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=True)
 
-val_dataset = SIMEPU_Dataset(data_partition='validation', transform=val_aug, validation_size=args.validation_size)
+val_dataset = SIMEPU_Dataset(data_partition='validation', transform=transforms.Compose(val_aug), validation_size=args.validation_size)
 val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
 
 # LABELS2TARGETS: Diccionario {"clase":target} para conocer el target que representa una clase dada
