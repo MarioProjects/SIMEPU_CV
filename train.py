@@ -2,12 +2,11 @@
 # coding: utf-8
 from time import gmtime, strftime
 
-import albumentations
-from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
 from torchvision import transforms
 
 # ---- My utils ----
@@ -35,10 +34,10 @@ else:
     ]
 
 val_aug = [
-    transforms.ToPILImage(), # because the input dtype is numpy.ndarray
+    transforms.ToPILImage(),  # because the input dtype is numpy.ndarray
     transforms.Resize((args.img_size, args.img_size)),
     transforms.CenterCrop((args.crop_size, args.crop_size)),
-    transforms.ToTensor(), # because inpus dtype is PIL Image
+    transforms.ToTensor(),  # because inpus dtype is PIL Image
 ]
 
 if args.pretrained:
@@ -60,14 +59,24 @@ progress_train_loss, progress_val_loss, = np.array([]), np.array([])
 progress_train_accuracy, progress_val_accuracy = np.array([]), np.array([])
 best_model = None
 
-criterion = nn.CrossEntropyLoss()
+if args.weighted_loss:
+    print("Loaded Class weights!")
+    with open("utils/class_weights_divide.pkl", "rb") as fp:  # Unpickling
+        weights = pickle.load(fp)
+    print("Weights: {}".format(weights))
+    class_weights = torch.FloatTensor(weights).cuda()
+    criterion = nn.CrossEntropyLoss(weight=torch.tensor(weights, device='cuda'))
+else:
+    criterion = nn.CrossEntropyLoss()
+
 optimizer = get_optimizer(args.optimizer, model, lr=args.learning_rate)
 scheduler = get_scheduler(optimizer, args.steps_scheduler, args.plateau_scheduler)
 
 print("\n--------------------------------------------")
 for argument in args.__dict__:
     print("{}: {}".format(argument, args.__dict__[argument]))
-writer = SummaryWriter(log_dir='results/logs/{}'.format(args.output_dir[args.output_dir.find("results/")+8:-1]))
+writer = SummaryWriter(log_dir='results/logs/{}'.format(args.output_dir[args.output_dir.find("results/") + 8:-1]))
+
 print("\n-------------- START TRAINING --------------")
 for epoch in range(args.epochs):
 
@@ -96,8 +105,7 @@ for epoch in range(args.epochs):
         scheduler.step(current_val_accuracy)
 
 print("\n------------------------------------------------")
-print("Best Validation Accuracy {:.4f} at epoch {}".format(progress_val_accuracy.max(),
-                                                           progress_val_accuracy.argmax() + 1))
+print("Best Validation Accuracy {:.4f} at epoch {}".format(progress_val_accuracy.max(), progress_val_accuracy.argmax() + 1))
 print("------------------------------------------------\n")
 
 print("---------------- Train Analysis ----------------")

@@ -8,7 +8,7 @@ epochs=200
 batch_size=128
 img_size=256
 crop_size=224
-model_path="results/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"_NoDA/"
+model_path="results/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"_DA_pretrained/"
 
 CUDA_VISIBLE_DEVICES=0 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
                                        --min_learning_rate $min_lr  --batch_size $batch_size --epochs $epochs \
