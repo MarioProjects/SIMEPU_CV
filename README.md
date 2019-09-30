@@ -26,15 +26,17 @@ En esta primera etapa tratamos de dar solución a la clasificación de 9 diferen
   - Parcheo
   - Sin daño
 
-|     Model    |   Pretrained  | Criterion | Optimizer |  Img Size  |  LR strategy  | Data Augmentation |      Extra       | Val Accuracy |
-|:------------:|:-------------:|:---------:|:---------:|:----------:|:-------------:|:-----------------:|:----------------:|:------------:|
-| resnet18     |      No       |    ce     |    sgd    |  224x224   |  steps 0.1    |         No        |   ------------   |    90.05%    |
-| resnet18     |      No       |    ce     |    sgd    |  224x224   |  steps 0.01   |         No        |   ------------   |    90.55%    |
-| resnet18     |      Si       |    ce     |    adam   |  224x224   |  steps 0.001  |         No        |   ------------   |    92.80%    |
-| resnet18     |      Si       |    ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   ------------   |    94.00%    |
-| resnet18     |      Si       |    ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   WeightedLoss   |    94.36%    |
-| resnet50     |      Si       |    ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   WeightedLoss   |    93.05%    |
-| seresnext50  |      Si       |    ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   WeightedLoss   |    94.12%    |
+|     Model    | Criterion  | Optimizer |  Img Size  |  LR strategy  | Data Augmentation |      Extra       | Val Accuracy |
+|:------------:|:----------:|:---------:|:----------:|:-------------:|:-----------------:|:----------------:|:------------:|
+| resnet18     |     ce     |    sgd    |  224x224   |  steps 0.1    |         No        |   ------------   |    90.05%    |
+| resnet18     |     ce     |    sgd    |  224x224   |  steps 0.01   |         No        |   ------------   |    90.55%    |
+| resnet18*    |     ce     |    adam   |  224x224   |  steps 0.001  |         No        |   ------------   |    92.80%    |
+| resnet18*    |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   ------------   |    94.00%    |
+| resnet18*    |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   WeightedLoss   |    94.36%    |
+| resnet50*    |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   WeightedLoss   |    93.05%    |
+| seresnext50* |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   WeightedLoss   |    94.12%    |
+
+*: Preentrenado en Imagenet
 
 Matriz de confusión del mejor modelo:
 ![Best Model Confusion Matrix](results/resnet18_adam_256to224_lr0.001_DA_pretrained_weightedLoss/confusion_matrix.jpg "Best Model Confusion Matrix")
