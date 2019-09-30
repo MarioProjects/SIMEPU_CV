@@ -1,6 +1,7 @@
 import torchvision.models as models
 import torch.nn as nn
 from .resnet import *
+from .pytorchcv_seresnext import *
 
 
 def model_selector(model_name, num_classes=9, pretrained=False):
@@ -17,7 +18,7 @@ def model_selector(model_name, num_classes=9, pretrained=False):
                 param.requires_grad = True
             print(resnet18)
             return resnet18.cuda()
-    if model_name == "resnet34":
+    elif model_name == "resnet34":
         if not pretrained:
             return ResNet34(num_classes=num_classes).cuda()
         else:
@@ -27,7 +28,7 @@ def model_selector(model_name, num_classes=9, pretrained=False):
                 param.requires_grad = True
             print(resnet34)
             return resnet34.cuda()
-    if model_name == "resnet50":
+    elif model_name == "resnet50":
         if not pretrained:
             return ResNet50(num_classes=num_classes).cuda()
         else:
@@ -37,7 +38,7 @@ def model_selector(model_name, num_classes=9, pretrained=False):
                 param.requires_grad = True
             print(resnet50)
             return resnet50.cuda()
-    if model_name == "resnet101":
+    elif model_name == "resnet101":
         if not pretrained:
             return ResNet101(num_classes=num_classes).cuda()
         else:
@@ -47,7 +48,7 @@ def model_selector(model_name, num_classes=9, pretrained=False):
                 param.requires_grad = True
             print(resnet101)
             return resnet101.cuda()
-    if model_name == "resnet152":
+    elif model_name == "resnet152":
         if not pretrained:
             return ResNet152(num_classes=num_classes).cuda()
         else:
@@ -57,6 +58,10 @@ def model_selector(model_name, num_classes=9, pretrained=False):
                 param.requires_grad = True
             print(resnet152)
             return resnet152.cuda()
+    elif model_name == "seresnext50":
+        return PretrainedSeresNext50(num_classes, pretrained=pretrained).cuda()
+    elif model_name == "seresnext101":
+        return PretrainedSeresNext101(num_classes, pretrained=pretrained).cuda()
     else:
         assert False, "Uknown model selected!"
 

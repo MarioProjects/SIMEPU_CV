@@ -1,0 +1,242 @@
+
+---- Start ----
+
+Pretrained-> Remember at end: transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+Loaded Class weights!
+Weights: [6.626878130217029, 6.4439935064935066, 3.1023837436498636, 43.14673913043478, 20.567357512953368, 16.006048387096776, 6.632414369256474, 21.284182305630026, 25.28343949044586]
+
+--------------------------------------------
+img_size: 256
+batch_size: 64
+output_dir: results/seresnext50_adam_256to224_lr0.001_DA_pretrained_weightedLoss/
+plateau_scheduler: False
+crop_size: 224
+steps_scheduler: True
+data_augmentation: True
+pretrained: True
+epochs: 200
+steps_best: False
+validation_size: 0.15
+verbose: False
+weighted_loss: True
+model_name: seresnext50
+min_learning_rate: 1e-07
+learning_rate: 0.001
+optimizer: adam
+
+-------------- START TRAINING --------------
+[2019-09-25 10:03:14] Epoch: 1, LR: 0.00100000, Train Accuracy: 53.4146, Val Accuracy: 55.2541
+[2019-09-25 10:05:07] Epoch: 2, LR: 0.00100000, Train Accuracy: 73.4146, Val Accuracy: 65.5090
+[2019-09-25 10:06:59] Epoch: 3, LR: 0.00100000, Train Accuracy: 78.1301, Val Accuracy: 51.2744
+[2019-09-25 10:08:53] Epoch: 4, LR: 0.00100000, Train Accuracy: 79.3496, Val Accuracy: 85.2437
+[2019-09-25 10:10:45] Epoch: 5, LR: 0.00100000, Train Accuracy: 84.0650, Val Accuracy: 80.6379
+[2019-09-25 10:12:36] Epoch: 6, LR: 0.00100000, Train Accuracy: 87.0732, Val Accuracy: 69.9806
+[2019-09-25 10:14:37] Epoch: 7, LR: 0.00100000, Train Accuracy: 87.1545, Val Accuracy: 55.7311
+[2019-09-25 10:16:29] Epoch: 8, LR: 0.00100000, Train Accuracy: 83.0081, Val Accuracy: 85.5567
+[2019-09-25 10:18:21] Epoch: 9, LR: 0.00100000, Train Accuracy: 88.6992, Val Accuracy: 87.0920
+[2019-09-25 10:20:15] Epoch: 10, LR: 0.00100000, Train Accuracy: 89.3496, Val Accuracy: 86.3020
+[2019-09-25 10:22:06] Epoch: 11, LR: 0.00100000, Train Accuracy: 80.3252, Val Accuracy: 67.9088
+[2019-09-25 10:24:01] Epoch: 12, LR: 0.00100000, Train Accuracy: 86.2602, Val Accuracy: 85.4673
+[2019-09-25 10:25:54] Epoch: 13, LR: 0.00100000, Train Accuracy: 89.5122, Val Accuracy: 88.7763
+[2019-09-25 10:27:48] Epoch: 14, LR: 0.00100000, Train Accuracy: 89.9187, Val Accuracy: 86.3020
+[2019-09-25 10:29:40] Epoch: 15, LR: 0.00100000, Train Accuracy: 88.2114, Val Accuracy: 82.9036
+[2019-09-25 10:31:34] Epoch: 16, LR: 0.00100000, Train Accuracy: 91.7073, Val Accuracy: 87.2112
+[2019-09-25 10:33:28] Epoch: 17, LR: 0.00100000, Train Accuracy: 91.3008, Val Accuracy: 86.5703
+[2019-09-25 10:35:24] Epoch: 18, LR: 0.00100000, Train Accuracy: 91.9512, Val Accuracy: 89.1787
+[2019-09-25 10:37:19] Epoch: 19, LR: 0.00100000, Train Accuracy: 92.1951, Val Accuracy: 93.0690
+[2019-09-25 10:39:11] Epoch: 20, LR: 0.00100000, Train Accuracy: 93.3333, Val Accuracy: 92.5324
+[2019-09-25 10:41:03] Epoch: 21, LR: 0.00100000, Train Accuracy: 91.7886, Val Accuracy: 85.7356
+[2019-09-25 10:42:58] Epoch: 22, LR: 0.00100000, Train Accuracy: 92.8455, Val Accuracy: 89.4172
+[2019-09-25 10:44:50] Epoch: 23, LR: 0.00100000, Train Accuracy: 92.0325, Val Accuracy: 90.8481
+[2019-09-25 10:46:44] Epoch: 24, LR: 0.00100000, Train Accuracy: 94.5528, Val Accuracy: 90.6693
+[2019-09-25 10:48:39] Epoch: 25, LR: 0.00100000, Train Accuracy: 92.0325, Val Accuracy: 87.8521
+[2019-09-25 10:50:30] Epoch: 26, LR: 0.00100000, Train Accuracy: 91.4634, Val Accuracy: 90.8332
+[2019-09-25 10:52:24] Epoch: 27, LR: 0.00100000, Train Accuracy: 93.1707, Val Accuracy: 88.0161
+[2019-09-25 10:54:15] Epoch: 28, LR: 0.00100000, Train Accuracy: 91.5447, Val Accuracy: 89.9091
+[2019-09-25 10:56:09] Epoch: 29, LR: 0.00100000, Train Accuracy: 95.1220, Val Accuracy: 88.6272
+[2019-09-25 10:58:04] Epoch: 30, LR: 0.00100000, Train Accuracy: 93.9837, Val Accuracy: 88.8806
+[2019-09-25 10:59:58] Epoch: 31, LR: 0.00100000, Train Accuracy: 94.7967, Val Accuracy: 90.4904
+[2019-09-25 11:01:54] Epoch: 32, LR: 0.00100000, Train Accuracy: 94.3089, Val Accuracy: 91.5338
+[2019-09-25 11:03:45] Epoch: 33, LR: 0.00100000, Train Accuracy: 95.6098, Val Accuracy: 91.4294
+[2019-09-25 11:05:38] Epoch: 34, LR: 0.00100000, Train Accuracy: 94.4715, Val Accuracy: 88.2993
+[2019-09-25 11:07:29] Epoch: 35, LR: 0.00100000, Train Accuracy: 94.3089, Val Accuracy: 90.5649
+[2019-09-25 11:09:21] Epoch: 36, LR: 0.00100000, Train Accuracy: 95.6098, Val Accuracy: 90.2817
+[2019-09-25 11:11:14] Epoch: 37, LR: 0.00100000, Train Accuracy: 95.9350, Val Accuracy: 92.9796
+[2019-09-25 11:13:07] Epoch: 38, LR: 0.00100000, Train Accuracy: 96.1789, Val Accuracy: 91.4145
+[2019-09-25 11:14:59] Epoch: 39, LR: 0.00100000, Train Accuracy: 96.9919, Val Accuracy: 89.3129
+[2019-09-25 11:16:54] Epoch: 40, LR: 0.00100000, Train Accuracy: 96.2602, Val Accuracy: 87.5838
+[2019-09-25 11:18:46] Epoch: 41, LR: 0.00100000, Train Accuracy: 94.7967, Val Accuracy: 91.5636
+[2019-09-25 11:20:37] Epoch: 42, LR: 0.00100000, Train Accuracy: 96.5854, Val Accuracy: 90.7736
+[2019-09-25 11:22:30] Epoch: 43, LR: 0.00100000, Train Accuracy: 96.8293, Val Accuracy: 91.8319
+[2019-09-25 11:24:22] Epoch: 44, LR: 0.00100000, Train Accuracy: 97.1545, Val Accuracy: 91.6977
+[2019-09-25 11:26:14] Epoch: 45, LR: 0.00100000, Train Accuracy: 97.2358, Val Accuracy: 90.0581
+[2019-09-25 11:28:10] Epoch: 46, LR: 0.00100000, Train Accuracy: 95.2033, Val Accuracy: 88.5527
+[2019-09-25 11:30:01] Epoch: 47, LR: 0.00100000, Train Accuracy: 93.3333, Val Accuracy: 84.1407
+[2019-09-25 11:31:56] Epoch: 48, LR: 0.00100000, Train Accuracy: 94.3089, Val Accuracy: 88.3887
+[2019-09-25 11:33:49] Epoch: 49, LR: 0.00100000, Train Accuracy: 96.1789, Val Accuracy: 89.5364
+[2019-09-25 11:35:44] Epoch: 50, LR: 0.00100000, Train Accuracy: 94.9593, Val Accuracy: 90.1178
+[2019-09-25 11:37:36] Epoch: 51, LR: 0.00100000, Train Accuracy: 89.1870, Val Accuracy: 86.0486
+[2019-09-25 11:39:30] Epoch: 52, LR: 0.00100000, Train Accuracy: 94.0650, Val Accuracy: 83.9320
+[2019-09-25 11:41:24] Epoch: 53, LR: 0.00100000, Train Accuracy: 89.3496, Val Accuracy: 75.8235
+[2019-09-25 11:43:18] Epoch: 54, LR: 0.00100000, Train Accuracy: 90.2439, Val Accuracy: 89.7004
+[2019-09-25 11:45:10] Epoch: 55, LR: 0.00100000, Train Accuracy: 91.6260, Val Accuracy: 88.8359
+[2019-09-25 11:47:02] Epoch: 56, LR: 0.00100000, Train Accuracy: 91.9512, Val Accuracy: 90.7438
+[2019-09-25 11:48:54] Epoch: 57, LR: 0.00100000, Train Accuracy: 94.2276, Val Accuracy: 87.8372
+[2019-09-25 11:50:47] Epoch: 58, LR: 0.00100000, Train Accuracy: 94.5528, Val Accuracy: 90.1923
+[2019-09-25 11:52:39] Epoch: 59, LR: 0.00100000, Train Accuracy: 95.0407, Val Accuracy: 91.5039
+[2019-09-25 11:54:32] Epoch: 60, LR: 0.00100000, Train Accuracy: 96.7480, Val Accuracy: 92.5473
+[2019-09-25 11:56:27] Epoch: 61, LR: 0.00100000, Train Accuracy: 95.4472, Val Accuracy: 90.1028
+[2019-09-25 11:58:21] Epoch: 62, LR: 0.00100000, Train Accuracy: 95.9350, Val Accuracy: 91.9362
+[2019-09-25 12:00:13] Epoch: 63, LR: 0.00100000, Train Accuracy: 95.4472, Val Accuracy: 87.0920
+[2019-09-25 12:02:09] Epoch: 64, LR: 0.00100000, Train Accuracy: 97.0732, Val Accuracy: 92.7262
+[2019-09-25 12:04:01] Epoch: 65, LR: 0.00100000, Train Accuracy: 98.0488, Val Accuracy: 92.3088
+[2019-09-25 12:05:55] Epoch: 66, LR: 0.00100000, Train Accuracy: 96.9106, Val Accuracy: 92.3536
+[2019-09-25 12:07:47] Epoch: 67, LR: 0.00100000, Train Accuracy: 95.9350, Val Accuracy: 91.5636
+[2019-09-25 12:09:41] Epoch: 68, LR: 0.00100000, Train Accuracy: 94.5528, Val Accuracy: 88.5080
+[2019-09-25 12:11:34] Epoch: 69, LR: 0.00100000, Train Accuracy: 95.2033, Val Accuracy: 88.8061
+[2019-09-25 12:13:28] Epoch: 70, LR: 0.00100000, Train Accuracy: 94.9593, Val Accuracy: 89.4172
+[2019-09-25 12:15:22] Epoch: 71, LR: 0.00010000, Train Accuracy: 97.6423, Val Accuracy: 92.0704
+[2019-09-25 12:17:14] Epoch: 72, LR: 0.00010000, Train Accuracy: 97.2358, Val Accuracy: 92.5771
+[2019-09-25 12:19:06] Epoch: 73, LR: 0.00010000, Train Accuracy: 97.7236, Val Accuracy: 92.1151
+[2019-09-25 12:21:01] Epoch: 74, LR: 0.00010000, Train Accuracy: 97.8049, Val Accuracy: 93.0243
+[2019-09-25 12:22:54] Epoch: 75, LR: 0.00010000, Train Accuracy: 97.4797, Val Accuracy: 93.4715
+[2019-09-25 12:24:47] Epoch: 76, LR: 0.00010000, Train Accuracy: 98.1301, Val Accuracy: 93.2926
+[2019-09-25 12:26:43] Epoch: 77, LR: 0.00010000, Train Accuracy: 98.2114, Val Accuracy: 93.2181
+[2019-09-25 12:28:38] Epoch: 78, LR: 0.00010000, Train Accuracy: 98.9431, Val Accuracy: 93.4118
+[2019-09-25 12:30:31] Epoch: 79, LR: 0.00010000, Train Accuracy: 98.4553, Val Accuracy: 93.6354
+[2019-09-25 12:32:24] Epoch: 80, LR: 0.00010000, Train Accuracy: 98.1301, Val Accuracy: 93.7547
+[2019-09-25 12:34:17] Epoch: 81, LR: 0.00010000, Train Accuracy: 98.5366, Val Accuracy: 93.8441
+[2019-09-25 12:36:08] Epoch: 82, LR: 0.00010000, Train Accuracy: 98.5366, Val Accuracy: 93.6652
+[2019-09-25 12:38:02] Epoch: 83, LR: 0.00010000, Train Accuracy: 98.5366, Val Accuracy: 93.7248
+[2019-09-25 12:39:56] Epoch: 84, LR: 0.00010000, Train Accuracy: 98.8618, Val Accuracy: 93.6652
+[2019-09-25 12:41:49] Epoch: 85, LR: 0.00010000, Train Accuracy: 98.6992, Val Accuracy: 93.7994
+[2019-09-25 12:43:44] Epoch: 86, LR: 0.00010000, Train Accuracy: 98.6992, Val Accuracy: 93.4715
+[2019-09-25 12:45:35] Epoch: 87, LR: 0.00010000, Train Accuracy: 98.8618, Val Accuracy: 93.6056
+[2019-09-25 12:47:27] Epoch: 88, LR: 0.00010000, Train Accuracy: 99.0244, Val Accuracy: 93.7398
+[2019-09-25 12:49:22] Epoch: 89, LR: 0.00010000, Train Accuracy: 98.6992, Val Accuracy: 93.8590
+[2019-09-25 12:51:16] Epoch: 90, LR: 0.00010000, Train Accuracy: 98.5366, Val Accuracy: 93.6801
+[2019-09-25 12:53:10] Epoch: 91, LR: 0.00010000, Train Accuracy: 99.1870, Val Accuracy: 93.6205
+[2019-09-25 12:55:04] Epoch: 92, LR: 0.00010000, Train Accuracy: 98.6179, Val Accuracy: 93.6056
+[2019-09-25 12:56:57] Epoch: 93, LR: 0.00010000, Train Accuracy: 98.7805, Val Accuracy: 93.3522
+[2019-09-25 12:58:49] Epoch: 94, LR: 0.00010000, Train Accuracy: 98.6179, Val Accuracy: 93.4864
+[2019-09-25 13:00:44] Epoch: 95, LR: 0.00010000, Train Accuracy: 98.6179, Val Accuracy: 93.6354
+[2019-09-25 13:02:37] Epoch: 96, LR: 0.00010000, Train Accuracy: 99.0244, Val Accuracy: 93.5907
+[2019-09-25 13:04:29] Epoch: 97, LR: 0.00010000, Train Accuracy: 98.8618, Val Accuracy: 93.6056
+[2019-09-25 13:06:23] Epoch: 98, LR: 0.00010000, Train Accuracy: 99.1870, Val Accuracy: 93.7547
+[2019-09-25 13:08:17] Epoch: 99, LR: 0.00010000, Train Accuracy: 98.7805, Val Accuracy: 93.6205
+[2019-09-25 13:10:08] Epoch: 100, LR: 0.00010000, Train Accuracy: 99.1870, Val Accuracy: 93.6205
+[2019-09-25 13:12:03] Epoch: 101, LR: 0.00010000, Train Accuracy: 99.1870, Val Accuracy: 93.5460
+[2019-09-25 13:13:57] Epoch: 102, LR: 0.00010000, Train Accuracy: 99.0244, Val Accuracy: 93.8590
+[2019-09-25 13:15:51] Epoch: 103, LR: 0.00010000, Train Accuracy: 99.2683, Val Accuracy: 93.6056
+[2019-09-25 13:17:44] Epoch: 104, LR: 0.00010000, Train Accuracy: 99.1057, Val Accuracy: 93.4864
+[2019-09-25 13:19:39] Epoch: 105, LR: 0.00010000, Train Accuracy: 99.5122, Val Accuracy: 93.7696
+[2019-09-25 13:21:32] Epoch: 106, LR: 0.00010000, Train Accuracy: 99.1057, Val Accuracy: 93.8590
+[2019-09-25 13:23:24] Epoch: 107, LR: 0.00010000, Train Accuracy: 98.9431, Val Accuracy: 93.8590
+[2019-09-25 13:25:17] Epoch: 108, LR: 0.00010000, Train Accuracy: 99.2683, Val Accuracy: 93.9186
+[2019-09-25 13:27:11] Epoch: 109, LR: 0.00010000, Train Accuracy: 99.6748, Val Accuracy: 93.8143
+[2019-09-25 13:29:03] Epoch: 110, LR: 0.00010000, Train Accuracy: 99.1057, Val Accuracy: 93.8143
+[2019-09-25 13:30:56] Epoch: 111, LR: 0.00010000, Train Accuracy: 99.3496, Val Accuracy: 93.5162
+[2019-09-25 13:32:49] Epoch: 112, LR: 0.00010000, Train Accuracy: 98.9431, Val Accuracy: 93.7994
+[2019-09-25 13:34:43] Epoch: 113, LR: 0.00010000, Train Accuracy: 99.0244, Val Accuracy: 93.7696
+[2019-09-25 13:36:36] Epoch: 114, LR: 0.00010000, Train Accuracy: 99.4309, Val Accuracy: 93.7696
+[2019-09-25 13:38:28] Epoch: 115, LR: 0.00010000, Train Accuracy: 99.2683, Val Accuracy: 93.6205
+[2019-09-25 13:40:21] Epoch: 116, LR: 0.00010000, Train Accuracy: 99.5122, Val Accuracy: 93.7994
+[2019-09-25 13:42:14] Epoch: 117, LR: 0.00010000, Train Accuracy: 99.5122, Val Accuracy: 93.9782
+[2019-09-25 13:44:06] Epoch: 118, LR: 0.00010000, Train Accuracy: 99.4309, Val Accuracy: 93.7845
+[2019-09-25 13:45:58] Epoch: 119, LR: 0.00010000, Train Accuracy: 99.4309, Val Accuracy: 93.9335
+[2019-09-25 13:47:50] Epoch: 120, LR: 0.00010000, Train Accuracy: 99.3496, Val Accuracy: 93.9633
+[2019-09-25 13:49:42] Epoch: 121, LR: 0.00010000, Train Accuracy: 99.1870, Val Accuracy: 93.9633
+[2019-09-25 13:51:35] Epoch: 122, LR: 0.00010000, Train Accuracy: 99.6748, Val Accuracy: 93.8143
+[2019-09-25 13:53:27] Epoch: 123, LR: 0.00010000, Train Accuracy: 99.1870, Val Accuracy: 93.7099
+[2019-09-25 13:55:21] Epoch: 124, LR: 0.00010000, Train Accuracy: 99.6748, Val Accuracy: 93.6950
+[2019-09-25 13:57:13] Epoch: 125, LR: 0.00010000, Train Accuracy: 99.1870, Val Accuracy: 93.4715
+[2019-09-25 13:59:06] Epoch: 126, LR: 0.00010000, Train Accuracy: 99.3496, Val Accuracy: 93.6354
+[2019-09-25 14:00:59] Epoch: 127, LR: 0.00010000, Train Accuracy: 99.5935, Val Accuracy: 93.9037
+[2019-09-25 14:02:53] Epoch: 128, LR: 0.00010000, Train Accuracy: 99.3496, Val Accuracy: 94.0975
+[2019-09-25 14:04:46] Epoch: 129, LR: 0.00010000, Train Accuracy: 98.9431, Val Accuracy: 93.6801
+[2019-09-25 14:06:38] Epoch: 130, LR: 0.00010000, Train Accuracy: 99.2683, Val Accuracy: 93.7696
+[2019-09-25 14:08:31] Epoch: 131, LR: 0.00001000, Train Accuracy: 99.6748, Val Accuracy: 93.9484
+[2019-09-25 14:10:22] Epoch: 132, LR: 0.00001000, Train Accuracy: 99.2683, Val Accuracy: 93.8590
+[2019-09-25 14:12:15] Epoch: 133, LR: 0.00001000, Train Accuracy: 99.3496, Val Accuracy: 93.9484
+[2019-09-25 14:14:08] Epoch: 134, LR: 0.00001000, Train Accuracy: 99.5935, Val Accuracy: 94.0528
+[2019-09-25 14:16:01] Epoch: 135, LR: 0.00001000, Train Accuracy: 99.5122, Val Accuracy: 94.0080
+[2019-09-25 14:17:53] Epoch: 136, LR: 0.00001000, Train Accuracy: 99.4309, Val Accuracy: 93.9335
+[2019-09-25 14:19:45] Epoch: 137, LR: 0.00001000, Train Accuracy: 98.9431, Val Accuracy: 93.8888
+[2019-09-25 14:21:38] Epoch: 138, LR: 0.00001000, Train Accuracy: 99.7561, Val Accuracy: 93.9484
+[2019-09-25 14:23:30] Epoch: 139, LR: 0.00001000, Train Accuracy: 99.5122, Val Accuracy: 93.8739
+[2019-09-25 14:25:24] Epoch: 140, LR: 0.00001000, Train Accuracy: 99.6748, Val Accuracy: 93.9186
+[2019-09-25 14:27:18] Epoch: 141, LR: 0.00001000, Train Accuracy: 99.5122, Val Accuracy: 93.8739
+[2019-09-25 14:29:11] Epoch: 142, LR: 0.00001000, Train Accuracy: 99.5122, Val Accuracy: 93.9633
+[2019-09-25 14:31:02] Epoch: 143, LR: 0.00001000, Train Accuracy: 99.5935, Val Accuracy: 93.9037
+[2019-09-25 14:32:55] Epoch: 144, LR: 0.00001000, Train Accuracy: 99.5122, Val Accuracy: 93.7994
+[2019-09-25 14:34:46] Epoch: 145, LR: 0.00001000, Train Accuracy: 99.5935, Val Accuracy: 93.8292
+[2019-09-25 14:36:40] Epoch: 146, LR: 0.00001000, Train Accuracy: 99.5935, Val Accuracy: 93.8143
+[2019-09-25 14:38:32] Epoch: 147, LR: 0.00001000, Train Accuracy: 99.5935, Val Accuracy: 93.9335
+[2019-09-25 14:40:25] Epoch: 148, LR: 0.00001000, Train Accuracy: 99.5122, Val Accuracy: 93.7994
+[2019-09-25 14:42:18] Epoch: 149, LR: 0.00001000, Train Accuracy: 99.4309, Val Accuracy: 93.8143
+[2019-09-25 14:44:11] Epoch: 150, LR: 0.00001000, Train Accuracy: 99.3496, Val Accuracy: 93.9633
+[2019-09-25 14:46:03] Epoch: 151, LR: 0.00001000, Train Accuracy: 99.5122, Val Accuracy: 94.0080
+[2019-09-25 14:47:54] Epoch: 152, LR: 0.00001000, Train Accuracy: 99.2683, Val Accuracy: 93.9484
+[2019-09-25 14:49:46] Epoch: 153, LR: 0.00001000, Train Accuracy: 99.5935, Val Accuracy: 93.9633
+[2019-09-25 14:51:39] Epoch: 154, LR: 0.00001000, Train Accuracy: 99.5122, Val Accuracy: 93.8590
+[2019-09-25 14:53:32] Epoch: 155, LR: 0.00001000, Train Accuracy: 99.7561, Val Accuracy: 94.1273
+[2019-09-25 14:55:27] Epoch: 156, LR: 0.00001000, Train Accuracy: 99.5935, Val Accuracy: 93.9037
+[2019-09-25 14:57:19] Epoch: 157, LR: 0.00001000, Train Accuracy: 99.4309, Val Accuracy: 93.7845
+[2019-09-25 14:59:10] Epoch: 158, LR: 0.00001000, Train Accuracy: 99.5122, Val Accuracy: 93.9186
+[2019-09-25 15:01:02] Epoch: 159, LR: 0.00001000, Train Accuracy: 99.1870, Val Accuracy: 93.9186
+[2019-09-25 15:02:55] Epoch: 160, LR: 0.00001000, Train Accuracy: 99.8374, Val Accuracy: 94.1124
+[2019-09-25 15:04:48] Epoch: 161, LR: 0.00001000, Train Accuracy: 99.4309, Val Accuracy: 94.0230
+[2019-09-25 15:06:42] Epoch: 162, LR: 0.00001000, Train Accuracy: 99.6748, Val Accuracy: 93.9484
+[2019-09-25 15:08:33] Epoch: 163, LR: 0.00001000, Train Accuracy: 99.7561, Val Accuracy: 93.9186
+[2019-09-25 15:10:26] Epoch: 164, LR: 0.00001000, Train Accuracy: 99.3496, Val Accuracy: 93.9037
+[2019-09-25 15:12:20] Epoch: 165, LR: 0.00001000, Train Accuracy: 99.4309, Val Accuracy: 94.1273
+[2019-09-25 15:14:14] Epoch: 166, LR: 0.00001000, Train Accuracy: 99.7561, Val Accuracy: 94.0677
+[2019-09-25 15:16:07] Epoch: 167, LR: 0.00001000, Train Accuracy: 99.5122, Val Accuracy: 93.9186
+[2019-09-25 15:17:59] Epoch: 168, LR: 0.00001000, Train Accuracy: 99.8374, Val Accuracy: 94.0230
+[2019-09-25 15:19:51] Epoch: 169, LR: 0.00001000, Train Accuracy: 99.4309, Val Accuracy: 94.0975
+[2019-09-25 15:21:45] Epoch: 170, LR: 0.00001000, Train Accuracy: 99.6748, Val Accuracy: 93.9335
+[2019-09-25 15:23:38] Epoch: 171, LR: 0.00000100, Train Accuracy: 99.9187, Val Accuracy: 94.0826
+[2019-09-25 15:25:31] Epoch: 172, LR: 0.00000100, Train Accuracy: 99.4309, Val Accuracy: 93.8292
+[2019-09-25 15:27:26] Epoch: 173, LR: 0.00000100, Train Accuracy: 99.6748, Val Accuracy: 93.8888
+[2019-09-25 15:29:18] Epoch: 174, LR: 0.00000100, Train Accuracy: 99.5935, Val Accuracy: 93.9186
+[2019-09-25 15:31:11] Epoch: 175, LR: 0.00000100, Train Accuracy: 99.6748, Val Accuracy: 93.9186
+[2019-09-25 15:33:04] Epoch: 176, LR: 0.00000100, Train Accuracy: 99.6748, Val Accuracy: 93.8441
+[2019-09-25 15:34:56] Epoch: 177, LR: 0.00000100, Train Accuracy: 99.4309, Val Accuracy: 94.0826
+[2019-09-25 15:36:50] Epoch: 178, LR: 0.00000100, Train Accuracy: 99.5935, Val Accuracy: 94.0975
+[2019-09-25 15:38:43] Epoch: 179, LR: 0.00000100, Train Accuracy: 99.7561, Val Accuracy: 94.1124
+[2019-09-25 15:40:35] Epoch: 180, LR: 0.00000100, Train Accuracy: 99.3496, Val Accuracy: 93.8143
+[2019-09-25 15:42:27] Epoch: 181, LR: 0.00000100, Train Accuracy: 99.2683, Val Accuracy: 93.9335
+[2019-09-25 15:44:21] Epoch: 182, LR: 0.00000100, Train Accuracy: 99.5122, Val Accuracy: 93.9782
+[2019-09-25 15:46:13] Epoch: 183, LR: 0.00000100, Train Accuracy: 99.5935, Val Accuracy: 93.8441
+[2019-09-25 15:48:05] Epoch: 184, LR: 0.00000100, Train Accuracy: 99.6748, Val Accuracy: 93.9782
+[2019-09-25 15:49:58] Epoch: 185, LR: 0.00000100, Train Accuracy: 99.6748, Val Accuracy: 94.0230
+[2019-09-25 15:51:50] Epoch: 186, LR: 0.00000100, Train Accuracy: 99.7561, Val Accuracy: 93.8441
+[2019-09-25 15:53:42] Epoch: 187, LR: 0.00000100, Train Accuracy: 99.5935, Val Accuracy: 94.0080
+[2019-09-25 15:55:36] Epoch: 188, LR: 0.00000100, Train Accuracy: 99.4309, Val Accuracy: 94.0379
+[2019-09-25 15:57:29] Epoch: 189, LR: 0.00000100, Train Accuracy: 99.8374, Val Accuracy: 93.9782
+[2019-09-25 15:59:20] Epoch: 190, LR: 0.00000100, Train Accuracy: 99.6748, Val Accuracy: 93.8292
+[2019-09-25 16:01:15] Epoch: 191, LR: 0.00000100, Train Accuracy: 99.3496, Val Accuracy: 93.8143
+[2019-09-25 16:03:07] Epoch: 192, LR: 0.00000100, Train Accuracy: 99.7561, Val Accuracy: 93.9037
+[2019-09-25 16:04:59] Epoch: 193, LR: 0.00000100, Train Accuracy: 99.6748, Val Accuracy: 93.9037
+[2019-09-25 16:06:54] Epoch: 194, LR: 0.00000100, Train Accuracy: 99.6748, Val Accuracy: 93.9037
+[2019-09-25 16:08:49] Epoch: 195, LR: 0.00000100, Train Accuracy: 99.4309, Val Accuracy: 93.7398
+[2019-09-25 16:10:45] Epoch: 196, LR: 0.00000100, Train Accuracy: 99.7561, Val Accuracy: 93.6950
+[2019-09-25 16:12:36] Epoch: 197, LR: 0.00000100, Train Accuracy: 99.5935, Val Accuracy: 93.8888
+[2019-09-25 16:14:30] Epoch: 198, LR: 0.00000100, Train Accuracy: 99.5935, Val Accuracy: 93.9931
+[2019-09-25 16:16:22] Epoch: 199, LR: 0.00000100, Train Accuracy: 99.5122, Val Accuracy: 94.0677
+[2019-09-25 16:18:16] Epoch: 200, LR: 0.00000100, Train Accuracy: 99.5935, Val Accuracy: 93.9931
+
+------------------------------------------------
+Best Validation Accuracy 94.1273 at epoch 155
+------------------------------------------------
+
+---------------- Train Analysis ----------------
+Accuracy of Grietas transversales : 94.33% 
+Accuracy of Marca vial : 97.38% 
+Accuracy of Sin daño : 97.57% 
+Accuracy of Grietas en forma de piel de cocodrilo : 95.42% 
+Accuracy of Parcheo : 91.24% 
+Accuracy of Huecos : 81.73% 
+Accuracy of Grietas longitudinales : 90.40% 
+Accuracy of Alcantarillado : 95.87% 
+Accuracy of Meteorización y desprendimiento : 83.27% 
