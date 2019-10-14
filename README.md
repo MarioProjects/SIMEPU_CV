@@ -13,6 +13,8 @@ En el siguiente repositorio trataremos de dar solución a la clasificación por 
 en los que podemos encontrar el pavimento. Como el proyecto puede avanzar hacia la clasificación de un número
 incremental de estados, dividiremos cada etapa experimental en consecuencia. 
 
+Para visualizar todos los experimentos realizados ejecutar: `tensorboard --logdir=results/logs`
+
 ## Etapa 1: Clasificación inicial
 
 En esta primera etapa tratamos de dar solución a la clasificación de 9 diferentes estados iniciales:
