@@ -26,6 +26,7 @@ parser.add_argument('--batch_size', type=int, default=32, help='Batch Size for t
 parser.add_argument('--learning_rate', type=float, default=0.01, help='Learning rate')
 parser.add_argument('--min_learning_rate', type=float, default=0.0001, help='Minimum Learning rate - Early stopping')
 
+parser.add_argument('--get_path', action='store_true', help='If dataloaders will return images paths')
 parser.add_argument('--weighted_loss', action='store_true', help='Use weighted loss based on class frequency')
 parser.add_argument('--plateau_scheduler', action='store_true',
                     help='Use a Plateau LR scheduler to control LR based on Accuracy metric')

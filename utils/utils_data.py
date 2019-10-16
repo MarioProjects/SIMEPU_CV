@@ -22,12 +22,13 @@ with open(os.path.join(SIMEPU_DATA_PATH, "targets2labels.pkl"), 'rb') as f:
 
 
 class SIMEPU_Dataset(data.Dataset):
-    def __init__(self, data_partition='', transform=None, validation_size=0.15, seed=42):
+    def __init__(self, data_partition='', transform=None, validation_size=0.15, seed=42, get_path=False):
         """
           - data_partition:
              -> Si esta vacio ("") devuelve todas las muestras del TRAIN set
              -> Si es "train" devuelve '1-validation_size' muestras del TRAIN set
              -> Si es "validation" devuelve 'validation_size' muestras del TRAIN set
+         - get_path: Si queremos devolver el path de la imagen (True) o no (False), tipicamente depuracion
         """
 
         np.random.seed(seed=seed)
@@ -45,6 +46,7 @@ class SIMEPU_Dataset(data.Dataset):
 
         self.data_partition = data_partition
         self.transform = transform
+        self.get_path = get_path
 
     def __getitem__(self, idx):
         img_path = self.data_paths.iloc[idx]["path"]
@@ -54,7 +56,10 @@ class SIMEPU_Dataset(data.Dataset):
         if self.transform is not None:
             img = self.transform(img)
 
-        return img, target
+        if self.get_path:
+            return img, target, img_path
+        else:
+            return img, target
 
     def __len__(self):
         return len(self.data_paths)

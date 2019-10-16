@@ -35,6 +35,8 @@ En esta primera etapa tratamos de dar solución a la clasificación de 9 diferen
 | resnet18*    |     ce     |    adam   |  224x224   |  steps 0.001  |         No        |   ------------   |    92.80%    |
 | resnet18*    |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   ------------   |    94.00%    |
 | resnet18*    |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   WeightedLoss   |    94.36%    |
+| resnet34*    |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   WeightedLoss   |    93.14%    |
+| resnet34*    |     ce     |    adam   |  224x224   |  steps 0.0001 |         Si        |   WeightedLoss   |    93.65%    |
 | resnet50*    |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   WeightedLoss   |    93.05%    |
 | seresnext50* |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   WeightedLoss   |    94.12%    |
 
