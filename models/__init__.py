@@ -2,6 +2,7 @@ import torchvision.models as models
 import torch.nn as nn
 from .resnet import *
 from .pytorchcv_seresnext import *
+from .pytorchcv_bam_resnet import *
 
 
 def model_selector(model_name, num_classes=9, pretrained=False):
@@ -62,6 +63,8 @@ def model_selector(model_name, num_classes=9, pretrained=False):
         return PretrainedSeresNext50(num_classes, pretrained=pretrained).cuda()
     elif model_name == "seresnext101":
         return PretrainedSeresNext101(num_classes, pretrained=pretrained).cuda()
+    elif model_name == "bam_resnet50":
+        return bam_resnet50(num_classes, pretrained=pretrained).cuda()
     else:
         assert False, "Uknown model selected!"
 
