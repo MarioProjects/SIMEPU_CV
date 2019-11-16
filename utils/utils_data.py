@@ -11,13 +11,11 @@ from torch.utils.data import DataLoader
 if os.environ.get('SIMEPU_DATA') is not None:
     SIMEPU_DATA_PATH = os.environ.get('SIMEPU_DATA')
 else:
-    assert False, "Please set SIMEPU DATA Path environment variable!"
+    assert False, "Please set SIMEPU_DATA_PATH environment variable!"
 
-SIMEPU_PATHS = pd.read_csv(os.path.join(SIMEPU_DATA_PATH, "data_paths.csv"))
-
-with open(os.path.join(SIMEPU_DATA_PATH, "labels2targets.pkl"), 'rb') as f:
+with open("labels2targets.pkl", 'rb') as f:
     LABELS2TARGETS = pickle.load(f)
-with open(os.path.join(SIMEPU_DATA_PATH, "targets2labels.pkl"), 'rb') as f:
+with open("targets2labels.pkl", 'rb') as f:
     TARGETS2LABELS = pickle.load(f)
 
 
@@ -31,16 +29,17 @@ class SIMEPU_Dataset(data.Dataset):
          - get_path: Si queremos devolver el path de la imagen (True) o no (False), tipicamente depuracion
         """
 
+        data_paths = pd.read_csv("data_paths.csv")
         np.random.seed(seed=seed)
 
         if data_partition == "":
-            self.data_paths = SIMEPU_PATHS
+            self.data_paths = data_paths
         else:
-            msk = np.random.rand(len(SIMEPU_PATHS)) < validation_size
+            msk = np.random.rand(len(data_paths)) < validation_size
             if data_partition == "train":
-                self.data_paths = SIMEPU_PATHS[msk]
+                self.data_paths = data_paths[msk]
             elif data_partition == "validation":
-                self.data_paths = SIMEPU_PATHS[~msk]
+                self.data_paths = data_paths[~msk]
             else:
                 assert False, "Wrong data partition: {}".format(data_partition)
 
@@ -49,7 +48,7 @@ class SIMEPU_Dataset(data.Dataset):
         self.get_path = get_path
 
     def __getitem__(self, idx):
-        img_path = self.data_paths.iloc[idx]["path"]
+        img_path = SIMEPU_DATA_PATH + "/" + self.data_paths.iloc[idx]["path"]
         target = int(self.data_paths.iloc[idx]["target"])
         img = io.imread(img_path)
 
