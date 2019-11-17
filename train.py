@@ -45,14 +45,14 @@ if args.pretrained:
     val_aug.append(transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
 
 # data_partition='', data_augmentation=None, validation_size=0.15, seed=42
-train_dataset = SIMEPU_Dataset(data_partition='train', transform=transforms.Compose(train_aug), validation_size=args.validation_size)
+train_dataset = SIMEPU_Dataset(data_partition='train', transform=transforms.Compose(train_aug), validation_size=args.validation_size, binary_problem=args.binary_problem)
 train_loader = DataLoader(train_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=True)
 
-val_dataset = SIMEPU_Dataset(data_partition='validation', transform=transforms.Compose(val_aug), validation_size=args.validation_size)
+val_dataset = SIMEPU_Dataset(data_partition='validation', transform=transforms.Compose(val_aug), validation_size=args.validation_size, binary_problem=args.binary_problem)
 val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
 
-# LABELS2TARGETS: Diccionario {"clase":target} para conocer el target que representa una clase dada
-model = model_selector(args.model_name, num_classes=len(LABELS2TARGETS), pretrained=args.pretrained)
+print("Hay {} clases!".format(train_dataset.num_classes))
+model = model_selector(args.model_name, num_classes=train_dataset.num_classes, pretrained=args.pretrained)
 model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
 
 progress_train_loss, progress_val_loss, = np.array([]), np.array([])
@@ -108,5 +108,6 @@ print("\n------------------------------------------------")
 print("Best Validation Accuracy {:.4f} at epoch {}".format(progress_val_accuracy.max(), progress_val_accuracy.argmax() + 1))
 print("------------------------------------------------\n")
 
-print("---------------- Train Analysis ----------------")
-train_analysis(model, val_loader, args.output_dir, LABELS2TARGETS, TARGETS2LABELS)
+if not args.binary_problem:
+    print("---------------- Train Analysis ----------------")
+    train_analysis(model, val_loader, args.output_dir, LABELS2TARGETS, TARGETS2LABELS)

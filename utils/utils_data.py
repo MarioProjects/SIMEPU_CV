@@ -13,9 +13,9 @@ if os.environ.get('SIMEPU_DATA') is not None:
 else:
     assert False, "Please set SIMEPU_DATA_PATH environment variable!"
 
-with open("labels2targets.pkl", 'rb') as f:
+with open("utils/labels2targets.pkl", 'rb') as f:
     LABELS2TARGETS = pickle.load(f)
-with open("targets2labels.pkl", 'rb') as f:
+with open("utils/targets2labels.pkl", 'rb') as f:
     TARGETS2LABELS = pickle.load(f)
 
 """
@@ -24,12 +24,10 @@ with open("targets2labels.pkl", 'rb') as f:
        [0] Parcheo / [3] Grietas Transversales Daño / [4] Huecos / [5] Grietas longitudinales / 
        [6] Meteorización y desprendimiento / [7] Grietas en forma de piel de cocodrilo
 """
-CLASES_NO_DAÑO = [1, 2, 8]
-CLASES_DAÑO = [0, 3, 4, 5, 6, 7]
 
 
 class SIMEPU_Dataset(data.Dataset):
-    def __init__(self, data_partition='', transform=None, validation_size=0.15, seed=42, get_path=False, dano_no_dano=False):
+    def __init__(self, data_partition='', transform=None, validation_size=0.15, seed=42, get_path=False, binary_problem=False):
         """
           - data_partition:
              -> Si esta vacio ("") devuelve todas las muestras del TRAIN set
@@ -40,8 +38,10 @@ class SIMEPU_Dataset(data.Dataset):
         """
         if data_partition not in ["", "train", "validation"]: assert False, "Wrong data partition: {}".format(data_partition)
 
-        if dano_no_dano: data_paths = pd.read_csv("data_daños_path.csv")
-        else: data_paths = pd.read_csv("data_paths.csv")
+        if binary_problem: data_paths = pd.read_csv("utils/data_damages_path.csv")
+        else: data_paths = pd.read_csv("utils/data_paths.csv")
+
+        self.num_classes = len(np.unique(data_paths["target"]))
 
         np.random.seed(seed=seed)
         if data_partition == "":

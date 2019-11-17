@@ -34,6 +34,9 @@ parser.add_argument('--steps_best', action='store_true', help='Load best checkpo
 parser.add_argument('--steps_scheduler', action='store_true',
                     help='Use a LR Steps scheduler to control LR based on epochs')
 
+parser.add_argument('--binary_problem', action='store_true',
+                    help='Binary classification problem: Damage / No Damage')
+
 parser.add_argument('--img_size', type=int, default=256, help='Final img squared size')
 parser.add_argument('--crop_size', type=int, default=224, help='Center crop squared size')
 
