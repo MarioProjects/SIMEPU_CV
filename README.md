@@ -44,3 +44,21 @@ En esta primera etapa tratamos de dar solución a la clasificación de 9 diferen
 
 Matriz de confusión del mejor modelo:
 ![Best Model Confusion Matrix](results/resnet18_adam_256to224_lr0.001_DA_pretrained_weightedLoss/confusion_matrix.jpg "Best Model Confusion Matrix")
+
+## Etapa 2: Daño vs. No Daño
+
+En esta segunda etapa tratamos de dar solución a la clasificación de las clases `Daño` y `No Daño`:
+  - Daño: Grietas en forma de piel de cocodrilo / Grietas longitudinales / Grietas transversales / Huecos / Meteorización y desprendimiento / Parcheo
+  - No Daño: Alcantarillado / Marca vial / Sin Daño
+
+|     Model    | Criterion  | Optimizer |  Img Size  |  LR strategy  | Data Augmentation |      Extra       |   Accuracy   |
+|:------------:|:----------:|:---------:|:----------:|:-------------:|:-----------------:|:----------------:|:------------:|
+| resnet18*    |     ce     |    adam   |  512x512   |  steps 0.001  |         Si        |   ------------   |    97.25%    |
+| resnet18*    |     ce     |    adam   |  224x224   |  steps 0.01   |         Si        |   ------------   |    70.86%    |
+| resnet18*    |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   ------------   |    97.19%    |
+| resnet18*    |     ce     |    adam   |  224x224   |  steps 0.0001 |         Si        |   ------------   |    97.54%    |
+| resnet34*    |     ce     |    adam   |  224x224   |  steps 0.01   |         Si        |   ------------   |    68.10%    |
+| resnet34*    |     ce     |    adam   |  224x224   |  steps 0.001  |         Si        |   ------------   |    87.07%    |
+| resnet34*    |     ce     |    adam   |  224x224   |  steps 0.0001 |         Si        |   ------------   |    97.68%    |
+
+*: Preentrenado en Imagenet
