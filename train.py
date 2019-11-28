@@ -59,7 +59,9 @@ progress_train_loss, progress_val_loss, = np.array([]), np.array([])
 progress_train_accuracy, progress_val_accuracy = np.array([]), np.array([])
 best_model = None
 
-if args.weighted_loss:
+if args.binary_problem:
+    criterion = nn.BCEWithLogitsLoss()
+elif args.weighted_loss:
     print("Loaded Class weights!")
     with open("utils/class_weights_divide.pkl", "rb") as fp:  # Unpickling
         weights = pickle.load(fp)
@@ -81,7 +83,7 @@ print("\n-------------- START TRAINING --------------")
 for epoch in range(args.epochs):
 
     current_train_loss, current_train_accuracy = train_step(train_loader, model, criterion, optimizer)
-    current_val_loss, current_val_accuracy = val_step(val_loader, model, criterion)
+    current_val_loss, current_val_accuracy = val_step(val_loader, model, criterion, args.binary_problem)
 
     progress_train_loss = np.append(progress_train_loss, current_train_loss)
     progress_val_loss = np.append(progress_val_loss, current_val_loss)

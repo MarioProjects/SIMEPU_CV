@@ -59,6 +59,7 @@ def train_step(train_loader, model, criterion, optimizer):
         inputs, targets = inputs.cuda(), targets.cuda()
         optimizer.zero_grad()
         outputs = model(inputs)
+        targets = targets.unsqueeze(1).type_as(outputs)
         loss = criterion(outputs, targets)
         loss.backward()
         optimizer.step()
@@ -73,19 +74,31 @@ def train_step(train_loader, model, criterion, optimizer):
     return train_loss, train_accuracy
 
 
-def val_step(val_loader, model, criterion):
+def val_step(val_loader, model, criterion, binary_problem=False):
     model.eval()
     val_loss, correct, total = 0, 0, 0
     with torch.no_grad():
         for batch_idx, (inputs, targets) in enumerate(val_loader):
-            inputs, targets = inputs.cuda(), targets.cuda()
-            outputs = model(inputs)
-            loss = criterion(outputs, targets)
+            if binary_problem:
+                inputs, targets = inputs.cuda(), targets.cuda()
+                outputs = model(inputs)
+                outputs = (nn.Sigmoid()(outputs) > 0.5).float()
+                targets = targets.unsqueeze(1).type_as(outputs)
+                loss = criterion(outputs, targets)
 
-            val_loss += loss.item()
-            _, predicted = outputs.max(1)
-            total += targets.size(0)
-            correct += predicted.eq(targets).sum().item()
+                val_loss += loss.item()
+                total += targets.size(0)
+                correct += (outputs == targets).float().sum().item()
+                
+            else:
+                inputs, targets = inputs.cuda(), targets.cuda()
+                outputs = model(inputs)
+                loss = criterion(outputs, targets)
+
+                val_loss += loss.item()
+                _, predicted = outputs.max(1)
+                total += targets.size(0)
+                correct += predicted.eq(targets).sum().item()
 
         val_loss = (val_loss / (batch_idx + 1))
         val_accuracy = 100. * correct / total

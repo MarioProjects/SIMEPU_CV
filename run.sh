@@ -1,8 +1,8 @@
 #!/bin/bash
 echo -e "\n---- Start ----\n"
-model="resnet18" #resnet_unet
+model="resnet34" #resnet_unet
 optimizer="adam"
-lr=0.001 # learning_rate
+lr=0.0001 # learning_rate
 min_lr=0.0000001
 epochs=200
 batch_size=128

@@ -41,7 +41,8 @@ class SIMEPU_Dataset(data.Dataset):
         if binary_problem: data_paths = pd.read_csv("utils/data_damages_path.csv")
         else: data_paths = pd.read_csv("utils/data_paths.csv")
 
-        self.num_classes = len(np.unique(data_paths["target"]))
+        if binary_problem: self.num_classes = 1
+        else: self.num_classes = len(np.unique(data_paths["target"]))
 
         np.random.seed(seed=seed)
         if data_partition == "":
