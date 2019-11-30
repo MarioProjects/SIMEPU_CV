@@ -1,0 +1,21 @@
+{
+  "verbose": false,
+  "optimizer": "adam",
+  "epochs": 200,
+  "batch_size": 64,
+  "learning_rate": 0.0001,
+  "min_learning_rate": 1e-07,
+  "get_path": false,
+  "weighted_loss": false,
+  "plateau_scheduler": false,
+  "steps_best": false,
+  "steps_scheduler": true,
+  "binary_problem": true,
+  "img_size": 256,
+  "crop_size": 224,
+  "model_name": "seresnext101",
+  "pretrained": true,
+  "validation_size": 0.15,
+  "output_dir": "results/seresnext101_adam_256to224_lr0.0001_DA_pretrained_Binary/",
+  "data_augmentation": true
+}

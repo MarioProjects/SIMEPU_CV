@@ -5,7 +5,7 @@ import matplotlib.transforms as mtrans
 import numpy as np
 import seaborn as sns
 import torch
-
+import torch.nn as nn
 
 def get_optimizer(optmizer_type, model, lr=0.1):
     # Funcion para rehacer el optmizador -> Ayuda para cambiar learning rate
