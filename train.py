@@ -45,11 +45,18 @@ if args.pretrained:
     val_aug.append(transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
 
 # data_partition='', data_augmentation=None, validation_size=0.15, seed=42
-train_dataset = SIMEPU_Dataset(data_partition='train', transform=transforms.Compose(train_aug), validation_size=args.validation_size, binary_problem=args.binary_problem)
+train_dataset = SIMEPU_Dataset(data_partition='train', transform=transforms.Compose(train_aug),
+                               validation_size=args.validation_size, binary_problem=args.binary_problem,
+                               damaged_problem=args.damaged_problem)
 train_loader = DataLoader(train_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=True)
 
-val_dataset = SIMEPU_Dataset(data_partition='validation', transform=transforms.Compose(val_aug), validation_size=args.validation_size, binary_problem=args.binary_problem)
+val_dataset = SIMEPU_Dataset(data_partition='validation', transform=transforms.Compose(val_aug),
+                             validation_size=args.validation_size, binary_problem=args.binary_problem,
+                             damaged_problem=args.damaged_problem)
 val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
+
+print("[Train] {} muestras".format(len(train_dataset)))
+print("[Validacion] {} muestras".format(len(val_dataset)))
 
 print("Hay {} clases!".format(train_dataset.num_classes))
 model = model_selector(args.model_name, num_classes=train_dataset.num_classes, pretrained=args.pretrained)
@@ -82,7 +89,7 @@ writer = SummaryWriter(log_dir='results/logs/{}'.format(args.output_dir[args.out
 print("\n-------------- START TRAINING --------------")
 for epoch in range(args.epochs):
 
-    current_train_loss, current_train_accuracy = train_step(train_loader, model, criterion, optimizer)
+    current_train_loss, current_train_accuracy = train_step(train_loader, model, criterion, optimizer, binary_problem=args.binary_problem)
     current_val_loss, current_val_accuracy = val_step(val_loader, model, criterion, args.binary_problem)
 
     progress_train_loss = np.append(progress_train_loss, current_train_loss)
@@ -97,7 +104,7 @@ for epoch in range(args.epochs):
 
     # Print training logs
     current_time = "[" + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + "]"
-    print("{} Epoch: {}, LR: {:.8f}, Train Accuracy: {:.4f}, Val Accuracy: {:.4f}".format(
+    print("{} Epoch: {}, LR: {:.8f}, Train Accuracy: {:.4f}%, Val Accuracy: {:.4f}%".format(
         current_time, epoch + 1, get_current_lr(optimizer), current_train_accuracy, current_val_accuracy
     ))
 
@@ -112,4 +119,7 @@ print("------------------------------------------------\n")
 
 if not args.binary_problem:
     print("---------------- Train Analysis ----------------")
-    train_analysis(model, val_loader, args.output_dir, LABELS2TARGETS, TARGETS2LABELS)
+    if args.damaged_problem:
+        train_analysis(model, val_loader, args.output_dir, LABELS2TARGETSDAMAGED, TARGETS2LABELSDAMAGED, 6)
+    else:
+        train_analysis(model, val_loader, args.output_dir, LABELS2TARGETS, TARGETS2LABELS, 9)

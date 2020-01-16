@@ -18,6 +18,11 @@ with open("utils/labels2targets.pkl", 'rb') as f:
 with open("utils/targets2labels.pkl", 'rb') as f:
     TARGETS2LABELS = pickle.load(f)
 
+with open("utils/labels2targetsdamaged.pkl", 'rb') as f:
+    LABELS2TARGETSDAMAGED = pickle.load(f)
+with open("utils/targets2labelsdamaged.pkl", 'rb') as f:
+    TARGETS2LABELSDAMAGED = pickle.load(f)
+
 """
  - Las clases SIN daño: [1] Marca Via / [2] Sin Daño / [8] Alcantarillado
  - Las clases CON daño: 
@@ -27,7 +32,8 @@ with open("utils/targets2labels.pkl", 'rb') as f:
 
 
 class SIMEPU_Dataset(data.Dataset):
-    def __init__(self, data_partition='', transform=None, validation_size=0.15, seed=42, get_path=False, binary_problem=False):
+    def __init__(self, data_partition='', transform=None, validation_size=0.15, seed=42, get_path=False,
+                 binary_problem=False, damaged_problem=False):
         """
           - data_partition:
              -> Si esta vacio ("") devuelve todas las muestras del TRAIN set
@@ -37,12 +43,17 @@ class SIMEPU_Dataset(data.Dataset):
          - dano_no_dano: Para separa las muestras en daño / no daño
         """
         if data_partition not in ["", "train", "validation"]: assert False, "Wrong data partition: {}".format(data_partition)
+        if binary_problem and damaged_problem: assert False, "Please not binary_problem and damaged_problem at same time"
 
-        if binary_problem: data_paths = pd.read_csv("utils/data_damages_path.csv")
-        else: data_paths = pd.read_csv("utils/data_paths.csv")
-
-        if binary_problem: self.num_classes = 1
-        else: self.num_classes = len(np.unique(data_paths["target"]))
+        if binary_problem:
+            data_paths = pd.read_csv("utils/data_damages_path.csv")
+            self.num_classes = 1
+        elif damaged_problem:
+            data_paths = pd.read_csv("utils/only_damaged_path.csv")
+            self.num_classes = 6
+        else:
+            data_paths = pd.read_csv("utils/data_paths.csv")
+            self.num_classes = len(np.unique(data_paths["target"]))
 
         np.random.seed(seed=seed)
         if data_partition == "":
@@ -50,9 +61,9 @@ class SIMEPU_Dataset(data.Dataset):
         else:
             msk = np.random.rand(len(data_paths)) < validation_size
             if data_partition == "train":
-                self.data_paths = data_paths[msk]
-            elif data_partition == "validation":
                 self.data_paths = data_paths[~msk]
+            elif data_partition == "validation":
+                self.data_paths = data_paths[msk]
             else:
                 assert False, "Wrong data partition: {}".format(data_partition)
 

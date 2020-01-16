@@ -17,7 +17,6 @@ def model_selector(model_name, num_classes=9, pretrained=False):
             resnet18.fc = nn.Linear(resnet18.fc.in_features, num_classes)
             for param in resnet18.parameters():  # Defrost model
                 param.requires_grad = True
-            print(resnet18)
             return resnet18.cuda()
     elif model_name == "resnet34":
         if not pretrained:
@@ -27,7 +26,6 @@ def model_selector(model_name, num_classes=9, pretrained=False):
             resnet34.fc = nn.Linear(resnet34.fc.in_features, num_classes)
             for param in resnet34.parameters():  # Defrost model
                 param.requires_grad = True
-            print(resnet34)
             return resnet34.cuda()
     elif model_name == "resnet50":
         if not pretrained:
@@ -37,7 +35,6 @@ def model_selector(model_name, num_classes=9, pretrained=False):
             resnet50.fc = nn.Linear(resnet50.fc.in_features, num_classes)
             for param in resnet50.parameters():  # Defrost model
                 param.requires_grad = True
-            print(resnet50)
             return resnet50.cuda()
     elif model_name == "resnet101":
         if not pretrained:
@@ -47,7 +44,6 @@ def model_selector(model_name, num_classes=9, pretrained=False):
             resnet101.fc = nn.Linear(resnet101.fc.in_features, num_classes)
             for param in resnet101.parameters():  # Defrost model
                 param.requires_grad = True
-            print(resnet101)
             return resnet101.cuda()
     elif model_name == "resnet152":
         if not pretrained:
@@ -57,7 +53,6 @@ def model_selector(model_name, num_classes=9, pretrained=False):
             resnet152.fc = nn.Linear(resnet152.fc.in_features, num_classes)
             for param in resnet152.parameters():  # Defrost model
                 param.requires_grad = True
-            print(resnet152)
             return resnet152.cuda()
     elif model_name == "seresnext50":
         return PretrainedSeresNext50(num_classes, pretrained=pretrained).cuda()

@@ -23,7 +23,7 @@ def get_optimizer(optmizer_type, model, lr=0.1):
 
 def get_scheduler(optimizer, steps, plateau):
     if steps:
-        return torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[70, 130, 170], gamma=0.1)
+        return torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100, 155, 190], gamma=0.1)
     elif plateau:
         return torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, cooldown=6, factor=0.1, patience=12)
     else:
@@ -52,14 +52,15 @@ def save_progress(epoch, progress_train_loss, progress_val_loss, progress_train_
             pickle.dump(progress, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def train_step(train_loader, model, criterion, optimizer):
+def train_step(train_loader, model, criterion, optimizer, binary_problem=False):
     model.train()
     train_loss, correct, total = 0, 0, 0
     for batch_idx, (inputs, targets) in enumerate(train_loader):
         inputs, targets = inputs.cuda(), targets.cuda()
         optimizer.zero_grad()
         outputs = model(inputs)
-        targets = targets.unsqueeze(1).type_as(outputs)
+        if binary_problem:
+            targets = targets.unsqueeze(1).type_as(outputs)
         loss = criterion(outputs, targets)
         loss.backward()
         optimizer.step()
@@ -105,7 +106,7 @@ def val_step(val_loader, model, criterion, binary_problem=False):
     return val_loss, val_accuracy
 
 
-def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS):
+def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS, nb_classes):
     """
     Generate accuracy per class and confusion matrix plots
     """
@@ -146,8 +147,6 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
 
     plt.savefig("{}/accuracy_per_class.jpg".format(output_dir), bbox_inches="tight")
 
-    nb_classes = 9
-
     confusion_matrix = torch.zeros(nb_classes, nb_classes)
     with torch.no_grad():
         for i, (inputs, classes) in enumerate(val_loader):
@@ -160,8 +159,7 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
     a4_dims = (11.7, 8.27)
     fig, ax = plt.subplots(figsize=a4_dims)
     # Great cmaps -> YlGnBu / GnBu
-    ax = sns.heatmap(confusion_matrix.data.cpu().numpy() / np.array(class_total), cmap="YlGnBu", annot=True,
-                     linewidths=.5)
+    ax = sns.heatmap(confusion_matrix.data.cpu().numpy() / np.array(class_total), cmap="YlGnBu", annot=True, linewidths=.5)
     ax.set_yticklabels(ax.get_xticklabels(), rotation=0)
     plt.yticks(np.arange(len(LABELS)), LABELS)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
