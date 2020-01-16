@@ -52,14 +52,14 @@ def save_progress(epoch, progress_train_loss, progress_val_loss, progress_train_
             pickle.dump(progress, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def train_step(train_loader, model, criterion, optimizer, binary_problem=False):
+def train_step(train_loader, model, criterion, optimizer, binary_problem=False, cutmix=False):
     model.train()
     train_loss, correct, total = 0, 0, 0
     for batch_idx, (inputs, targets) in enumerate(train_loader):
         inputs, targets = inputs.cuda(), targets.cuda()
         optimizer.zero_grad()
         outputs = model(inputs)
-        if binary_problem:
+        if binary_problem and not cutmix:
             targets = targets.unsqueeze(1).type_as(outputs)
         loss = criterion(outputs, targets)
         loss.backward()
@@ -68,7 +68,10 @@ def train_step(train_loader, model, criterion, optimizer, binary_problem=False):
         train_loss += loss.item()
         _, predicted = outputs.max(1)
         total += targets.size(0)
-        correct += predicted.eq(targets).sum().item()
+        if cutmix: # Using cutmix transforms targets to one hot so we have to take it right 
+            correct += predicted.eq(torch.argmax(targets, 1)).sum().item()
+        else:
+            correct += predicted.eq(targets).sum().item()
 
     train_loss = (train_loss / (batch_idx + 1))
     train_accuracy = 100. * correct / total

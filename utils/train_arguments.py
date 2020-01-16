@@ -36,9 +36,11 @@ parser.add_argument('--steps_scheduler', action='store_true',
 
 parser.add_argument('--binary_problem', action='store_true', help='Binary classification problem: Damage / No Damage')
 parser.add_argument('--damaged_problem', action='store_true', help='Only damaged classification problem.')
+#https://github.com/ildoonet/cutmix
+parser.add_argument('--cutmix', action='store_true', help='Use cutmix Data Augmentation?')
 
-parser.add_argument('--img_size', type=int, default=256, help='Final img squared size')
-parser.add_argument('--crop_size', type=int, default=224, help='Center crop squared size')
+parser.add_argument('--img_size', type=int, default=150, help='Final img squared size')
+parser.add_argument('--crop_size', type=int, default=128, help='Center crop squared size')
 
 parser.add_argument('--model_name', type=str, default='resnet18', help='Model name for training')
 parser.add_argument('--pretrained', action='store_true', help='Use Imagenet Pretrained model')

@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 if os.environ.get('SIMEPU_DATA') is not None:
     SIMEPU_DATA_PATH = os.environ.get('SIMEPU_DATA')
 else:
-    assert False, "Please set SIMEPU_DATA_PATH environment variable!"
+    assert False, "Please set SIMEPU_DATA environment variable!"
 
 with open("utils/labels2targets.pkl", 'rb') as f:
     LABELS2TARGETS = pickle.load(f)

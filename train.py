@@ -15,6 +15,9 @@ from utils.train_arguments import *
 from utils.utils_data import *
 from utils.utils_training import *
 
+from cutmix.cutmix import CutMix
+from cutmix.utils import CutMixCrossEntropyLoss
+
 if args.data_augmentation:
     train_aug = [
         transforms.ToPILImage(),  # because the input dtype is numpy.ndarray
@@ -45,9 +48,16 @@ if args.pretrained:
     val_aug.append(transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
 
 # data_partition='', data_augmentation=None, validation_size=0.15, seed=42
+
 train_dataset = SIMEPU_Dataset(data_partition='train', transform=transforms.Compose(train_aug),
                                validation_size=args.validation_size, binary_problem=args.binary_problem,
                                damaged_problem=args.damaged_problem)
+
+num_classes = train_dataset.num_classes
+
+if args.cutmix:
+    train_dataset = CutMix(train_dataset, num_class=num_classes if not args.binary_problem else 2, beta=1.0, prob=0.5, num_mix=2)
+
 train_loader = DataLoader(train_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=True)
 
 val_dataset = SIMEPU_Dataset(data_partition='validation', transform=transforms.Compose(val_aug),
@@ -55,18 +65,22 @@ val_dataset = SIMEPU_Dataset(data_partition='validation', transform=transforms.C
                              damaged_problem=args.damaged_problem)
 val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
 
+print("Hay {} clases!".format(num_classes))
 print("[Train] {} muestras".format(len(train_dataset)))
 print("[Validacion] {} muestras".format(len(val_dataset)))
 
-print("Hay {} clases!".format(train_dataset.num_classes))
-model = model_selector(args.model_name, num_classes=train_dataset.num_classes, pretrained=args.pretrained)
+model = model_selector(args.model_name, num_classes=num_classes, pretrained=args.pretrained)
 model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
 
 progress_train_loss, progress_val_loss, = np.array([]), np.array([])
 progress_train_accuracy, progress_val_accuracy = np.array([]), np.array([])
 best_model = None
 
-if args.binary_problem:
+# if args.binary_problem and args.cutmix:
+#     assert False, "Not implemented binary problem with cutmix!"
+if args.cutmix:
+    criterion = CutMixCrossEntropyLoss(True)
+elif args.binary_problem:
     criterion = nn.BCEWithLogitsLoss()
 elif args.weighted_loss:
     print("Loaded Class weights!")
@@ -89,7 +103,7 @@ writer = SummaryWriter(log_dir='results/logs/{}'.format(args.output_dir[args.out
 print("\n-------------- START TRAINING --------------")
 for epoch in range(args.epochs):
 
-    current_train_loss, current_train_accuracy = train_step(train_loader, model, criterion, optimizer, binary_problem=args.binary_problem)
+    current_train_loss, current_train_accuracy = train_step(train_loader, model, criterion, optimizer, binary_problem=args.binary_problem, cutmix=args.cutmix)
     current_val_loss, current_val_accuracy = val_step(val_loader, model, criterion, args.binary_problem)
 
     progress_train_loss = np.append(progress_train_loss, current_train_loss)
