@@ -145,7 +145,7 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
     axes.set_ylim([0, 100])
     plt.yticks(np.arange(0, 101, 10.0))
 
-    plt.savefig("{}/accuracy_per_class.jpg".format(output_dir), bbox_inches="tight")
+    plt.savefig("{}/accuracy_per_class.png".format(output_dir), bbox_inches="tight")
 
     confusion_matrix = torch.zeros(nb_classes, nb_classes)
     with torch.no_grad():
@@ -173,4 +173,4 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
     for t in ax.get_yticklabels():
         t.set_transform(t.get_transform() + trans)
 
-    plt.savefig("{}/confusion_matrix.jpg".format(output_dir), bbox_inches="tight")
+    plt.savefig("{}/confusion_matrix.png".format(output_dir), bbox_inches="tight")

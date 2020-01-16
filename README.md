@@ -46,7 +46,7 @@ En esta primera etapa tratamos de dar solución a la clasificación de 9 diferen
 *: Preentrenado en Imagenet
 
 Matriz de confusión del mejor modelo:
-![Best Model Confusion Matrix](results/resnet34_adam_256to224_lr0.0001_DA_pretrained_FullTrainOK/confusion_matrix.jpg "Best Model Confusion Matrix")
+![Best Model Confusion Matrix](results/resnet34_adam_256to224_lr0.0001_DA_pretrained_FullTrainOK/confusion_matrix.png "Best Model Confusion Matrix")
 
 ## Daño vs. No Daño
 
@@ -96,3 +96,5 @@ Por otra parte, queremos estudiar cómo sería la clasificación de los daños a
   - Accuracy of Grietas longitudinales : 100.00% 
   - Accuracy of Meteorización y desprendimiento : 100.00% 
   - Accuracy of Grietas en forma de piel de cocodrilo : 100.00% 
+  
+ ![Best Model Damaged Confusion Matrix](results/resnet34_adam_256to224_lr0.0001_DA_pretrained_OnlyDamaged/confusion_matrix.png "Best Model Damaged Confusion Matrix")
