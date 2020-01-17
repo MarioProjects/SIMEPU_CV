@@ -23,7 +23,7 @@ def get_optimizer(optmizer_type, model, lr=0.1):
 
 def get_scheduler(optimizer, steps, plateau):
     if steps:
-        return torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100, 155, 190], gamma=0.1)
+        return torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[80, 145, 180], gamma=0.1)
     elif plateau:
         return torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, cooldown=6, factor=0.1, patience=12)
     else:

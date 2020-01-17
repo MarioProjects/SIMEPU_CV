@@ -56,7 +56,7 @@ train_dataset = SIMEPU_Dataset(data_partition='train', transform=transforms.Comp
 num_classes = train_dataset.num_classes
 
 if args.cutmix:
-    train_dataset = CutMix(train_dataset, num_class=num_classes if not args.binary_problem else 2, beta=1.0, prob=0.5, num_mix=2)
+    train_dataset = CutMix(train_dataset, num_class=num_classes if not args.binary_problem else 2, beta=1.0, prob=0.65, num_mix=1)
 
 train_loader = DataLoader(train_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=True)
 
