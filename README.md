@@ -15,6 +15,10 @@ incremental de estados, dividiremos cada etapa experimental en consecuencia.
 
 Para visualizar todos los experimentos realizados ejecutar: `tensorboard --logdir=results/logs`
 
+``
+pip install git+https://github.com/ildoonet/cutmix
+``
+
 ## Clasificación: Todas las clases
 
 En esta primera etapa tratamos de dar solución a la clasificación de 9 diferentes estados iniciales:
