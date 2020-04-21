@@ -137,3 +137,8 @@ Por otra parte, queremos estudiar cómo sería la clasificación de los daños a
   - Accuracy of Grietas en forma de piel de cocodrilo : 100.00% 
   
  ![Best Model Damaged Confusion Matrix](results/resnet50_adam_256to224_lr0.0001_DA_pretrained_OnlyDamaged/confusion_matrix.png "Best Model Damaged Confusion Matrix")
+ 
+ ### To-Do
+ 
+   - [ ] A partir de la imagen sacar la 'mascara' de donde esta el daño, para sacar la superficie del mismo. 
+   ¿Podemos obtenerlo a partir del Captum? (Solo apra los daños)
