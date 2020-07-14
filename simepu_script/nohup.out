@@ -1,0 +1,337 @@
+
+---- Start ----
+
+Hay 6 clases!
+[Train] 3189 muestras
+[Validacion] 586 muestras
+Pretrained-> Remember at end: transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+
+--------------------------------------------
+verbose: False
+optimizer: adam
+epochs: 100
+batch_size: 256
+learning_rate: 0.0001
+min_learning_rate: 1e-07
+get_path: False
+weighted_loss: False
+plateau_scheduler: False
+steps_best: False
+steps_scheduler: True
+binary_problem: False
+damaged_problem: True
+cutmix: False
+img_size: 256
+crop_size: 224
+model_name: resnet34
+pretrained: True
+validation_size: 0.15
+output_dir: results/resnet34_adam_256to224_lr0.0001_DA_pretrained_OnlyDamaged/
+data_augmentation: True
+
+-------------- START TRAINING --------------
+[2020-07-13 20:40:04] Epoch: 1, LR: 0.00010000, Train Accuracy: 61.7121%, Val Accuracy: 79.3515%
+[2020-07-13 20:40:36] Epoch: 2, LR: 0.00010000, Train Accuracy: 84.4152%, Val Accuracy: 90.2730%
+[2020-07-13 20:41:08] Epoch: 3, LR: 0.00010000, Train Accuracy: 89.7774%, Val Accuracy: 92.4915%
+[2020-07-13 20:41:41] Epoch: 4, LR: 0.00010000, Train Accuracy: 92.9131%, Val Accuracy: 93.0034%
+[2020-07-13 20:42:13] Epoch: 5, LR: 0.00010000, Train Accuracy: 94.4497%, Val Accuracy: 94.5392%
+[2020-07-13 20:42:45] Epoch: 6, LR: 0.00010000, Train Accuracy: 95.4845%, Val Accuracy: 94.0273%
+[2020-07-13 20:43:18] Epoch: 7, LR: 0.00010000, Train Accuracy: 95.9862%, Val Accuracy: 95.2218%
+[2020-07-13 20:43:50] Epoch: 8, LR: 0.00010000, Train Accuracy: 96.1116%, Val Accuracy: 95.0512%
+[2020-07-13 20:44:22] Epoch: 9, LR: 0.00010000, Train Accuracy: 96.6447%, Val Accuracy: 95.0512%
+[2020-07-13 20:44:55] Epoch: 10, LR: 0.00010000, Train Accuracy: 97.5854%, Val Accuracy: 96.0751%
+[2020-07-13 20:45:27] Epoch: 11, LR: 0.00010000, Train Accuracy: 97.7422%, Val Accuracy: 96.0751%
+[2020-07-13 20:46:00] Epoch: 12, LR: 0.00010000, Train Accuracy: 97.9304%, Val Accuracy: 95.2218%
+[2020-07-13 20:46:33] Epoch: 13, LR: 0.00010000, Train Accuracy: 97.3659%, Val Accuracy: 95.9044%
+[2020-07-13 20:47:06] Epoch: 14, LR: 0.00010000, Train Accuracy: 97.8677%, Val Accuracy: 97.7816%
+[2020-07-13 20:47:39] Epoch: 15, LR: 0.00010000, Train Accuracy: 98.6203%, Val Accuracy: 96.9283%
+[2020-07-13 20:48:12] Epoch: 16, LR: 0.00010000, Train Accuracy: 98.3067%, Val Accuracy: 97.9522%
+[2020-07-13 20:48:45] Epoch: 17, LR: 0.00010000, Train Accuracy: 98.3067%, Val Accuracy: 97.2696%
+[2020-07-13 20:49:17] Epoch: 18, LR: 0.00010000, Train Accuracy: 98.1812%, Val Accuracy: 97.7816%
+[2020-07-13 20:49:50] Epoch: 19, LR: 0.00010000, Train Accuracy: 98.4948%, Val Accuracy: 96.2457%
+[2020-07-13 20:50:23] Epoch: 20, LR: 0.00010000, Train Accuracy: 98.5889%, Val Accuracy: 95.7338%
+[2020-07-13 20:50:56] Epoch: 21, LR: 0.00010000, Train Accuracy: 98.0558%, Val Accuracy: 97.2696%
+[2020-07-13 20:51:30] Epoch: 22, LR: 0.00010000, Train Accuracy: 98.5575%, Val Accuracy: 97.9522%
+[2020-07-13 20:52:02] Epoch: 23, LR: 0.00010000, Train Accuracy: 98.7457%, Val Accuracy: 96.9283%
+[2020-07-13 20:52:35] Epoch: 24, LR: 0.00010000, Train Accuracy: 98.9652%, Val Accuracy: 96.0751%
+[2020-07-13 20:53:07] Epoch: 25, LR: 0.00010000, Train Accuracy: 99.2788%, Val Accuracy: 97.2696%
+[2020-07-13 20:53:40] Epoch: 26, LR: 0.00010000, Train Accuracy: 99.2161%, Val Accuracy: 96.5870%
+[2020-07-13 20:54:13] Epoch: 27, LR: 0.00010000, Train Accuracy: 99.2474%, Val Accuracy: 96.9283%
+[2020-07-13 20:54:46] Epoch: 28, LR: 0.00010000, Train Accuracy: 98.9966%, Val Accuracy: 97.2696%
+[2020-07-13 20:55:19] Epoch: 29, LR: 0.00010000, Train Accuracy: 99.2474%, Val Accuracy: 95.9044%
+[2020-07-13 20:55:51] Epoch: 30, LR: 0.00010000, Train Accuracy: 99.0593%, Val Accuracy: 95.3925%
+[2020-07-13 20:56:25] Epoch: 31, LR: 0.00010000, Train Accuracy: 99.4669%, Val Accuracy: 96.9283%
+[2020-07-13 20:56:58] Epoch: 32, LR: 0.00010000, Train Accuracy: 99.4983%, Val Accuracy: 96.9283%
+[2020-07-13 20:57:32] Epoch: 33, LR: 0.00010000, Train Accuracy: 99.4669%, Val Accuracy: 97.9522%
+[2020-07-13 20:58:04] Epoch: 34, LR: 0.00010000, Train Accuracy: 99.4042%, Val Accuracy: 96.5870%
+[2020-07-13 20:58:37] Epoch: 35, LR: 0.00010000, Train Accuracy: 98.9966%, Val Accuracy: 97.4403%
+[2020-07-13 20:59:11] Epoch: 36, LR: 0.00010000, Train Accuracy: 99.1533%, Val Accuracy: 97.6109%
+[2020-07-13 20:59:44] Epoch: 37, LR: 0.00010000, Train Accuracy: 99.2161%, Val Accuracy: 97.0990%
+[2020-07-13 21:00:16] Epoch: 38, LR: 0.00010000, Train Accuracy: 99.3728%, Val Accuracy: 97.2696%
+[2020-07-13 21:00:50] Epoch: 39, LR: 0.00010000, Train Accuracy: 99.4356%, Val Accuracy: 97.7816%
+[2020-07-13 21:01:23] Epoch: 40, LR: 0.00010000, Train Accuracy: 99.4042%, Val Accuracy: 97.9522%
+[2020-07-13 21:01:56] Epoch: 41, LR: 0.00010000, Train Accuracy: 99.2788%, Val Accuracy: 97.7816%
+[2020-07-13 21:02:28] Epoch: 42, LR: 0.00010000, Train Accuracy: 99.4042%, Val Accuracy: 97.4403%
+[2020-07-13 21:03:01] Epoch: 43, LR: 0.00010000, Train Accuracy: 99.2161%, Val Accuracy: 97.2696%
+[2020-07-13 21:03:34] Epoch: 44, LR: 0.00010000, Train Accuracy: 99.3728%, Val Accuracy: 97.6109%
+[2020-07-13 21:04:06] Epoch: 45, LR: 0.00010000, Train Accuracy: 99.4042%, Val Accuracy: 97.0990%
+[2020-07-13 21:04:39] Epoch: 46, LR: 0.00010000, Train Accuracy: 99.1533%, Val Accuracy: 97.6109%
+[2020-07-13 21:05:13] Epoch: 47, LR: 0.00010000, Train Accuracy: 99.2788%, Val Accuracy: 97.4403%
+[2020-07-13 21:05:46] Epoch: 48, LR: 0.00010000, Train Accuracy: 99.4356%, Val Accuracy: 97.4403%
+[2020-07-13 21:06:20] Epoch: 49, LR: 0.00010000, Train Accuracy: 99.6237%, Val Accuracy: 98.1229%
+[2020-07-13 21:06:52] Epoch: 50, LR: 0.00010000, Train Accuracy: 99.5923%, Val Accuracy: 97.6109%
+[2020-07-13 21:07:25] Epoch: 51, LR: 0.00010000, Train Accuracy: 99.4669%, Val Accuracy: 98.1229%
+[2020-07-13 21:07:58] Epoch: 52, LR: 0.00010000, Train Accuracy: 99.7178%, Val Accuracy: 98.2935%
+[2020-07-13 21:08:32] Epoch: 53, LR: 0.00010000, Train Accuracy: 99.3728%, Val Accuracy: 98.4642%
+[2020-07-13 21:09:05] Epoch: 54, LR: 0.00010000, Train Accuracy: 99.5296%, Val Accuracy: 96.7577%
+[2020-07-13 21:09:37] Epoch: 55, LR: 0.00010000, Train Accuracy: 99.5923%, Val Accuracy: 97.9522%
+[2020-07-13 21:10:10] Epoch: 56, LR: 0.00010000, Train Accuracy: 99.4356%, Val Accuracy: 97.9522%
+[2020-07-13 21:10:43] Epoch: 57, LR: 0.00010000, Train Accuracy: 99.4356%, Val Accuracy: 97.4403%
+[2020-07-13 21:11:16] Epoch: 58, LR: 0.00010000, Train Accuracy: 99.2474%, Val Accuracy: 96.7577%
+[2020-07-13 21:11:48] Epoch: 59, LR: 0.00010000, Train Accuracy: 99.3415%, Val Accuracy: 98.1229%
+[2020-07-13 21:12:21] Epoch: 60, LR: 0.00010000, Train Accuracy: 99.3415%, Val Accuracy: 97.4403%
+[2020-07-13 21:12:54] Epoch: 61, LR: 0.00010000, Train Accuracy: 99.5923%, Val Accuracy: 98.1229%
+[2020-07-13 21:13:27] Epoch: 62, LR: 0.00010000, Train Accuracy: 99.4042%, Val Accuracy: 97.9522%
+[2020-07-13 21:14:00] Epoch: 63, LR: 0.00010000, Train Accuracy: 99.1533%, Val Accuracy: 98.2935%
+[2020-07-13 21:14:33] Epoch: 64, LR: 0.00010000, Train Accuracy: 99.5296%, Val Accuracy: 97.6109%
+[2020-07-13 21:15:05] Epoch: 65, LR: 0.00010000, Train Accuracy: 99.4983%, Val Accuracy: 97.6109%
+[2020-07-13 21:15:38] Epoch: 66, LR: 0.00010000, Train Accuracy: 99.5296%, Val Accuracy: 98.2935%
+[2020-07-13 21:16:11] Epoch: 67, LR: 0.00010000, Train Accuracy: 99.4983%, Val Accuracy: 97.9522%
+[2020-07-13 21:16:44] Epoch: 68, LR: 0.00010000, Train Accuracy: 99.6864%, Val Accuracy: 98.1229%
+[2020-07-13 21:17:16] Epoch: 69, LR: 0.00010000, Train Accuracy: 99.5923%, Val Accuracy: 97.9522%
+[2020-07-13 21:17:50] Epoch: 70, LR: 0.00010000, Train Accuracy: 99.6551%, Val Accuracy: 98.4642%
+[2020-07-13 21:18:22] Epoch: 71, LR: 0.00001000, Train Accuracy: 99.7805%, Val Accuracy: 98.1229%
+[2020-07-13 21:18:55] Epoch: 72, LR: 0.00001000, Train Accuracy: 99.8432%, Val Accuracy: 98.1229%
+[2020-07-13 21:19:28] Epoch: 73, LR: 0.00001000, Train Accuracy: 99.8746%, Val Accuracy: 98.2935%
+[2020-07-13 21:20:00] Epoch: 74, LR: 0.00001000, Train Accuracy: 99.8746%, Val Accuracy: 98.2935%
+[2020-07-13 21:20:33] Epoch: 75, LR: 0.00001000, Train Accuracy: 99.8432%, Val Accuracy: 98.1229%
+[2020-07-13 21:21:05] Epoch: 76, LR: 0.00001000, Train Accuracy: 99.8432%, Val Accuracy: 98.1229%
+[2020-07-13 21:21:38] Epoch: 77, LR: 0.00001000, Train Accuracy: 99.7805%, Val Accuracy: 98.1229%
+[2020-07-13 21:22:10] Epoch: 78, LR: 0.00001000, Train Accuracy: 99.9373%, Val Accuracy: 98.2935%
+[2020-07-13 21:22:43] Epoch: 79, LR: 0.00001000, Train Accuracy: 99.8432%, Val Accuracy: 98.2935%
+[2020-07-13 21:23:16] Epoch: 80, LR: 0.00001000, Train Accuracy: 99.8746%, Val Accuracy: 98.4642%
+[2020-07-13 21:23:48] Epoch: 81, LR: 0.00001000, Train Accuracy: 99.9373%, Val Accuracy: 98.2935%
+[2020-07-13 21:24:22] Epoch: 82, LR: 0.00001000, Train Accuracy: 99.9686%, Val Accuracy: 98.4642%
+[2020-07-13 21:24:55] Epoch: 83, LR: 0.00001000, Train Accuracy: 99.9059%, Val Accuracy: 98.4642%
+[2020-07-13 21:25:28] Epoch: 84, LR: 0.00001000, Train Accuracy: 99.9373%, Val Accuracy: 98.4642%
+[2020-07-13 21:26:01] Epoch: 85, LR: 0.00001000, Train Accuracy: 99.9686%, Val Accuracy: 98.6348%
+[2020-07-13 21:26:34] Epoch: 86, LR: 0.00001000, Train Accuracy: 99.9686%, Val Accuracy: 98.6348%
+[2020-07-13 21:27:07] Epoch: 87, LR: 0.00001000, Train Accuracy: 99.9373%, Val Accuracy: 98.6348%
+[2020-07-13 21:27:40] Epoch: 88, LR: 0.00001000, Train Accuracy: 99.8746%, Val Accuracy: 98.4642%
+[2020-07-13 21:28:12] Epoch: 89, LR: 0.00001000, Train Accuracy: 99.8746%, Val Accuracy: 98.6348%
+[2020-07-13 21:28:45] Epoch: 90, LR: 0.00001000, Train Accuracy: 99.9059%, Val Accuracy: 98.4642%
+[2020-07-13 21:29:18] Epoch: 91, LR: 0.00000100, Train Accuracy: 99.9373%, Val Accuracy: 98.6348%
+[2020-07-13 21:29:50] Epoch: 92, LR: 0.00000100, Train Accuracy: 99.9059%, Val Accuracy: 98.4642%
+[2020-07-13 21:30:23] Epoch: 93, LR: 0.00000100, Train Accuracy: 100.0000%, Val Accuracy: 98.6348%
+[2020-07-13 21:30:56] Epoch: 94, LR: 0.00000100, Train Accuracy: 99.9686%, Val Accuracy: 98.6348%
+[2020-07-13 21:31:30] Epoch: 95, LR: 0.00000100, Train Accuracy: 99.9373%, Val Accuracy: 98.6348%
+[2020-07-13 21:32:03] Epoch: 96, LR: 0.00000100, Train Accuracy: 99.9373%, Val Accuracy: 98.6348%
+[2020-07-13 21:32:36] Epoch: 97, LR: 0.00000100, Train Accuracy: 99.8746%, Val Accuracy: 98.4642%
+[2020-07-13 21:33:08] Epoch: 98, LR: 0.00000100, Train Accuracy: 99.8119%, Val Accuracy: 98.6348%
+[2020-07-13 21:33:41] Epoch: 99, LR: 0.00000100, Train Accuracy: 99.9059%, Val Accuracy: 98.6348%
+[2020-07-13 21:34:14] Epoch: 100, LR: 0.00000100, Train Accuracy: 99.8432%, Val Accuracy: 98.6348%
+
+------------------------------------------------
+Best Validation Accuracy 98.6348 at epoch 85
+------------------------------------------------
+
+---------------- Train Analysis ----------------
+Accuracy of Parcheo : 100.00% 
+Accuracy of Grietas transversales : 97.31% 
+Accuracy of Huecos : 96.39% 
+Accuracy of Grietas longitudinales : 100.00% 
+Accuracy of Meteorización y desprendimiento : 100.00% 
+Accuracy of Grietas en forma de piel de cocodrilo : 100.00% 
+Hay 1 clases!
+[Train] 6709 muestras
+[Validacion] 1230 muestras
+Pretrained-> Remember at end: transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+
+--------------------------------------------
+verbose: False
+optimizer: adam
+epochs: 100
+batch_size: 256
+learning_rate: 0.0001
+min_learning_rate: 1e-07
+get_path: False
+weighted_loss: False
+plateau_scheduler: False
+steps_best: False
+steps_scheduler: True
+binary_problem: True
+damaged_problem: False
+cutmix: False
+img_size: 256
+crop_size: 224
+model_name: resnet34
+pretrained: True
+validation_size: 0.15
+output_dir: results/resnet34_adam_256to224_lr0.0001_DA_pretrained_Binary/
+data_augmentation: True
+
+-------------- START TRAINING --------------
+[2020-07-13 21:36:00] Epoch: 1, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 92.5203%
+[2020-07-13 21:37:08] Epoch: 2, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 97.3984%
+[2020-07-13 21:38:16] Epoch: 3, LR: 0.00010000, Train Accuracy: 13314.0259%, Val Accuracy: 97.3171%
+[2020-07-13 21:39:25] Epoch: 4, LR: 0.00010000, Train Accuracy: 13317.0517%, Val Accuracy: 97.8049%
+[2020-07-13 21:40:33] Epoch: 5, LR: 0.00010000, Train Accuracy: 13301.9228%, Val Accuracy: 97.8049%
+[2020-07-13 21:41:42] Epoch: 6, LR: 0.00010000, Train Accuracy: 13323.1033%, Val Accuracy: 98.4553%
+[2020-07-13 21:42:50] Epoch: 7, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 98.3740%
+[2020-07-13 21:43:59] Epoch: 8, LR: 0.00010000, Train Accuracy: 13314.0259%, Val Accuracy: 98.6992%
+[2020-07-13 21:45:07] Epoch: 9, LR: 0.00010000, Train Accuracy: 13323.1033%, Val Accuracy: 98.3740%
+[2020-07-13 21:46:16] Epoch: 10, LR: 0.00010000, Train Accuracy: 13311.0001%, Val Accuracy: 98.6992%
+[2020-07-13 21:47:25] Epoch: 11, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 98.7805%
+[2020-07-13 21:48:33] Epoch: 12, LR: 0.00010000, Train Accuracy: 13326.1291%, Val Accuracy: 97.4797%
+[2020-07-13 21:49:42] Epoch: 13, LR: 0.00010000, Train Accuracy: 13326.1291%, Val Accuracy: 98.7805%
+[2020-07-13 21:50:50] Epoch: 14, LR: 0.00010000, Train Accuracy: 13332.1807%, Val Accuracy: 99.0244%
+[2020-07-13 21:51:58] Epoch: 15, LR: 0.00010000, Train Accuracy: 13314.0259%, Val Accuracy: 98.4553%
+[2020-07-13 21:53:06] Epoch: 16, LR: 0.00010000, Train Accuracy: 13311.0001%, Val Accuracy: 98.6179%
+[2020-07-13 21:54:13] Epoch: 17, LR: 0.00010000, Train Accuracy: 13329.1549%, Val Accuracy: 98.5366%
+[2020-07-13 21:55:21] Epoch: 18, LR: 0.00010000, Train Accuracy: 13329.1549%, Val Accuracy: 98.3740%
+[2020-07-13 21:56:29] Epoch: 19, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 98.4553%
+[2020-07-13 21:57:37] Epoch: 20, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 98.6179%
+[2020-07-13 21:58:45] Epoch: 21, LR: 0.00010000, Train Accuracy: 13307.9744%, Val Accuracy: 98.6992%
+[2020-07-13 21:59:53] Epoch: 22, LR: 0.00010000, Train Accuracy: 13332.1807%, Val Accuracy: 98.6179%
+[2020-07-13 22:01:02] Epoch: 23, LR: 0.00010000, Train Accuracy: 13323.1033%, Val Accuracy: 98.5366%
+[2020-07-13 22:02:11] Epoch: 24, LR: 0.00010000, Train Accuracy: 13314.0259%, Val Accuracy: 98.6179%
+[2020-07-13 22:03:19] Epoch: 25, LR: 0.00010000, Train Accuracy: 13347.3096%, Val Accuracy: 97.8049%
+[2020-07-13 22:04:28] Epoch: 26, LR: 0.00010000, Train Accuracy: 13332.1807%, Val Accuracy: 98.4553%
+[2020-07-13 22:05:35] Epoch: 27, LR: 0.00010000, Train Accuracy: 13338.2322%, Val Accuracy: 98.4553%
+[2020-07-13 22:06:44] Epoch: 28, LR: 0.00010000, Train Accuracy: 13323.1033%, Val Accuracy: 98.7805%
+[2020-07-13 22:07:51] Epoch: 29, LR: 0.00010000, Train Accuracy: 13323.1033%, Val Accuracy: 98.5366%
+[2020-07-13 22:08:59] Epoch: 30, LR: 0.00010000, Train Accuracy: 13311.0001%, Val Accuracy: 98.7805%
+[2020-07-13 22:10:08] Epoch: 31, LR: 0.00010000, Train Accuracy: 13338.2322%, Val Accuracy: 98.6992%
+[2020-07-13 22:11:15] Epoch: 32, LR: 0.00010000, Train Accuracy: 13314.0259%, Val Accuracy: 98.7805%
+[2020-07-13 22:12:23] Epoch: 33, LR: 0.00010000, Train Accuracy: 13332.1807%, Val Accuracy: 98.9431%
+[2020-07-13 22:13:31] Epoch: 34, LR: 0.00010000, Train Accuracy: 13304.9486%, Val Accuracy: 98.8618%
+[2020-07-13 22:14:39] Epoch: 35, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 98.2114%
+[2020-07-13 22:15:47] Epoch: 36, LR: 0.00010000, Train Accuracy: 13338.2322%, Val Accuracy: 98.7805%
+[2020-07-13 22:16:55] Epoch: 37, LR: 0.00010000, Train Accuracy: 13326.1291%, Val Accuracy: 98.4553%
+[2020-07-13 22:18:04] Epoch: 38, LR: 0.00010000, Train Accuracy: 13323.1033%, Val Accuracy: 98.5366%
+[2020-07-13 22:19:12] Epoch: 39, LR: 0.00010000, Train Accuracy: 13335.2064%, Val Accuracy: 98.7805%
+[2020-07-13 22:20:21] Epoch: 40, LR: 0.00010000, Train Accuracy: 13311.0001%, Val Accuracy: 98.2927%
+[2020-07-13 22:21:29] Epoch: 41, LR: 0.00010000, Train Accuracy: 13335.2064%, Val Accuracy: 98.8618%
+[2020-07-13 22:22:38] Epoch: 42, LR: 0.00010000, Train Accuracy: 13329.1549%, Val Accuracy: 98.9431%
+[2020-07-13 22:23:46] Epoch: 43, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 98.6992%
+[2020-07-13 22:24:55] Epoch: 44, LR: 0.00010000, Train Accuracy: 13314.0259%, Val Accuracy: 98.6992%
+[2020-07-13 22:26:03] Epoch: 45, LR: 0.00010000, Train Accuracy: 13317.0517%, Val Accuracy: 99.0244%
+[2020-07-13 22:27:11] Epoch: 46, LR: 0.00010000, Train Accuracy: 13329.1549%, Val Accuracy: 98.3740%
+[2020-07-13 22:28:19] Epoch: 47, LR: 0.00010000, Train Accuracy: 13323.1033%, Val Accuracy: 98.2927%
+[2020-07-13 22:29:27] Epoch: 48, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 99.0244%
+[2020-07-13 22:30:35] Epoch: 49, LR: 0.00010000, Train Accuracy: 13323.1033%, Val Accuracy: 98.6179%
+[2020-07-13 22:31:44] Epoch: 50, LR: 0.00010000, Train Accuracy: 13304.9486%, Val Accuracy: 98.6179%
+[2020-07-13 22:32:52] Epoch: 51, LR: 0.00010000, Train Accuracy: 13301.9228%, Val Accuracy: 98.8618%
+[2020-07-13 22:34:00] Epoch: 52, LR: 0.00010000, Train Accuracy: 13317.0517%, Val Accuracy: 98.5366%
+[2020-07-13 22:35:08] Epoch: 53, LR: 0.00010000, Train Accuracy: 13326.1291%, Val Accuracy: 98.4553%
+[2020-07-13 22:36:16] Epoch: 54, LR: 0.00010000, Train Accuracy: 13311.0001%, Val Accuracy: 98.5366%
+[2020-07-13 22:37:24] Epoch: 55, LR: 0.00010000, Train Accuracy: 13292.8454%, Val Accuracy: 99.0244%
+[2020-07-13 22:38:33] Epoch: 56, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 98.2927%
+[2020-07-13 22:39:41] Epoch: 57, LR: 0.00010000, Train Accuracy: 13323.1033%, Val Accuracy: 99.0244%
+[2020-07-13 22:40:50] Epoch: 58, LR: 0.00010000, Train Accuracy: 13332.1807%, Val Accuracy: 98.6992%
+[2020-07-13 22:41:58] Epoch: 59, LR: 0.00010000, Train Accuracy: 13335.2064%, Val Accuracy: 98.6992%
+[2020-07-13 22:43:06] Epoch: 60, LR: 0.00010000, Train Accuracy: 13341.2580%, Val Accuracy: 98.4553%
+[2020-07-13 22:44:15] Epoch: 61, LR: 0.00010000, Train Accuracy: 13317.0517%, Val Accuracy: 99.0244%
+[2020-07-13 22:45:23] Epoch: 62, LR: 0.00010000, Train Accuracy: 13320.0775%, Val Accuracy: 98.0488%
+[2020-07-13 22:46:32] Epoch: 63, LR: 0.00010000, Train Accuracy: 13317.0517%, Val Accuracy: 98.6992%
+[2020-07-13 22:47:42] Epoch: 64, LR: 0.00010000, Train Accuracy: 13307.9744%, Val Accuracy: 98.6992%
+[2020-07-13 22:48:50] Epoch: 65, LR: 0.00010000, Train Accuracy: 13338.2322%, Val Accuracy: 99.2683%
+[2020-07-13 22:49:58] Epoch: 66, LR: 0.00010000, Train Accuracy: 13329.1549%, Val Accuracy: 98.2927%
+[2020-07-13 22:51:07] Epoch: 67, LR: 0.00010000, Train Accuracy: 13311.0001%, Val Accuracy: 98.8618%
+[2020-07-13 22:52:14] Epoch: 68, LR: 0.00010000, Train Accuracy: 13326.1291%, Val Accuracy: 98.0488%
+[2020-07-13 22:53:23] Epoch: 69, LR: 0.00010000, Train Accuracy: 13314.0259%, Val Accuracy: 98.0488%
+[2020-07-13 22:54:32] Epoch: 70, LR: 0.00010000, Train Accuracy: 13326.1291%, Val Accuracy: 98.8618%
+[2020-07-13 22:55:40] Epoch: 71, LR: 0.00001000, Train Accuracy: 13338.2322%, Val Accuracy: 98.4553%
+[2020-07-13 22:56:49] Epoch: 72, LR: 0.00001000, Train Accuracy: 13323.1033%, Val Accuracy: 98.8618%
+[2020-07-13 22:57:58] Epoch: 73, LR: 0.00001000, Train Accuracy: 13326.1291%, Val Accuracy: 98.7805%
+[2020-07-13 22:59:06] Epoch: 74, LR: 0.00001000, Train Accuracy: 13320.0775%, Val Accuracy: 98.7805%
+[2020-07-13 23:00:14] Epoch: 75, LR: 0.00001000, Train Accuracy: 13298.8970%, Val Accuracy: 99.0244%
+[2020-07-13 23:01:24] Epoch: 76, LR: 0.00001000, Train Accuracy: 13329.1549%, Val Accuracy: 98.8618%
+[2020-07-13 23:02:32] Epoch: 77, LR: 0.00001000, Train Accuracy: 13320.0775%, Val Accuracy: 99.0244%
+[2020-07-13 23:03:42] Epoch: 78, LR: 0.00001000, Train Accuracy: 13323.1033%, Val Accuracy: 99.1057%
+[2020-07-13 23:04:50] Epoch: 79, LR: 0.00001000, Train Accuracy: 13304.9486%, Val Accuracy: 99.1057%
+[2020-07-13 23:05:59] Epoch: 80, LR: 0.00001000, Train Accuracy: 13307.9744%, Val Accuracy: 98.8618%
+[2020-07-13 23:07:08] Epoch: 81, LR: 0.00001000, Train Accuracy: 13338.2322%, Val Accuracy: 99.0244%
+[2020-07-13 23:08:17] Epoch: 82, LR: 0.00001000, Train Accuracy: 13323.1033%, Val Accuracy: 98.9431%
+[2020-07-13 23:09:26] Epoch: 83, LR: 0.00001000, Train Accuracy: 13311.0001%, Val Accuracy: 98.8618%
+[2020-07-13 23:10:35] Epoch: 84, LR: 0.00001000, Train Accuracy: 13311.0001%, Val Accuracy: 98.7805%
+[2020-07-13 23:11:44] Epoch: 85, LR: 0.00001000, Train Accuracy: 13326.1291%, Val Accuracy: 98.9431%
+[2020-07-13 23:12:53] Epoch: 86, LR: 0.00001000, Train Accuracy: 13323.1033%, Val Accuracy: 98.8618%
+[2020-07-13 23:14:02] Epoch: 87, LR: 0.00001000, Train Accuracy: 13320.0775%, Val Accuracy: 98.8618%
+[2020-07-13 23:15:10] Epoch: 88, LR: 0.00001000, Train Accuracy: 13323.1033%, Val Accuracy: 98.6992%
+[2020-07-13 23:16:20] Epoch: 89, LR: 0.00001000, Train Accuracy: 13314.0259%, Val Accuracy: 98.7805%
+[2020-07-13 23:17:29] Epoch: 90, LR: 0.00001000, Train Accuracy: 13320.0775%, Val Accuracy: 99.0244%
+[2020-07-13 23:18:38] Epoch: 91, LR: 0.00000100, Train Accuracy: 13338.2322%, Val Accuracy: 98.9431%
+[2020-07-13 23:19:47] Epoch: 92, LR: 0.00000100, Train Accuracy: 13329.1549%, Val Accuracy: 98.9431%
+[2020-07-13 23:20:57] Epoch: 93, LR: 0.00000100, Train Accuracy: 13311.0001%, Val Accuracy: 98.9431%
+[2020-07-13 23:22:05] Epoch: 94, LR: 0.00000100, Train Accuracy: 13332.1807%, Val Accuracy: 99.0244%
+[2020-07-13 23:23:15] Epoch: 95, LR: 0.00000100, Train Accuracy: 13329.1549%, Val Accuracy: 98.8618%
+[2020-07-13 23:24:23] Epoch: 96, LR: 0.00000100, Train Accuracy: 13338.2322%, Val Accuracy: 99.0244%
+[2020-07-13 23:25:32] Epoch: 97, LR: 0.00000100, Train Accuracy: 13314.0259%, Val Accuracy: 98.9431%
+[2020-07-13 23:26:41] Epoch: 98, LR: 0.00000100, Train Accuracy: 13320.0775%, Val Accuracy: 99.0244%
+[2020-07-13 23:27:50] Epoch: 99, LR: 0.00000100, Train Accuracy: 13314.0259%, Val Accuracy: 99.0244%
+[2020-07-13 23:28:59] Epoch: 100, LR: 0.00000100, Train Accuracy: 13314.0259%, Val Accuracy: 98.9431%
+
+------------------------------------------------
+Best Validation Accuracy 99.2683 at epoch 65
+------------------------------------------------
+
+Hay 9 clases!
+[Train] 6709 muestras
+[Validacion] 1230 muestras
+Pretrained-> Remember at end: transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+
+--------------------------------------------
+verbose: False
+optimizer: adam
+epochs: 100
+batch_size: 256
+learning_rate: 0.0001
+min_learning_rate: 1e-07
+get_path: False
+weighted_loss: False
+plateau_scheduler: False
+steps_best: False
+steps_scheduler: True
+binary_problem: False
+damaged_problem: False
+cutmix: False
+img_size: 256
+crop_size: 224
+model_name: resnet34
+pretrained: True
+validation_size: 0.15
+output_dir: results/resnet34_adam_256to224_lr0.0001_DA_pretrained_Full/
+data_augmentation: True
+
+-------------- START TRAINING --------------
+Traceback (most recent call last):
+  File "train.py", line 106, in <module>
+    current_train_loss, current_train_accuracy = train_step(train_loader, model, criterion, optimizer, binary_problem=args.binary_problem, cutmix=args.cutmix)
+  File "/home/maparla/SIMEPU_SCRIPT/SIMEPU_CV/utils/utils_training.py", line 61, in train_step
+    outputs = model(inputs)
+  File "/home/maparla/venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 550, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/maparla/venv/lib/python3.8/site-packages/torch/nn/parallel/data_parallel.py", line 153, in forward
+    return self.module(*inputs[0], **kwargs[0])
+  File "/home/maparla/venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 550, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/maparla/venv/lib/python3.8/site-packages/torchvision/models/resnet.py", line 220, in forward
+    return self._forward_impl(x)
+  File "/home/maparla/venv/lib/python3.8/site-packages/torchvision/models/resnet.py", line 210, in _forward_impl
+    x = self.layer3(x)
+  File "/home/maparla/venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 550, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/maparla/venv/lib/python3.8/site-packages/torch/nn/modules/container.py", line 100, in forward
+    input = module(input)
+  File "/home/maparla/venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 550, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/maparla/venv/lib/python3.8/site-packages/torchvision/models/resnet.py", line 60, in forward
+    out = self.bn1(out)
+  File "/home/maparla/venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 550, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/maparla/venv/lib/python3.8/site-packages/torch/nn/modules/batchnorm.py", line 103, in forward
+    return F.batch_norm(
+  File "/home/maparla/venv/lib/python3.8/site-packages/torch/nn/functional.py", line 1921, in batch_norm
+    return torch.batch_norm(
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB (GPU 0; 7.93 GiB total capacity; 7.33 GiB already allocated; 50.06 MiB free; 7.36 GiB reserved in total by PyTorch)

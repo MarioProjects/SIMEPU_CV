@@ -1,0 +1,4 @@
+
+mkdir checkpoints
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1eYjglzuKTMKiCHNb7d6e-9dpYWTFJehe' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1eYjglzuKTMKiCHNb7d6e-9dpYWTFJehe" -O checkpoints/resnet34_binary.pt && rm -rf /tmp/cookies.txt
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1zLLiO3JTc9UJaDMyYvXzozRssn7aqXEB' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1zLLiO3JTc9UJaDMyYvXzozRssn7aqXEB" -O checkpoints/resnet34_damages.pt && rm -rf /tmp/cookies.txt
