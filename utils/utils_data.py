@@ -33,7 +33,7 @@ with open("utils/targets2labelsdamaged.pkl", 'rb') as f:
 
 class SIMEPU_Dataset(data.Dataset):
     def __init__(self, data_partition='', transform=None, validation_size=0.15, seed=42, get_path=False,
-                 binary_problem=False, damaged_problem=False):
+                 binary_problem=False, damaged_problem=False, selected_class=""):
         """
           - data_partition:
              -> Si esta vacio ("") devuelve todas las muestras del TRAIN set
@@ -55,6 +55,9 @@ class SIMEPU_Dataset(data.Dataset):
             data_paths = pd.read_csv("utils/data_paths.csv")
             self.num_classes = len(np.unique(data_paths["target"]))
 
+        if selected_class != "":
+            data_paths = data_paths[data_paths.path.str.startswith(selected_class)]
+
         np.random.seed(seed=seed)
         if data_partition == "":
             self.data_paths = data_paths
@@ -67,6 +70,7 @@ class SIMEPU_Dataset(data.Dataset):
             else:
                 assert False, "Wrong data partition: {}".format(data_partition)
 
+        self.data_paths = self.data_paths.reset_index(drop=True)
         self.data_partition = data_partition
         self.transform = transform
         self.get_path = get_path
