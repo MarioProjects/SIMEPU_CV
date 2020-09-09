@@ -26,11 +26,25 @@ lr=$lrFor # learning_rate
 #                                       --img_size $img_size --crop_size $crop_size --output_dir $model_path \
 #                                       --steps_scheduler --pretrained --data_augmentation --binary_problem
 
-model_path="results/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"_DA_pretrained_Full/"
-CUDA_VISIBLE_DEVICES=0 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
+#model_path="results/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"_DA_pretrained_Full/"
+#CUDA_VISIBLE_DEVICES=0 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
+#                                       --min_learning_rate $min_lr  --batch_size $batch_size --epochs $epochs \
+#                                       --img_size $img_size --crop_size $crop_size --output_dir $model_path \
+#                                       --steps_scheduler --pretrained --data_augmentation
+
+
+# Segmentation models -> unet unet_small unet_extra_small unet_nano
+model="unet_extra_small"
+img_size=512
+crop_size=512
+batch_size=6
+selected_class="Grietas longitudinales"
+model_path="results/segmentation/$selected_class/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"/"
+CUDA_VISIBLE_DEVICES=0,1 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
                                        --min_learning_rate $min_lr  --batch_size $batch_size --epochs $epochs \
-                                       --img_size $img_size --crop_size $crop_size --output_dir $model_path \
-                                       --steps_scheduler --pretrained --data_augmentation
+                                       --img_size $img_size --crop_size $crop_size --output_dir "$model_path" \
+                                       --steps_scheduler --data_augmentation --segmentation_problem \
+                                       --selected_class "$selected_class" --masks_overlays 10
 
 
 done

@@ -12,9 +12,7 @@ class SmartFormatter(argparse.HelpFormatter):
         return argparse.HelpFormatter._split_lines(self, text, width)
 
 
-parser = argparse.ArgumentParser(
-    description='SIMEPU Project',
-    formatter_class=SmartFormatter)
+parser = argparse.ArgumentParser(description='SIMEPU Project', formatter_class=SmartFormatter)
 
 parser.add_argument('--verbose', action='store_true', help='Verbose mode')
 parser.add_argument('--optimizer', type=str, default='sgd',
@@ -36,8 +34,13 @@ parser.add_argument('--steps_scheduler', action='store_true',
 
 parser.add_argument('--binary_problem', action='store_true', help='Binary classification problem: Damage / No Damage')
 parser.add_argument('--damaged_problem', action='store_true', help='Only damaged classification problem.')
-#https://github.com/ildoonet/cutmix
+parser.add_argument('--segmentation_problem', action='store_true', help='Segmentation problem.')
+parser.add_argument('--masks_overlays', type=int, default=0, help='Save overlays each epoch on segmentation problem')
+
+# https://github.com/ildoonet/cutmix
 parser.add_argument('--cutmix', action='store_true', help='Use cutmix Data Augmentation?')
+
+parser.add_argument('--selected_class', type=str, default='', help='Train specific class')
 
 parser.add_argument('--img_size', type=int, default=150, help='Final img squared size')
 parser.add_argument('--crop_size', type=int, default=128, help='Center crop squared size')
@@ -65,5 +68,5 @@ if not os.path.exists(args.output_dir):
     os.makedirs(args.output_dir)
 
 # Save commands in txt - https://stackoverflow.com/a/55114771
-with open(args.output_dir+'/commandline_args.txt', 'w') as f:
+with open(args.output_dir + '/commandline_args.txt', 'w') as f:
     json.dump(args.__dict__, f, indent=2)

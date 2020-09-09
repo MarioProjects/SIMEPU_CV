@@ -1,11 +1,14 @@
 import os
+import albumentations
 import pickle
-
+import torch
 import numpy as np
 import pandas as pd
 from skimage import io
+import copy
 from torch.utils import data
 from torch.utils.data import DataLoader
+from torchvision import transforms
 
 # echo "export SIMEPU_DATA='/home/maparla/DeepLearning/Datasets/SIMEPU'" >> ~/.bashrc
 if os.environ.get('SIMEPU_DATA') is not None:
@@ -23,6 +26,47 @@ with open("utils/labels2targetsdamaged.pkl", 'rb') as f:
 with open("utils/targets2labelsdamaged.pkl", 'rb') as f:
     TARGETS2LABELSDAMAGED = pickle.load(f)
 
+
+def apply_augmentations(image, transform, img_transform, mask=None):
+    if transform is not None:
+        if mask is not None:
+            augmented = transform(image=image, mask=mask)
+            mask = augmented['mask']
+        else:
+            augmented = transform(image=image)
+
+        image = augmented['image']
+
+    if img_transform is not None:
+        augmented = img_transform(image=image)
+        image = augmented['image']
+
+    return image, mask
+
+
+def apply_normalization(image, normalization_type):
+    """
+    https://www.statisticshowto.com/normalized/
+    :param image:
+    :param normalization_type:
+    :return:
+    """
+    if normalization_type == "none":
+        return image
+    elif normalization_type == "reescale":
+        image_min = image.min()
+        image_max = image.max()
+        image = (image - image_min) / (image_max - image_min)
+        return image
+    elif normalization_type == "standardize":
+        mean = np.mean(image)
+        std = np.std(image)
+        image = image - mean
+        image = image / std
+        return image
+    assert False, "Unknown normalization: '{}'".format(normalization_type)
+
+
 """
  - Las clases SIN daño: [1] Marca Via / [2] Sin Daño / [8] Alcantarillado
  - Las clases CON daño: 
@@ -32,8 +76,8 @@ with open("utils/targets2labelsdamaged.pkl", 'rb') as f:
 
 
 class SIMEPU_Dataset(data.Dataset):
-    def __init__(self, data_partition='', transform=None, validation_size=0.15, seed=42, get_path=False,
-                 binary_problem=False, damaged_problem=False, selected_class=""):
+    def __init__(self, data_partition='', transform=None, augmentation=None, validation_size=0.15, selected_class="",
+                 get_path=False, binary_problem=False, damaged_problem=False, segmentation_problem=False, seed=42):
         """
           - data_partition:
              -> Si esta vacio ("") devuelve todas las muestras del TRAIN set
@@ -42,8 +86,10 @@ class SIMEPU_Dataset(data.Dataset):
          - get_path: Si queremos devolver el path de la imagen (True) o no (False), tipicamente depuracion
          - dano_no_dano: Para separa las muestras en daño / no daño
         """
-        if data_partition not in ["", "train", "validation"]: assert False, "Wrong data partition: {}".format(data_partition)
-        if binary_problem and damaged_problem: assert False, "Please not binary_problem and damaged_problem at same time"
+        if data_partition not in ["", "train", "validation"]:
+            assert False, "Wrong data partition: {}".format(data_partition)
+        if binary_problem and damaged_problem:
+            assert False, "Please not binary_problem and damaged_problem at same time"
 
         if binary_problem:
             data_paths = pd.read_csv("utils/data_damages_path.csv")
@@ -57,6 +103,14 @@ class SIMEPU_Dataset(data.Dataset):
 
         if selected_class != "":
             data_paths = data_paths[data_paths.path.str.startswith(selected_class)]
+            self.num_classes = 1
+
+        if segmentation_problem:
+            if selected_class == "": assert False, "You need select a class for segmentation problem"
+            masks_paths = os.listdir(os.path.join(SIMEPU_DATA_PATH, "Mascaras", selected_class))
+            for index, row in data_paths.iterrows():
+                if row['path'].split("/")[1] not in masks_paths:
+                    data_paths.drop(index, inplace=True)
 
         np.random.seed(seed=seed)
         if data_partition == "":
@@ -73,21 +127,38 @@ class SIMEPU_Dataset(data.Dataset):
         self.data_paths = self.data_paths.reset_index(drop=True)
         self.data_partition = data_partition
         self.transform = transform
-        self.get_path = get_path
+        self.augmentation = augmentation
+        self.get_path = get_path or segmentation_problem
+        self.segmentation_problem = segmentation_problem
 
     def __getitem__(self, idx):
 
         img_path = SIMEPU_DATA_PATH + "/" + self.data_paths.iloc[idx]["path"]
         target = int(self.data_paths.iloc[idx]["target"])
         img = io.imread(img_path)
+        original_img = copy.deepcopy(img)
+        mask = None
 
         if self.transform is not None:
-            img = self.transform(img)
+            img = transforms.Compose(self.transform)(img)
+        elif self.augmentation is not None:
+            mask_path = os.path.join(SIMEPU_DATA_PATH, "Mascaras", self.data_paths.iloc[idx]["path"])
+            mask = np.where(io.imread(mask_path)[..., 0] > 0.5, 1, 0).astype(np.uint8)
+            original_mask = copy.deepcopy(mask)
+            img, mask = apply_augmentations(img, albumentations.Compose(self.augmentation), None, mask)
+            img = apply_normalization(img, "reescale")
+            img = torch.from_numpy(img.transpose(2, 0, 1)).float()  # Transpose == Channels first
+            mask = torch.from_numpy(np.expand_dims(mask, 0)).float()
+
+        res = [img, target]
+
+        if self.segmentation_problem:
+            res = res + [mask, original_img, original_mask]
 
         if self.get_path:
-            return img, target, img_path
-        else:
-            return img, target
+            res.append(img_path)
+
+        return res
 
     def __len__(self):
         return len(self.data_paths)

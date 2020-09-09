@@ -4,11 +4,13 @@ from .resnet import *
 from .pytorchcv_seresnext import *
 from .pytorchcv_mobilenet import *
 from .pytorchcv_bam_resnet import *
+from .small_segmentation_models import small_segmentation_model_selector
 
 
 def model_selector(model_name, num_classes=9, pretrained=False):
     if pretrained:
-        print("Pretrained-> Remember at end: {}".format("transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])"))
+        print("Pretrained-> Remember at end: {}".format(
+            "transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])"))
 
     if model_name == "resnet18":
         if not pretrained:
@@ -63,12 +65,15 @@ def model_selector(model_name, num_classes=9, pretrained=False):
         return PretrainedSeresNext101(num_classes, pretrained=pretrained).cuda()
     elif model_name == "bam_resnet50":
         return bam_resnet50(num_classes, pretrained=pretrained).cuda()
+    elif "unet" in model_name:
+        return small_segmentation_model_selector(model_name, num_classes).cuda()
     else:
         assert False, "Uknown model selected!"
+
 
 def test():
     net = model_selector("resnet18", num_classes=9)
     y = net(torch.randn(1, 3, 32, 32).cuda())
     print(y.size())
 
-#test()
+# test()
