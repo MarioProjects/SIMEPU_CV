@@ -143,7 +143,7 @@ class SIMEPU_Dataset(data.Dataset):
             img = transforms.Compose(self.transform)(img)
         elif self.augmentation is not None:
             mask_path = os.path.join(SIMEPU_DATA_PATH, "Mascaras", self.data_paths.iloc[idx]["path"])
-            mask = np.where(io.imread(mask_path)[..., 0] > 0.5, 1, 0).astype(np.uint8)
+            mask = np.where(io.imread(mask_path)[..., 0] > 0.5, 1, 0).astype(np.int32)
             original_mask = copy.deepcopy(mask)
             img, mask = apply_augmentations(img, albumentations.Compose(self.augmentation), None, mask)
             img = apply_normalization(img, "reescale")
@@ -162,6 +162,22 @@ class SIMEPU_Dataset(data.Dataset):
 
     def __len__(self):
         return len(self.data_paths)
+
+    def segmentation_collate(self, batch):
+        """
+        Necesitamos un collate ya que las imagenes 'originales' pueden venir con distinto tamaño y no le gusta a Pytorch
+        """
+        img, target, mask, original_img, original_mask, img_path = [], [], [], [], [], []
+        for item in batch:
+            img.append(item[0])
+            target.append(item[1])
+            mask.append(item[2])
+            original_img.append(item[3])
+            original_mask.append(item[4])
+            img_path.append(item[5])
+        img = torch.stack(img)
+        mask = torch.stack(mask)
+        return img, target, mask, original_img, original_mask, img_path
 
 
 def test():

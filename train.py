@@ -35,13 +35,28 @@ if args.cutmix:
         train_dataset, num_class=num_classes if not args.binary_problem else 2, beta=1.0, prob=0.65, num_mix=1
     )
 
-train_loader = DataLoader(train_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=True)
-
 val_dataset = SIMEPU_Dataset(data_partition='validation', transform=val_aug,
                              validation_size=args.validation_size, binary_problem=args.binary_problem,
                              damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
                              augmentation=val_albumentation, selected_class=args.selected_class)
-val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
+
+if not args.segmentation_problem:
+    train_loader = DataLoader(
+        train_dataset, batch_size=args.batch_size, pin_memory=True,
+        shuffle=True,
+    )
+    val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
+else:
+    train_loader = DataLoader(
+        train_dataset, batch_size=args.batch_size, pin_memory=True,
+        shuffle=True, collate_fn=train_dataset.segmentation_collate
+    )
+    val_loader = DataLoader(
+        val_dataset, batch_size=args.batch_size, pin_memory=True,
+        shuffle=False, collate_fn=val_dataset.segmentation_collate
+    )
+
+
 
 print("Hay {} clases!".format(num_classes))
 print("[Train] {} muestras".format(len(train_dataset)))
@@ -93,7 +108,7 @@ for epoch in range(args.epochs):
     )
     current_val_loss, current_val_metric = val_step(
         val_loader, model, criterion, args.binary_problem, args.segmentation_problem,
-        selected_class=args.selected_class, masks_overlays=args.masks_overlays, epoch=(epoch+1)
+        selected_class=args.selected_class, masks_overlays=args.masks_overlays, epoch=(epoch+1), lr=args.learning_rate
     )
 
     progress_train_loss = np.append(progress_train_loss, current_train_loss)

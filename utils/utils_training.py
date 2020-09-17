@@ -8,6 +8,7 @@ import seaborn as sns
 import torch
 import torch.nn as nn
 import matplotlib.gridspec as gridspec
+import albumentations
 
 from utils.metrics import jaccard_coef
 
@@ -28,7 +29,7 @@ def get_optimizer(optmizer_type, model, lr=0.1):
 
 def get_scheduler(optimizer, steps, plateau):
     if steps:
-        return torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[80, 145, 180], gamma=0.1)
+        return torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[50, 80, 110], gamma=0.1)
     elif plateau:
         return torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, cooldown=6, factor=0.1, patience=12)
     else:
@@ -169,8 +170,10 @@ def train_step(train_loader, model, criterion, optimizer, binary_problem=False, 
             train_loss += loss.item()
 
             for indx, single_pred in enumerate(outputs):
-                original_mask = original_masks[indx].data.cpu().numpy().astype(np.uint8).squeeze()
-                pred_mask = reshape_masks(single_pred.squeeze(0).data.cpu().numpy(), original_mask.shape)
+                original_mask = original_masks[indx]
+                original_h, original_w = original_mask.shape
+                resize_transform = albumentations.Resize(original_h, original_w)
+                pred_mask = resize_transform(image=torch.sigmoid(single_pred).squeeze(0).data.cpu().numpy())["image"]
                 binary_ground_truth = np.where(original_mask > 0.5, 1, 0).astype(np.int32)
                 binary_pred_mask = np.where(pred_mask > 0.5, 1, 0).astype(np.int32)
 
@@ -182,7 +185,7 @@ def train_step(train_loader, model, criterion, optimizer, binary_problem=False, 
 
 
 def val_step(val_loader, model, criterion, binary_problem=False, segmentation_problem=False,
-             masks_overlays=0, overlays_path="overlays", selected_class="", epoch=-1):
+             masks_overlays=0, overlays_path="overlays", selected_class="", epoch=-1, lr=0):
     model.eval()
     if not segmentation_problem:
         val_loss, correct, total = 0, 0, 0
@@ -224,8 +227,10 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
                 val_loss += loss.item()
 
                 for indx, single_pred in enumerate(outputs):
-                    original_mask = original_masks[indx].data.cpu().numpy().astype(np.uint8).squeeze()
-                    pred_mask = reshape_masks(single_pred.squeeze(0).data.cpu().numpy(), original_mask.shape)
+                    original_mask = original_masks[indx]
+                    original_h, original_w = original_mask.shape
+                    resize_transform = albumentations.Resize(original_h, original_w)
+                    pred_mask = resize_transform(image=torch.sigmoid(single_pred).squeeze(0).data.cpu().numpy())["image"]
                     binary_ground_truth = np.where(original_mask > 0.5, 1, 0).astype(np.int32)
                     binary_pred_mask = np.where(pred_mask > 0.5, 1, 0).astype(np.int32)
 
@@ -237,7 +242,7 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
                             original_imgs[indx],
                             binary_ground_truth, binary_pred_mask,
                             os.path.join(
-                                overlays_path, selected_class, f"epoch{epoch}", f"{inputs_names[indx].split('/')[-1]}"
+                                overlays_path, selected_class, f"{lr}", f"epoch{epoch}", f"{inputs_names[indx].split('/')[-1]}"
                             )
                         )
                         generated_masks += 1

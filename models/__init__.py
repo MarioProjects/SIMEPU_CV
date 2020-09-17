@@ -5,6 +5,7 @@ from .pytorchcv_seresnext import *
 from .pytorchcv_mobilenet import *
 from .pytorchcv_bam_resnet import *
 from .small_segmentation_models import small_segmentation_model_selector
+from .resnet_segmentation import resnet_model_selector
 
 
 def model_selector(model_name, num_classes=9, pretrained=False):
@@ -67,6 +68,8 @@ def model_selector(model_name, num_classes=9, pretrained=False):
         return bam_resnet50(num_classes, pretrained=pretrained).cuda()
     elif "unet" in model_name:
         return small_segmentation_model_selector(model_name, num_classes).cuda()
+    if "unet_resnet34_pretrained" == model_name:
+        return resnet_model_selector(model_name, num_classes, classification, in_channels)
     else:
         assert False, "Uknown model selected!"
 

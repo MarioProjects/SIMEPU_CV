@@ -1,14 +1,19 @@
 #!/bin/bash
 echo -e "\n---- Start ----\n"
+
+######################################################################################################################
+######################################################################################################################
+######################################################################################################################
+
 model="mobilenetwd4"
 optimizer="adam"
 min_lr=0.0000001
-epochs=200
+epochs=120
 batch_size=256
 img_size=256
 crop_size=224
 
-for lrFor in 0.001 0.0001
+for lrFor in 0.01 0.001 0.0001
 do
 
 lr=$lrFor # learning_rate
@@ -32,19 +37,72 @@ lr=$lrFor # learning_rate
 #                                       --img_size $img_size --crop_size $crop_size --output_dir $model_path \
 #                                       --steps_scheduler --pretrained --data_augmentation
 
+done
+
+
+######################################################################################################################
+######################################################################################################################
+######################################################################################################################
+
+
+for lrFor in 0.01 0.001 0.0001
+do
 
 # Segmentation models -> unet unet_small unet_extra_small unet_nano
 model="unet_extra_small"
 img_size=512
 crop_size=512
-batch_size=6
+batch_size=32
 selected_class="Grietas longitudinales"
 model_path="results/segmentation/$selected_class/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"/"
 CUDA_VISIBLE_DEVICES=0,1 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
-                                       --min_learning_rate $min_lr  --batch_size $batch_size --epochs $epochs \
+                                       --min_learning_rate $min_lr --batch_size $batch_size --epochs $epochs \
                                        --img_size $img_size --crop_size $crop_size --output_dir "$model_path" \
                                        --steps_scheduler --data_augmentation --segmentation_problem \
-                                       --selected_class "$selected_class" --masks_overlays 10
+                                       --selected_class "$selected_class" --masks_overlays 20
+
+
+## Segmentation models -> unet unet_small unet_extra_small unet_nano
+#model="unet_extra_small"
+#img_size=512
+#crop_size=512
+#batch_size=32
+#selected_class="Huecos"
+#model_path="results/segmentation/$selected_class/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"/"
+#CUDA_VISIBLE_DEVICES=0,1 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
+#                                       --min_learning_rate $min_lr --batch_size $batch_size --epochs $epochs \
+#                                       --img_size $img_size --crop_size $crop_size --output_dir "$model_path" \
+#                                       --steps_scheduler --data_augmentation --segmentation_problem \
+#                                       --selected_class "$selected_class" --masks_overlays 20
+
+
+# # Segmentation models -> unet unet_small unet_extra_small unet_nano
+#model="unet_extra_small"
+#img_size=512
+#crop_size=512
+#batch_size=32
+#selected_class="Grietas transversales"
+#model_path="results/segmentation/$selected_class/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"/"
+#CUDA_VISIBLE_DEVICES=0,1 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
+#                                       --min_learning_rate $min_lr --batch_size $batch_size --epochs $epochs \
+#                                       --img_size $img_size --crop_size $crop_size --output_dir "$model_path" \
+#                                       --steps_scheduler --data_augmentation --segmentation_problem \
+#                                       --selected_class "$selected_class" --masks_overlays 20
+
+# Segmentation models -> unet unet_small unet_extra_small unet_nano
+#model="unet_extra_small"
+#img_size=512
+#crop_size=512
+#batch_size=32
+#selected_class="Parcheo"
+#model_path="results/segmentation/$selected_class/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"/"
+#CUDA_VISIBLE_DEVICES=0,1 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
+#                                      --min_learning_rate $min_lr --batch_size $batch_size --epochs $epochs \
+#                                       --img_size $img_size --crop_size $crop_size --output_dir "$model_path" \
+#                                       --steps_scheduler --data_augmentation --segmentation_problem \
+#                                       --selected_class "$selected_class" --masks_overlays 20
+
+
 
 
 done

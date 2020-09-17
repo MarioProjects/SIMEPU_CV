@@ -36,6 +36,7 @@ def get_augmentations(data_augmentation, pretrained, img_size, crop_size, segmen
 
     else:  # Segmentation problem
         train_albumentation = [
+            albumentations.Resize(img_size, img_size),
             albumentations.ElasticTransform(p=0.72, alpha=177, sigma=177 * 0.05, alpha_affine=176 * 0.03),
             albumentations.GridDistortion(p=0.675, distort_limit=0.3),
             albumentations.OpticalDistortion(p=0.2, distort_limit=0.2, shift_limit=0.2),
