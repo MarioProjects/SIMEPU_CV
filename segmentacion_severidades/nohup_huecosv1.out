@@ -1,0 +1,333 @@
+
+---- Start ----
+
+Hay 1 clases!
+[Train] 334 muestras
+[Validacion] 67 muestras
+
+--------------------------------------------
+verbose: False
+optimizer: adam
+epochs: 120
+batch_size: 32
+learning_rate: 0.01
+min_learning_rate: 1e-07
+get_path: False
+weighted_loss: False
+plateau_scheduler: False
+steps_best: False
+steps_scheduler: True
+binary_problem: False
+damaged_problem: False
+segmentation_problem: True
+masks_overlays: 20
+cutmix: False
+selected_class: Huecos
+img_size: 512
+crop_size: 512
+model_name: unet_extra_small
+pretrained: False
+validation_size: 0.15
+output_dir: results/segmentation/Huecos/unet_extra_small_adam_512to512_lr0.01/
+data_augmentation: True
+
+-------------- START TRAINING --------------
+[2020-09-18 06:16:41] Epoch: 1, LR: 0.01000000, Train IOU: 0.0425, Val IOU: 0.0000
+[2020-09-18 06:17:17] Epoch: 2, LR: 0.01000000, Train IOU: 0.0026, Val IOU: 0.0001
+[2020-09-18 06:17:51] Epoch: 3, LR: 0.01000000, Train IOU: 0.0215, Val IOU: 0.2188
+[2020-09-18 06:18:26] Epoch: 4, LR: 0.01000000, Train IOU: 0.0901, Val IOU: 0.3826
+[2020-09-18 06:19:00] Epoch: 5, LR: 0.01000000, Train IOU: 0.1147, Val IOU: 0.3018
+[2020-09-18 06:19:35] Epoch: 6, LR: 0.01000000, Train IOU: 0.1391, Val IOU: 0.2180
+[2020-09-18 06:20:09] Epoch: 7, LR: 0.01000000, Train IOU: 0.1225, Val IOU: 0.3972
+[2020-09-18 06:20:44] Epoch: 8, LR: 0.01000000, Train IOU: 0.1330, Val IOU: 0.2896
+[2020-09-18 06:21:19] Epoch: 9, LR: 0.01000000, Train IOU: 0.1609, Val IOU: 0.3373
+[2020-09-18 06:21:53] Epoch: 10, LR: 0.01000000, Train IOU: 0.1573, Val IOU: 0.4868
+[2020-09-18 06:22:29] Epoch: 11, LR: 0.01000000, Train IOU: 0.1601, Val IOU: 0.3367
+[2020-09-18 06:23:03] Epoch: 12, LR: 0.01000000, Train IOU: 0.1463, Val IOU: 0.5181
+[2020-09-18 06:23:38] Epoch: 13, LR: 0.01000000, Train IOU: 0.1366, Val IOU: 0.4498
+[2020-09-18 06:24:13] Epoch: 14, LR: 0.01000000, Train IOU: 0.1549, Val IOU: 0.3920
+[2020-09-18 06:24:46] Epoch: 15, LR: 0.01000000, Train IOU: 0.1409, Val IOU: 0.4528
+[2020-09-18 06:25:21] Epoch: 16, LR: 0.01000000, Train IOU: 0.1377, Val IOU: 0.4773
+[2020-09-18 06:25:56] Epoch: 17, LR: 0.01000000, Train IOU: 0.1274, Val IOU: 0.3294
+[2020-09-18 06:26:30] Epoch: 18, LR: 0.01000000, Train IOU: 0.1407, Val IOU: 0.3505
+[2020-09-18 06:27:05] Epoch: 19, LR: 0.01000000, Train IOU: 0.1603, Val IOU: 0.4283
+[2020-09-18 06:27:41] Epoch: 20, LR: 0.01000000, Train IOU: 0.1424, Val IOU: 0.5219
+[2020-09-18 06:28:16] Epoch: 21, LR: 0.01000000, Train IOU: 0.1531, Val IOU: 0.5408
+[2020-09-18 06:28:50] Epoch: 22, LR: 0.01000000, Train IOU: 0.1582, Val IOU: 0.2115
+[2020-09-18 06:29:25] Epoch: 23, LR: 0.01000000, Train IOU: 0.1670, Val IOU: 0.4318
+[2020-09-18 06:29:59] Epoch: 24, LR: 0.01000000, Train IOU: 0.1574, Val IOU: 0.5172
+[2020-09-18 06:30:33] Epoch: 25, LR: 0.01000000, Train IOU: 0.1564, Val IOU: 0.4925
+[2020-09-18 06:31:08] Epoch: 26, LR: 0.01000000, Train IOU: 0.1554, Val IOU: 0.2609
+[2020-09-18 06:31:43] Epoch: 27, LR: 0.01000000, Train IOU: 0.1194, Val IOU: 0.3698
+[2020-09-18 06:32:17] Epoch: 28, LR: 0.01000000, Train IOU: 0.1653, Val IOU: 0.5799
+[2020-09-18 06:32:51] Epoch: 29, LR: 0.01000000, Train IOU: 0.1314, Val IOU: 0.4670
+[2020-09-18 06:33:26] Epoch: 30, LR: 0.01000000, Train IOU: 0.1297, Val IOU: 0.4575
+[2020-09-18 06:34:01] Epoch: 31, LR: 0.01000000, Train IOU: 0.1517, Val IOU: 0.4690
+[2020-09-18 06:34:35] Epoch: 32, LR: 0.01000000, Train IOU: 0.1686, Val IOU: 0.4736
+[2020-09-18 06:35:10] Epoch: 33, LR: 0.01000000, Train IOU: 0.1718, Val IOU: 0.5308
+[2020-09-18 06:35:45] Epoch: 34, LR: 0.01000000, Train IOU: 0.1510, Val IOU: 0.4872
+[2020-09-18 06:36:19] Epoch: 35, LR: 0.01000000, Train IOU: 0.1629, Val IOU: 0.4642
+[2020-09-18 06:36:55] Epoch: 36, LR: 0.01000000, Train IOU: 0.1682, Val IOU: 0.5695
+[2020-09-18 06:37:30] Epoch: 37, LR: 0.01000000, Train IOU: 0.1620, Val IOU: 0.3732
+[2020-09-18 06:38:05] Epoch: 38, LR: 0.01000000, Train IOU: 0.1489, Val IOU: 0.4703
+[2020-09-18 06:38:40] Epoch: 39, LR: 0.01000000, Train IOU: 0.1666, Val IOU: 0.5276
+[2020-09-18 06:39:15] Epoch: 40, LR: 0.01000000, Train IOU: 0.1501, Val IOU: 0.5712
+[2020-09-18 06:39:49] Epoch: 41, LR: 0.01000000, Train IOU: 0.1728, Val IOU: 0.4817
+[2020-09-18 06:40:23] Epoch: 42, LR: 0.01000000, Train IOU: 0.1879, Val IOU: 0.5274
+[2020-09-18 06:40:58] Epoch: 43, LR: 0.01000000, Train IOU: 0.1528, Val IOU: 0.5441
+[2020-09-18 06:41:33] Epoch: 44, LR: 0.01000000, Train IOU: 0.1645, Val IOU: 0.4304
+[2020-09-18 06:42:07] Epoch: 45, LR: 0.01000000, Train IOU: 0.1453, Val IOU: 0.5553
+[2020-09-18 06:42:41] Epoch: 46, LR: 0.01000000, Train IOU: 0.1791, Val IOU: 0.5557
+[2020-09-18 06:43:15] Epoch: 47, LR: 0.01000000, Train IOU: 0.1555, Val IOU: 0.5164
+[2020-09-18 06:43:50] Epoch: 48, LR: 0.01000000, Train IOU: 0.1716, Val IOU: 0.5769
+[2020-09-18 06:44:24] Epoch: 49, LR: 0.01000000, Train IOU: 0.1615, Val IOU: 0.5568
+[2020-09-18 06:44:59] Epoch: 50, LR: 0.01000000, Train IOU: 0.1738, Val IOU: 0.4131
+[2020-09-18 06:45:34] Epoch: 51, LR: 0.00100000, Train IOU: 0.1717, Val IOU: 0.5776
+[2020-09-18 06:46:08] Epoch: 52, LR: 0.00100000, Train IOU: 0.1635, Val IOU: 0.6005
+[2020-09-18 06:46:43] Epoch: 53, LR: 0.00100000, Train IOU: 0.1692, Val IOU: 0.6194
+[2020-09-18 06:47:18] Epoch: 54, LR: 0.00100000, Train IOU: 0.1737, Val IOU: 0.6179
+[2020-09-18 06:47:52] Epoch: 55, LR: 0.00100000, Train IOU: 0.1781, Val IOU: 0.6068
+[2020-09-18 06:48:26] Epoch: 56, LR: 0.00100000, Train IOU: 0.1550, Val IOU: 0.6014
+[2020-09-18 06:49:01] Epoch: 57, LR: 0.00100000, Train IOU: 0.1955, Val IOU: 0.5833
+[2020-09-18 06:49:36] Epoch: 58, LR: 0.00100000, Train IOU: 0.1812, Val IOU: 0.5987
+[2020-09-18 06:50:10] Epoch: 59, LR: 0.00100000, Train IOU: 0.1758, Val IOU: 0.6237
+[2020-09-18 06:50:45] Epoch: 60, LR: 0.00100000, Train IOU: 0.1750, Val IOU: 0.6243
+[2020-09-18 06:51:20] Epoch: 61, LR: 0.00100000, Train IOU: 0.1892, Val IOU: 0.6265
+[2020-09-18 06:51:56] Epoch: 62, LR: 0.00100000, Train IOU: 0.1903, Val IOU: 0.6209
+[2020-09-18 06:52:31] Epoch: 63, LR: 0.00100000, Train IOU: 0.1981, Val IOU: 0.6074
+[2020-09-18 06:53:06] Epoch: 64, LR: 0.00100000, Train IOU: 0.1937, Val IOU: 0.6109
+[2020-09-18 06:53:40] Epoch: 65, LR: 0.00100000, Train IOU: 0.1588, Val IOU: 0.6092
+[2020-09-18 06:54:14] Epoch: 66, LR: 0.00100000, Train IOU: 0.1696, Val IOU: 0.6044
+[2020-09-18 06:54:49] Epoch: 67, LR: 0.00100000, Train IOU: 0.1814, Val IOU: 0.5884
+[2020-09-18 06:55:24] Epoch: 68, LR: 0.00100000, Train IOU: 0.1968, Val IOU: 0.5952
+[2020-09-18 06:55:59] Epoch: 69, LR: 0.00100000, Train IOU: 0.1934, Val IOU: 0.6065
+[2020-09-18 06:56:34] Epoch: 70, LR: 0.00100000, Train IOU: 0.1737, Val IOU: 0.6163
+[2020-09-18 06:57:08] Epoch: 71, LR: 0.00100000, Train IOU: 0.1796, Val IOU: 0.6125
+[2020-09-18 06:57:43] Epoch: 72, LR: 0.00100000, Train IOU: 0.2035, Val IOU: 0.6043
+[2020-09-18 06:58:17] Epoch: 73, LR: 0.00100000, Train IOU: 0.1701, Val IOU: 0.6119
+[2020-09-18 06:58:52] Epoch: 74, LR: 0.00100000, Train IOU: 0.1714, Val IOU: 0.6124
+[2020-09-18 06:59:27] Epoch: 75, LR: 0.00100000, Train IOU: 0.1711, Val IOU: 0.6217
+[2020-09-18 07:00:03] Epoch: 76, LR: 0.00100000, Train IOU: 0.1923, Val IOU: 0.6232
+[2020-09-18 07:00:37] Epoch: 77, LR: 0.00100000, Train IOU: 0.1745, Val IOU: 0.6072
+[2020-09-18 07:01:11] Epoch: 78, LR: 0.00100000, Train IOU: 0.1831, Val IOU: 0.6227
+[2020-09-18 07:01:46] Epoch: 79, LR: 0.00100000, Train IOU: 0.1889, Val IOU: 0.6290
+[2020-09-18 07:02:21] Epoch: 80, LR: 0.00100000, Train IOU: 0.1784, Val IOU: 0.5922
+[2020-09-18 07:02:56] Epoch: 81, LR: 0.00010000, Train IOU: 0.1641, Val IOU: 0.5999
+[2020-09-18 07:03:31] Epoch: 82, LR: 0.00010000, Train IOU: 0.2003, Val IOU: 0.6071
+[2020-09-18 07:04:05] Epoch: 83, LR: 0.00010000, Train IOU: 0.1925, Val IOU: 0.6059
+[2020-09-18 07:04:39] Epoch: 84, LR: 0.00010000, Train IOU: 0.1755, Val IOU: 0.6030
+[2020-09-18 07:05:14] Epoch: 85, LR: 0.00010000, Train IOU: 0.1919, Val IOU: 0.6041
+[2020-09-18 07:05:49] Epoch: 86, LR: 0.00010000, Train IOU: 0.1860, Val IOU: 0.6224
+[2020-09-18 07:06:24] Epoch: 87, LR: 0.00010000, Train IOU: 0.2011, Val IOU: 0.6066
+[2020-09-18 07:07:00] Epoch: 88, LR: 0.00010000, Train IOU: 0.1972, Val IOU: 0.6174
+[2020-09-18 07:07:34] Epoch: 89, LR: 0.00010000, Train IOU: 0.1804, Val IOU: 0.6187
+[2020-09-18 07:08:07] Epoch: 90, LR: 0.00010000, Train IOU: 0.2154, Val IOU: 0.6250/home/maparla/venv/lib/python3.8/site-packages/matplotlib/image.py:452: UserWarning: Warning: converting a masked element to nan.
+  dv = np.float64(self.norm.vmax) - np.float64(self.norm.vmin)
+/home/maparla/venv/lib/python3.8/site-packages/matplotlib/image.py:459: UserWarning: Warning: converting a masked element to nan.
+  a_min = np.float64(newmin)
+/home/maparla/venv/lib/python3.8/site-packages/matplotlib/image.py:464: UserWarning: Warning: converting a masked element to nan.
+  a_max = np.float64(newmax)
+<__array_function__ internals>:5: UserWarning: Warning: converting a masked element to nan.
+/home/maparla/venv/lib/python3.8/site-packages/numpy/core/_asarray.py:83: UserWarning: Warning: converting a masked element to nan.
+  return array(a, dtype, copy=False, order=order)
+
+[2020-09-18 07:08:42] Epoch: 91, LR: 0.00010000, Train IOU: 0.1880, Val IOU: 0.6166
+[2020-09-18 07:09:16] Epoch: 92, LR: 0.00010000, Train IOU: 0.1915, Val IOU: 0.6165
+[2020-09-18 07:09:51] Epoch: 93, LR: 0.00010000, Train IOU: 0.2028, Val IOU: 0.6086
+[2020-09-18 07:10:26] Epoch: 94, LR: 0.00010000, Train IOU: 0.1773, Val IOU: 0.6222
+[2020-09-18 07:11:01] Epoch: 95, LR: 0.00010000, Train IOU: 0.2101, Val IOU: 0.6230
+[2020-09-18 07:11:36] Epoch: 96, LR: 0.00010000, Train IOU: 0.1789, Val IOU: 0.6137
+[2020-09-18 07:12:12] Epoch: 97, LR: 0.00010000, Train IOU: 0.1669, Val IOU: 0.6133
+[2020-09-18 07:12:46] Epoch: 98, LR: 0.00010000, Train IOU: 0.1662, Val IOU: 0.6207
+[2020-09-18 07:13:21] Epoch: 99, LR: 0.00010000, Train IOU: 0.1631, Val IOU: 0.6235
+[2020-09-18 07:13:55] Epoch: 100, LR: 0.00010000, Train IOU: 0.2041, Val IOU: 0.6253
+[2020-09-18 07:14:31] Epoch: 101, LR: 0.00010000, Train IOU: 0.1959, Val IOU: 0.6190
+[2020-09-18 07:15:05] Epoch: 102, LR: 0.00010000, Train IOU: 0.1774, Val IOU: 0.6187
+[2020-09-18 07:15:40] Epoch: 103, LR: 0.00010000, Train IOU: 0.1777, Val IOU: 0.6123
+[2020-09-18 07:16:16] Epoch: 104, LR: 0.00010000, Train IOU: 0.1810, Val IOU: 0.6132
+[2020-09-18 07:16:50] Epoch: 105, LR: 0.00010000, Train IOU: 0.1860, Val IOU: 0.6280
+[2020-09-18 07:17:25] Epoch: 106, LR: 0.00010000, Train IOU: 0.1892, Val IOU: 0.6254
+[2020-09-18 07:18:00] Epoch: 107, LR: 0.00010000, Train IOU: 0.1913, Val IOU: 0.6276
+[2020-09-18 07:18:33] Epoch: 108, LR: 0.00010000, Train IOU: 0.1970, Val IOU: 0.6301
+[2020-09-18 07:19:08] Epoch: 109, LR: 0.00010000, Train IOU: 0.1794, Val IOU: 0.6109
+[2020-09-18 07:19:42] Epoch: 110, LR: 0.00010000, Train IOU: 0.1636, Val IOU: 0.6103
+[2020-09-18 07:20:17] Epoch: 111, LR: 0.00001000, Train IOU: 0.1815, Val IOU: 0.6127
+[2020-09-18 07:20:51] Epoch: 112, LR: 0.00001000, Train IOU: 0.1946, Val IOU: 0.6132
+[2020-09-18 07:21:26] Epoch: 113, LR: 0.00001000, Train IOU: 0.1871, Val IOU: 0.6245
+[2020-09-18 07:22:00] Epoch: 114, LR: 0.00001000, Train IOU: 0.1866, Val IOU: 0.6199
+[2020-09-18 07:22:36] Epoch: 115, LR: 0.00001000, Train IOU: 0.1879, Val IOU: 0.6251
+[2020-09-18 07:23:09] Epoch: 116, LR: 0.00001000, Train IOU: 0.1794, Val IOU: 0.6247
+[2020-09-18 07:23:45] Epoch: 117, LR: 0.00001000, Train IOU: 0.1897, Val IOU: 0.6255
+[2020-09-18 07:24:18] Epoch: 118, LR: 0.00001000, Train IOU: 0.1897, Val IOU: 0.6281
+[2020-09-18 07:24:53] Epoch: 119, LR: 0.00001000, Train IOU: 0.1828, Val IOU: 0.6282
+[2020-09-18 07:25:29] Epoch: 120, LR: 0.00001000, Train IOU: 0.1918, Val IOU: 0.6365
+
+------------------------------------------------
+Best Validation IOU 0.6365 at epoch 120
+------------------------------------------------
+
+Hay 1 clases!
+[Train] 334 muestras
+[Validacion] 67 muestras
+
+--------------------------------------------
+verbose: False
+optimizer: adam
+epochs: 120
+batch_size: 32
+learning_rate: 0.001
+min_learning_rate: 1e-07
+get_path: False
+weighted_loss: False
+plateau_scheduler: False
+steps_best: False
+steps_scheduler: True
+binary_problem: False
+damaged_problem: False
+segmentation_problem: True
+masks_overlays: 20
+cutmix: False
+selected_class: Huecos
+img_size: 512
+crop_size: 512
+model_name: unet_extra_small
+pretrained: False
+validation_size: 0.15
+output_dir: results/segmentation/Huecos/unet_extra_small_adam_512to512_lr0.001/
+data_augmentation: True
+
+-------------- START TRAINING --------------
+[2020-09-18 07:26:11] Epoch: 1, LR: 0.00100000, Train IOU: 0.0630, Val IOU: 0.0000
+[2020-09-18 07:26:46] Epoch: 2, LR: 0.00100000, Train IOU: 0.1242, Val IOU: 0.0006
+[2020-09-18 07:27:20] Epoch: 3, LR: 0.00100000, Train IOU: 0.1484, Val IOU: 0.0291
+[2020-09-18 07:27:55] Epoch: 4, LR: 0.00100000, Train IOU: 0.1768, Val IOU: 0.1219
+[2020-09-18 07:28:29] Epoch: 5, LR: 0.00100000, Train IOU: 0.1620, Val IOU: 0.1607
+[2020-09-18 07:29:04] Epoch: 6, LR: 0.00100000, Train IOU: 0.1655, Val IOU: 0.5292
+[2020-09-18 07:29:38] Epoch: 7, LR: 0.00100000, Train IOU: 0.1627, Val IOU: 0.5298
+[2020-09-18 07:30:11] Epoch: 8, LR: 0.00100000, Train IOU: 0.1728, Val IOU: 0.5323
+[2020-09-18 07:30:45] Epoch: 9, LR: 0.00100000, Train IOU: 0.1638, Val IOU: 0.4909
+[2020-09-18 07:31:20] Epoch: 10, LR: 0.00100000, Train IOU: 0.1606, Val IOU: 0.5439
+[2020-09-18 07:31:54] Epoch: 11, LR: 0.00100000, Train IOU: 0.1534, Val IOU: 0.5697
+[2020-09-18 07:32:29] Epoch: 12, LR: 0.00100000, Train IOU: 0.1672, Val IOU: 0.5200
+[2020-09-18 07:33:04] Epoch: 13, LR: 0.00100000, Train IOU: 0.1668, Val IOU: 0.3997
+[2020-09-18 07:33:39] Epoch: 14, LR: 0.00100000, Train IOU: 0.1529, Val IOU: 0.5026
+[2020-09-18 07:34:14] Epoch: 15, LR: 0.00100000, Train IOU: 0.1469, Val IOU: 0.5624
+[2020-09-18 07:34:49] Epoch: 16, LR: 0.00100000, Train IOU: 0.1607, Val IOU: 0.4504
+[2020-09-18 07:35:24] Epoch: 17, LR: 0.00100000, Train IOU: 0.1586, Val IOU: 0.4977
+[2020-09-18 07:35:59] Epoch: 18, LR: 0.00100000, Train IOU: 0.1692, Val IOU: 0.4606
+[2020-09-18 07:36:34] Epoch: 19, LR: 0.00100000, Train IOU: 0.1602, Val IOU: 0.5363
+[2020-09-18 07:37:08] Epoch: 20, LR: 0.00100000, Train IOU: 0.1610, Val IOU: 0.5382
+[2020-09-18 07:37:43] Epoch: 21, LR: 0.00100000, Train IOU: 0.1669, Val IOU: 0.5445
+[2020-09-18 07:38:19] Epoch: 22, LR: 0.00100000, Train IOU: 0.1607, Val IOU: 0.5965
+[2020-09-18 07:38:53] Epoch: 23, LR: 0.00100000, Train IOU: 0.1523, Val IOU: 0.5707
+[2020-09-18 07:39:27] Epoch: 24, LR: 0.00100000, Train IOU: 0.1696, Val IOU: 0.5873
+[2020-09-18 07:40:02] Epoch: 25, LR: 0.00100000, Train IOU: 0.1510, Val IOU: 0.4648
+[2020-09-18 07:40:36] Epoch: 26, LR: 0.00100000, Train IOU: 0.1538, Val IOU: 0.5740
+[2020-09-18 07:41:12] Epoch: 27, LR: 0.00100000, Train IOU: 0.1724, Val IOU: 0.5193
+[2020-09-18 07:41:46] Epoch: 28, LR: 0.00100000, Train IOU: 0.1927, Val IOU: 0.6006
+[2020-09-18 07:42:22] Epoch: 29, LR: 0.00100000, Train IOU: 0.1723, Val IOU: 0.5163
+[2020-09-18 07:42:57] Epoch: 30, LR: 0.00100000, Train IOU: 0.1679, Val IOU: 0.5192
+[2020-09-18 07:43:31] Epoch: 31, LR: 0.00100000, Train IOU: 0.1683, Val IOU: 0.6036
+[2020-09-18 07:44:07] Epoch: 32, LR: 0.00100000, Train IOU: 0.1666, Val IOU: 0.5375
+[2020-09-18 07:44:42] Epoch: 33, LR: 0.00100000, Train IOU: 0.1821, Val IOU: 0.5502
+[2020-09-18 07:45:17] Epoch: 34, LR: 0.00100000, Train IOU: 0.1669, Val IOU: 0.5831
+[2020-09-18 07:45:51] Epoch: 35, LR: 0.00100000, Train IOU: 0.1728, Val IOU: 0.6032
+[2020-09-18 07:46:25] Epoch: 36, LR: 0.00100000, Train IOU: 0.1912, Val IOU: 0.6089
+[2020-09-18 07:46:59] Epoch: 37, LR: 0.00100000, Train IOU: 0.1868, Val IOU: 0.6161
+[2020-09-18 07:47:34] Epoch: 38, LR: 0.00100000, Train IOU: 0.1711, Val IOU: 0.6012
+[2020-09-18 07:48:09] Epoch: 39, LR: 0.00100000, Train IOU: 0.1638, Val IOU: 0.6194
+[2020-09-18 07:48:43] Epoch: 40, LR: 0.00100000, Train IOU: 0.1817, Val IOU: 0.6340
+[2020-09-18 07:49:17] Epoch: 41, LR: 0.00100000, Train IOU: 0.1775, Val IOU: 0.5693
+[2020-09-18 07:49:52] Epoch: 42, LR: 0.00100000, Train IOU: 0.1843, Val IOU: 0.6251
+[2020-09-18 07:50:27] Epoch: 43, LR: 0.00100000, Train IOU: 0.1785, Val IOU: 0.6163
+[2020-09-18 07:51:02] Epoch: 44, LR: 0.00100000, Train IOU: 0.1662, Val IOU: 0.6389
+[2020-09-18 07:51:36] Epoch: 45, LR: 0.00100000, Train IOU: 0.1814, Val IOU: 0.4507
+[2020-09-18 07:52:10] Epoch: 46, LR: 0.00100000, Train IOU: 0.1802, Val IOU: 0.5574
+[2020-09-18 07:52:44] Epoch: 47, LR: 0.00100000, Train IOU: 0.1892, Val IOU: 0.6192
+[2020-09-18 07:53:20] Epoch: 48, LR: 0.00100000, Train IOU: 0.1798, Val IOU: 0.6152
+[2020-09-18 07:53:54] Epoch: 49, LR: 0.00100000, Train IOU: 0.1921, Val IOU: 0.5657
+[2020-09-18 07:54:30] Epoch: 50, LR: 0.00100000, Train IOU: 0.1886, Val IOU: 0.6423
+[2020-09-18 07:55:04] Epoch: 51, LR: 0.00010000, Train IOU: 0.2059, Val IOU: 0.6511
+[2020-09-18 07:55:39] Epoch: 52, LR: 0.00010000, Train IOU: 0.2013, Val IOU: 0.6418
+[2020-09-18 07:56:14] Epoch: 53, LR: 0.00010000, Train IOU: 0.1903, Val IOU: 0.6411
+[2020-09-18 07:56:50] Epoch: 54, LR: 0.00010000, Train IOU: 0.1725, Val IOU: 0.6461
+[2020-09-18 07:57:26] Epoch: 55, LR: 0.00010000, Train IOU: 0.1843, Val IOU: 0.6472
+[2020-09-18 07:58:01] Epoch: 56, LR: 0.00010000, Train IOU: 0.1911, Val IOU: 0.6529
+[2020-09-18 07:58:37] Epoch: 57, LR: 0.00010000, Train IOU: 0.2066, Val IOU: 0.6560
+[2020-09-18 07:59:11] Epoch: 58, LR: 0.00010000, Train IOU: 0.1982, Val IOU: 0.6557
+[2020-09-18 07:59:46] Epoch: 59, LR: 0.00010000, Train IOU: 0.1984, Val IOU: 0.6577
+[2020-09-18 08:00:21] Epoch: 60, LR: 0.00010000, Train IOU: 0.2040, Val IOU: 0.6519
+[2020-09-18 08:00:55] Epoch: 61, LR: 0.00010000, Train IOU: 0.1893, Val IOU: 0.6527
+[2020-09-18 08:01:30] Epoch: 62, LR: 0.00010000, Train IOU: 0.1793, Val IOU: 0.6651
+[2020-09-18 08:02:05] Epoch: 63, LR: 0.00010000, Train IOU: 0.2071, Val IOU: 0.6645
+[2020-09-18 08:02:41] Epoch: 64, LR: 0.00010000, Train IOU: 0.1826, Val IOU: 0.6566
+[2020-09-18 08:03:17] Epoch: 65, LR: 0.00010000, Train IOU: 0.1746, Val IOU: 0.6631
+[2020-09-18 08:03:53] Epoch: 66, LR: 0.00010000, Train IOU: 0.1909, Val IOU: 0.6665
+[2020-09-18 08:04:28] Epoch: 67, LR: 0.00010000, Train IOU: 0.2020, Val IOU: 0.6685
+[2020-09-18 08:05:03] Epoch: 68, LR: 0.00010000, Train IOU: 0.1836, Val IOU: 0.6757
+[2020-09-18 08:05:37] Epoch: 69, LR: 0.00010000, Train IOU: 0.2094, Val IOU: 0.6604
+[2020-09-18 08:06:12] Epoch: 70, LR: 0.00010000, Train IOU: 0.1890, Val IOU: 0.6570
+[2020-09-18 08:06:47] Epoch: 71, LR: 0.00010000, Train IOU: 0.2041, Val IOU: 0.6631
+[2020-09-18 08:07:22] Epoch: 72, LR: 0.00010000, Train IOU: 0.1944, Val IOU: 0.6617
+[2020-09-18 08:07:57] Epoch: 73, LR: 0.00010000, Train IOU: 0.1980, Val IOU: 0.6636
+[2020-09-18 08:08:31] Epoch: 74, LR: 0.00010000, Train IOU: 0.2073, Val IOU: 0.6615
+[2020-09-18 08:09:07] Epoch: 75, LR: 0.00010000, Train IOU: 0.1932, Val IOU: 0.6766
+[2020-09-18 08:09:41] Epoch: 76, LR: 0.00010000, Train IOU: 0.1950, Val IOU: 0.6764
+[2020-09-18 08:10:16] Epoch: 77, LR: 0.00010000, Train IOU: 0.1887, Val IOU: 0.6529
+[2020-09-18 08:10:49] Epoch: 78, LR: 0.00010000, Train IOU: 0.1927, Val IOU: 0.6468
+[2020-09-18 08:11:23] Epoch: 79, LR: 0.00010000, Train IOU: 0.2062, Val IOU: 0.6629
+[2020-09-18 08:11:59] Epoch: 80, LR: 0.00010000, Train IOU: 0.1872, Val IOU: 0.6643
+[2020-09-18 08:12:33] Epoch: 81, LR: 0.00001000, Train IOU: 0.2060, Val IOU: 0.6667
+[2020-09-18 08:13:07] Epoch: 82, LR: 0.00001000, Train IOU: 0.1784, Val IOU: 0.6626
+[2020-09-18 08:13:42] Epoch: 83, LR: 0.00001000, Train IOU: 0.1904, Val IOU: 0.6639
+[2020-09-18 08:14:17] Epoch: 84, LR: 0.00001000, Train IOU: 0.2063, Val IOU: 0.6646
+[2020-09-18 08:14:52] Epoch: 85, LR: 0.00001000, Train IOU: 0.2011, Val IOU: 0.6690
+[2020-09-18 08:15:28] Epoch: 86, LR: 0.00001000, Train IOU: 0.1883, Val IOU: 0.6621
+[2020-09-18 08:16:03] Epoch: 87, LR: 0.00001000, Train IOU: 0.1752, Val IOU: 0.6564
+[2020-09-18 08:16:37] Epoch: 88, LR: 0.00001000, Train IOU: 0.1890, Val IOU: 0.6640
+[2020-09-18 08:17:12] Epoch: 89, LR: 0.00001000, Train IOU: 0.1898, Val IOU: 0.6600
+[2020-09-18 08:17:46] Epoch: 90, LR: 0.00001000, Train IOU: 0.1788, Val IOU: 0.6649/home/maparla/venv/lib/python3.8/site-packages/matplotlib/image.py:452: UserWarning: Warning: converting a masked element to nan.
+  dv = np.float64(self.norm.vmax) - np.float64(self.norm.vmin)
+/home/maparla/venv/lib/python3.8/site-packages/matplotlib/image.py:459: UserWarning: Warning: converting a masked element to nan.
+  a_min = np.float64(newmin)
+/home/maparla/venv/lib/python3.8/site-packages/matplotlib/image.py:464: UserWarning: Warning: converting a masked element to nan.
+  a_max = np.float64(newmax)
+<__array_function__ internals>:5: UserWarning: Warning: converting a masked element to nan.
+/home/maparla/venv/lib/python3.8/site-packages/numpy/core/_asarray.py:83: UserWarning: Warning: converting a masked element to nan.
+  return array(a, dtype, copy=False, order=order)
+
+[2020-09-18 08:18:20] Epoch: 91, LR: 0.00001000, Train IOU: 0.1905, Val IOU: 0.6632
+[2020-09-18 08:18:54] Epoch: 92, LR: 0.00001000, Train IOU: 0.1779, Val IOU: 0.6645
+[2020-09-18 08:19:28] Epoch: 93, LR: 0.00001000, Train IOU: 0.1915, Val IOU: 0.6612
+[2020-09-18 08:20:03] Epoch: 94, LR: 0.00001000, Train IOU: 0.1811, Val IOU: 0.6569
+[2020-09-18 08:20:38] Epoch: 95, LR: 0.00001000, Train IOU: 0.2033, Val IOU: 0.6580
+[2020-09-18 08:21:13] Epoch: 96, LR: 0.00001000, Train IOU: 0.2138, Val IOU: 0.6611
+[2020-09-18 08:21:48] Epoch: 97, LR: 0.00001000, Train IOU: 0.2019, Val IOU: 0.6669
+[2020-09-18 08:22:22] Epoch: 98, LR: 0.00001000, Train IOU: 0.2114, Val IOU: 0.6744
+[2020-09-18 08:22:57] Epoch: 99, LR: 0.00001000, Train IOU: 0.2022, Val IOU: 0.6726
+[2020-09-18 08:23:30] Epoch: 100, LR: 0.00001000, Train IOU: 0.1976, Val IOU: 0.6680
+[2020-09-18 08:24:04] Epoch: 101, LR: 0.00001000, Train IOU: 0.2096, Val IOU: 0.6656
+[2020-09-18 08:24:40] Epoch: 102, LR: 0.00001000, Train IOU: 0.1677, Val IOU: 0.6711
+[2020-09-18 08:25:15] Epoch: 103, LR: 0.00001000, Train IOU: 0.1882, Val IOU: 0.6581
+[2020-09-18 08:25:48] Epoch: 104, LR: 0.00001000, Train IOU: 0.2110, Val IOU: 0.6602
+[2020-09-18 08:26:24] Epoch: 105, LR: 0.00001000, Train IOU: 0.2039, Val IOU: 0.6632
+[2020-09-18 08:26:59] Epoch: 106, LR: 0.00001000, Train IOU: 0.1936, Val IOU: 0.6680
+[2020-09-18 08:27:34] Epoch: 107, LR: 0.00001000, Train IOU: 0.1963, Val IOU: 0.6708
+[2020-09-18 08:28:09] Epoch: 108, LR: 0.00001000, Train IOU: 0.2080, Val IOU: 0.6722
+[2020-09-18 08:28:43] Epoch: 109, LR: 0.00001000, Train IOU: 0.1861, Val IOU: 0.6661
+[2020-09-18 08:29:18] Epoch: 110, LR: 0.00001000, Train IOU: 0.2222, Val IOU: 0.6654
+[2020-09-18 08:29:54] Epoch: 111, LR: 0.00000100, Train IOU: 0.2378, Val IOU: 0.6663
+[2020-09-18 08:30:28] Epoch: 112, LR: 0.00000100, Train IOU: 0.1951, Val IOU: 0.6701
+[2020-09-18 08:31:03] Epoch: 113, LR: 0.00000100, Train IOU: 0.2026, Val IOU: 0.6647
+[2020-09-18 08:31:38] Epoch: 114, LR: 0.00000100, Train IOU: 0.1839, Val IOU: 0.6722
+[2020-09-18 08:32:13] Epoch: 115, LR: 0.00000100, Train IOU: 0.1701, Val IOU: 0.6660
+[2020-09-18 08:32:48] Epoch: 116, LR: 0.00000100, Train IOU: 0.1639, Val IOU: 0.6656
+[2020-09-18 08:33:24] Epoch: 117, LR: 0.00000100, Train IOU: 0.2082, Val IOU: 0.6682
+[2020-09-18 08:33:59] Epoch: 118, LR: 0.00000100, Train IOU: 0.2004, Val IOU: 0.6682
+[2020-09-18 08:34:34] Epoch: 119, LR: 0.00000100, Train IOU: 0.2170, Val IOU: 0.6735
+[2020-09-18 08:35:08] Epoch: 120, LR: 0.00000100, Train IOU: 0.2174, Val IOU: 0.6690
+
+------------------------------------------------
+Best Validation IOU 0.6766 at epoch 75
+------------------------------------------------
+

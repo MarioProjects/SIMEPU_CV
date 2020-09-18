@@ -142,7 +142,7 @@ print("Best Validation {} {:.4f} at epoch {}".format(
 )
 print("------------------------------------------------\n")
 
-if not args.binary_problem:
+if not args.binary_problem and not args.segmentation_problem:
     print("---------------- Train Analysis ----------------")
     if args.damaged_problem:
         train_analysis(model, val_loader, args.output_dir, LABELS2TARGETSDAMAGED, TARGETS2LABELSDAMAGED, 6)
