@@ -13,6 +13,7 @@
   "binary_problem": false,
   "damaged_problem": false,
   "segmentation_problem": false,
+  "masks_overlays": 0,
   "cutmix": false,
   "selected_class": "",
   "img_size": 150,

@@ -5,8 +5,8 @@ from time import gmtime, strftime
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
+from cutmix.utils import CutMixCrossEntropyLoss
 
 # ---- My utils ----
 from models import *
@@ -15,48 +15,14 @@ from utils.utils_data import *
 from utils.utils_training import *
 from utils.data_augmentation import get_augmentations
 
-from cutmix.cutmix import CutMix
-from cutmix.utils import CutMixCrossEntropyLoss
-
 
 train_aug, val_aug, train_albumentation, val_albumentation = get_augmentations(
     args.data_augmentation, args.pretrained, args.img_size, args.crop_size, args.segmentation_problem
 )
 
-train_dataset = SIMEPU_Dataset(data_partition='train', transform=train_aug,
-                               validation_size=args.validation_size, binary_problem=args.binary_problem,
-                               damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
-                               augmentation=train_albumentation, selected_class=args.selected_class)
-
-num_classes = train_dataset.num_classes
-
-if args.cutmix:
-    train_dataset = CutMix(
-        train_dataset, num_class=num_classes if not args.binary_problem else 2, beta=1.0, prob=0.65, num_mix=1
-    )
-
-val_dataset = SIMEPU_Dataset(data_partition='validation', transform=val_aug,
-                             validation_size=args.validation_size, binary_problem=args.binary_problem,
-                             damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
-                             augmentation=val_albumentation, selected_class=args.selected_class)
-
-if not args.segmentation_problem:
-    train_loader = DataLoader(
-        train_dataset, batch_size=args.batch_size, pin_memory=True,
-        shuffle=True,
-    )
-    val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
-else:
-    train_loader = DataLoader(
-        train_dataset, batch_size=args.batch_size, pin_memory=True,
-        shuffle=True, collate_fn=train_dataset.segmentation_collate
-    )
-    val_loader = DataLoader(
-        val_dataset, batch_size=args.batch_size, pin_memory=True,
-        shuffle=False, collate_fn=val_dataset.segmentation_collate
-    )
-
-
+train_dataset, train_loader, val_dataset, val_loader, num_classes = dataset_selector(
+    train_aug, train_albumentation, val_aug, val_albumentation, args
+)
 
 print("Hay {} clases!".format(num_classes))
 print("[Train] {} muestras".format(len(train_dataset)))

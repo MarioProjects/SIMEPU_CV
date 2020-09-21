@@ -1,6 +1,7 @@
 import os
 import pickle
 import math
+from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtrans
 import numpy as np
@@ -9,8 +10,10 @@ import torch
 import torch.nn as nn
 import matplotlib.gridspec as gridspec
 import albumentations
+from cutmix.cutmix import CutMix
 
 from utils.metrics import jaccard_coef
+from utils.utils_data import SIMEPU_Dataset
 
 
 def get_optimizer(optmizer_type, model, lr=0.1):
@@ -320,3 +323,93 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
         t.set_transform(t.get_transform() + trans)
 
     plt.savefig("{}/confusion_matrix.png".format(output_dir), bbox_inches="tight")
+
+
+def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation, args):
+
+    if args.segmentation_problem and args.selected_class == "Grietas":
+
+        train_dataset_longitudinales = SIMEPU_Dataset(
+            data_partition='train', transform=train_aug, validation_size=args.validation_size,
+            binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
+            augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
+            selected_class="Grietas longitudinales"
+        )
+
+        train_albumentation.append(albumentations.Rotate(limit=(90, 90), p=1))
+        train_dataset_transversales = SIMEPU_Dataset(
+            data_partition='train', transform=train_aug, validation_size=args.validation_size,
+            binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
+            augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
+            selected_class="Grietas transversales"
+        )
+
+        train_dataset = torch.utils.data.ConcatDataset([train_dataset_longitudinales, train_dataset_transversales])
+
+        num_classes = 1
+
+        val_dataset_longitudinales = SIMEPU_Dataset(
+            data_partition='validation', transform=val_aug,
+            validation_size=args.validation_size, binary_problem=args.binary_problem,
+            damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
+            augmentation=val_albumentation, selected_class="Grietas longitudinales"
+        )
+
+        val_albumentation.append(albumentations.Rotate(limit=(90, 90), p=1))
+        val_dataset_transversales = SIMEPU_Dataset(
+            data_partition='validation', transform=val_aug,
+            validation_size=args.validation_size, binary_problem=args.binary_problem,
+            damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
+            augmentation=val_albumentation, selected_class="Grietas transversales"
+        )
+
+        val_dataset = torch.utils.data.ConcatDataset([val_dataset_longitudinales, val_dataset_transversales])
+
+        train_loader = DataLoader(
+            train_dataset, batch_size=args.batch_size, pin_memory=True,
+            shuffle=True, collate_fn=train_dataset_longitudinales.segmentation_collate
+        )
+        val_loader = DataLoader(
+            val_dataset, batch_size=args.batch_size, pin_memory=True,
+            shuffle=False, collate_fn=val_dataset_longitudinales.segmentation_collate
+        )
+
+    else:
+        train_dataset = SIMEPU_Dataset(
+            data_partition='train', transform=train_aug, validation_size=args.validation_size,
+            binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
+            augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
+            selected_class=args.selected_class
+        )
+
+        num_classes = train_dataset.num_classes
+
+        if args.cutmix:
+            train_dataset = CutMix(
+                train_dataset, num_class=num_classes if not args.binary_problem else 2, beta=1.0, prob=0.65, num_mix=1
+            )
+
+        val_dataset = SIMEPU_Dataset(
+            data_partition='validation', transform=val_aug,
+            validation_size=args.validation_size, binary_problem=args.binary_problem,
+            damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
+            augmentation=val_albumentation, selected_class=args.selected_class
+        )
+
+        if not args.segmentation_problem:
+            train_loader = DataLoader(
+                train_dataset, batch_size=args.batch_size, pin_memory=True,
+                shuffle=True,
+            )
+            val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
+        else:
+            train_loader = DataLoader(
+                train_dataset, batch_size=args.batch_size, pin_memory=True,
+                shuffle=True, collate_fn=train_dataset.segmentation_collate
+            )
+            val_loader = DataLoader(
+                val_dataset, batch_size=args.batch_size, pin_memory=True,
+                shuffle=False, collate_fn=val_dataset.segmentation_collate
+            )
+
+    return train_dataset, train_loader, val_dataset, val_loader, num_classes

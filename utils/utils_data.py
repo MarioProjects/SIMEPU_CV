@@ -86,7 +86,7 @@ class SIMEPU_Dataset(data.Dataset):
          - get_path: Si queremos devolver el path de la imagen (True) o no (False), tipicamente depuracion
          - dano_no_dano: Para separa las muestras en daño / no daño
         """
-        if data_partition not in ["", "train", "validation"]:
+        if data_partition not in ["", "train", "validation", "segmentation_test"]:
             assert False, "Wrong data partition: {}".format(data_partition)
         if binary_problem and damaged_problem:
             assert False, "Please not binary_problem and damaged_problem at same time"
@@ -107,13 +107,19 @@ class SIMEPU_Dataset(data.Dataset):
 
         if segmentation_problem:
             if selected_class == "": assert False, "You need select a class for segmentation problem"
-            masks_paths = os.listdir(os.path.join(SIMEPU_DATA_PATH, "Mascaras", selected_class))
+            if os.path.isdir(os.path.join(SIMEPU_DATA_PATH, "Mascaras", selected_class)):
+                masks_paths = os.listdir(os.path.join(SIMEPU_DATA_PATH, "Mascaras", selected_class))
+            else: 
+                masks_paths = []
             for index, row in data_paths.iterrows():
-                if row['path'].split("/")[1] not in masks_paths:
+                if data_partition == "segmentation_test": # Aquellas imagenes que no tenemos etiquetadas
+                    if row['path'].split("/")[1] in masks_paths:
+                        data_paths.drop(index, inplace=True)
+                elif row['path'].split("/")[1] not in masks_paths:
                     data_paths.drop(index, inplace=True)
 
         np.random.seed(seed=seed)
-        if data_partition == "":
+        if data_partition == "" or data_partition == "segmentation_test":
             self.data_paths = data_paths
         else:
             msk = np.random.rand(len(data_paths)) < validation_size
@@ -142,18 +148,25 @@ class SIMEPU_Dataset(data.Dataset):
         if self.transform is not None:
             img = transforms.Compose(self.transform)(img)
         elif self.augmentation is not None:
-            mask_path = os.path.join(SIMEPU_DATA_PATH, "Mascaras", self.data_paths.iloc[idx]["path"])
-            mask = np.where(io.imread(mask_path)[..., 0] > 0.5, 1, 0).astype(np.int32)
-            original_mask = copy.deepcopy(mask)
-            img, mask = apply_augmentations(img, albumentations.Compose(self.augmentation), None, mask)
-            img = apply_normalization(img, "reescale")
-            img = torch.from_numpy(img.transpose(2, 0, 1)).float()  # Transpose == Channels first
-            mask = torch.from_numpy(np.expand_dims(mask, 0)).float()
+            if self.data_partition == "segmentation_test":
+                img, mask = apply_augmentations(img, albumentations.Compose(self.augmentation), None, None)
+                img = apply_normalization(img, "reescale")
+                img = torch.from_numpy(img.transpose(2, 0, 1)).float()  # Transpose == Channels first
+            else:
+                mask_path = os.path.join(SIMEPU_DATA_PATH, "Mascaras", self.data_paths.iloc[idx]["path"])
+                mask = np.where(io.imread(mask_path)[..., 0] > 0.5, 1, 0).astype(np.int32)
+                original_mask = copy.deepcopy(mask)
+                img, mask = apply_augmentations(img, albumentations.Compose(self.augmentation), None, mask)
+                img = apply_normalization(img, "reescale")
+                img = torch.from_numpy(img.transpose(2, 0, 1)).float()  # Transpose == Channels first
+                mask = torch.from_numpy(np.expand_dims(mask, 0)).float()
 
         res = [img, target]
 
-        if self.segmentation_problem:
+        if self.segmentation_problem and self.data_partition != "segmentation_test":
             res = res + [mask, original_img, original_mask]
+        if self.data_partition == "segmentation_test":
+            res = res + [original_img]
 
         if self.get_path:
             res.append(img_path)
