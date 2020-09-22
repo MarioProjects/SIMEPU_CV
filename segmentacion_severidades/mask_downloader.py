@@ -21,7 +21,7 @@ if os.environ.get('SIMEPU_DATA') is not None:
 
 download = input("Quieres descargar las  mascaras de las grietas longitudinales? (si/no):")
 if download == "si":
-    with open("datos/longitudinales-2020-09-17-980.json") as json_file:
+    with open("datos/final/longitudinales-2020-09-17-980.json") as json_file:
         datos_longitudinales = json.load(json_file)
 
     save_path = os.path.join(SIMEPU_DATA_PATH, "Mascaras", "Grietas longitudinales")
@@ -31,7 +31,7 @@ if download == "si":
         if len(item["Label"]):
             nombre = item["External ID"]
             mascara_url = item["Label"]["objects"][0]["instanceURI"]
-
+            print(mascara_url)
             response = requests.get(mascara_url)
             img = Image.open(BytesIO(response.content))
 
@@ -44,7 +44,7 @@ if download == "si":
 
 download = input("Quieres descargar las  mascaras de las grietas transversales? (si/no):")
 if download == "si":
-    with open("datos/transversales-2020-09-10-451.json") as json_file:
+    with open("datos/final/transversales-2020-09-21-584.json") as json_file:
         datos_transversales = json.load(json_file)
 
     save_path = os.path.join(SIMEPU_DATA_PATH, "Mascaras", "Grietas transversales")
@@ -67,7 +67,7 @@ if download == "si":
 
 download = input("Quieres descargar las mascaras de los huecos? (si/no):")
 if download == "si":
-    with open("datos/huecos-2020-09-17-494.json") as json_file:
+    with open("datos/final/huecos-2020-09-21-494.json") as json_file:
         datos_huecos = json.load(json_file)
         
     save_path = os.path.join(SIMEPU_DATA_PATH, "Mascaras", "Huecos")
@@ -89,7 +89,7 @@ if download == "si":
 
 download = input("Quieres descargar las mascaras de los parcheos? (si/no):")
 if download == "si":
-    with open("datos/parcheos-2020-09-11-316.json") as json_file:
+    with open("datos/final/parcheo-2020-09-21-386.json") as json_file:
         datos_parcheos = json.load(json_file)
         
     save_path = os.path.join(SIMEPU_DATA_PATH, "Mascaras", "Parcheo")
