@@ -156,6 +156,9 @@ class SIMEPU_Dataset(data.Dataset):
                 mask_path = os.path.join(SIMEPU_DATA_PATH, "Mascaras", self.data_paths.iloc[idx]["path"])
                 mask = np.where(io.imread(mask_path)[..., 0] > 0.5, 1, 0).astype(np.int32)
                 original_mask = copy.deepcopy(mask)
+                if self.selected_class == "Grietas" and "transversales" in img_path:
+                    # Debemos voltear la mascara de grietas transversales ya que la imagen es rotada
+                    original_mask = albumentations.Rotate(limit=(90, 90), p=1)(image=original_mask)["image"]
                 img, mask = apply_augmentations(img, albumentations.Compose(self.augmentation), None, mask)
                 img = apply_normalization(img, "reescale")
                 img = torch.from_numpy(img.transpose(2, 0, 1)).float()  # Transpose == Channels first

@@ -49,7 +49,7 @@ def get_augmentations(data_augmentation, pretrained, img_size, crop_size, segmen
         ]
 
         val_albumentation = [
-            # All images are 512x512 pixels
+            albumentations.Resize(img_size, img_size),
         ]
 
     return train_aug, val_aug, train_albumentation, val_albumentation
