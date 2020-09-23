@@ -77,7 +77,8 @@ def apply_normalization(image, normalization_type):
 
 class SIMEPU_Dataset(data.Dataset):
     def __init__(self, data_partition='', transform=None, augmentation=None, validation_size=0.15, selected_class="",
-                 get_path=False, binary_problem=False, damaged_problem=False, segmentation_problem=False, seed=42):
+                 get_path=False, binary_problem=False, damaged_problem=False, segmentation_problem=False,
+                 rotate=False, seed=42):
         """
           - data_partition:
              -> Si esta vacio ("") devuelve todas las muestras del TRAIN set
@@ -136,6 +137,8 @@ class SIMEPU_Dataset(data.Dataset):
         self.augmentation = augmentation
         self.get_path = get_path or segmentation_problem
         self.segmentation_problem = segmentation_problem
+        self.selected_class = selected_class
+        self.rotate = rotate
 
     def __getitem__(self, idx):
 
@@ -156,9 +159,10 @@ class SIMEPU_Dataset(data.Dataset):
                 mask_path = os.path.join(SIMEPU_DATA_PATH, "Mascaras", self.data_paths.iloc[idx]["path"])
                 mask = np.where(io.imread(mask_path)[..., 0] > 0.5, 1, 0).astype(np.int32)
                 original_mask = copy.deepcopy(mask)
-                if self.selected_class == "Grietas" and "transversales" in img_path:
+                if self.rotate:
                     # Debemos voltear la mascara de grietas transversales ya que la imagen es rotada
-                    original_mask = albumentations.Rotate(limit=(90, 90), p=1)(image=original_mask)["image"]
+                    original_img = albumentations.Rotate(limit=(90, 90), p=1)(image=original_img)["image"]
+                    original_mask = albumentations.Rotate(limit=(90, 90), p=1)(image=original_mask.astype(np.uint8))["image"]
                 img, mask = apply_augmentations(img, albumentations.Compose(self.augmentation), None, mask)
                 img = apply_normalization(img, "reescale")
                 img = torch.from_numpy(img.transpose(2, 0, 1)).float()  # Transpose == Channels first

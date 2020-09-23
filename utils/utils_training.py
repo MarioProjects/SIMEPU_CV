@@ -341,7 +341,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
             data_partition='train', transform=train_aug, validation_size=args.validation_size,
             binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
             augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
-            selected_class="Grietas transversales"
+            selected_class="Grietas transversales", rotate=True
         )
 
         train_dataset = torch.utils.data.ConcatDataset([train_dataset_longitudinales, train_dataset_transversales])
@@ -360,7 +360,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
             data_partition='validation', transform=val_aug,
             validation_size=args.validation_size, binary_problem=args.binary_problem,
             damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
-            augmentation=val_albumentation, selected_class="Grietas transversales"
+            augmentation=val_albumentation, selected_class="Grietas transversales", rotate=True
         )
 
         val_dataset = torch.utils.data.ConcatDataset([val_dataset_longitudinales, val_dataset_transversales])
