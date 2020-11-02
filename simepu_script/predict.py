@@ -138,11 +138,12 @@ batch = torch.unsqueeze(img_t, 0)
 num_classes = 1
 model = ExtraSmallUNet(n_channels=3, n_classes=num_classes)
 
+overlay_mask_info = ""
 if class_indx == 0:  # Parcheo
     mask = load_predict_segmentation(model, args.parcheo_segmentation_checkpoint, img, batch, DEVICE)
     pixeles_parcheo = mask.sum()
     porcentaje_parcheo = (pixeles_parcheo / (mask.shape[0] * mask.shape[1])) * 100
-
+    overlay_mask_info = "- {:.2f}%".format(porcentaje_parcheo)
     print(f"El parcheo esta compuesto por {pixeles_parcheo} pixeles, el {porcentaje_parcheo:.2f}% de la imagen")
 
 if class_indx == 1:  # Transversales
@@ -156,14 +157,14 @@ if class_indx == 1:  # Transversales
 
     anchura = abs(first_row_index - last_row_index)
     longitud = abs(first_column_index - last_column_index)
-
+    overlay_mask_info = f" - Longitud {longitud} y Anchura {anchura}"
     print(f"La grieta tiene una longitud de {longitud} pixeles y abarca {anchura} pixeles de ancho")
 
 if class_indx == 2:  # Huecos
     mask = load_predict_segmentation(model, args.huecos_segmentation_checkpoint, img, batch, DEVICE)
     pixeles_hueco = mask.sum()
     porcentaje_hueco = (pixeles_hueco / (mask.shape[0] * mask.shape[1])) * 100
-
+    overlay_mask_info = "- {:.2f}%".format(porcentaje_hueco)
     print(f"El hueco esta compuesto por {pixeles_hueco} pixeles, el {porcentaje_hueco:.2f}% de la imagen")
 
 
@@ -179,7 +180,7 @@ if class_indx == 3:  # Longitudinales
 
     longitud = abs(first_row_index - last_row_index)
     anchura = abs(first_column_index - last_column_index)
-
+    overlay_mask_info = f" - Longitud {longitud} y Anchura {anchura}"
     print(f"La grieta tiene una longitud de {longitud} pixeles y abarca {anchura} pixeles de ancho")
 
 if class_indx == 5:  # Grietas en forma de piel de cocodrilo
@@ -189,7 +190,7 @@ if class_indx == 5:  # Grietas en forma de piel de cocodrilo
 
     pixeles_cocodrilo = mask.sum()
     porcentaje_cocodrilo = (pixeles_cocodrilo / (mask.shape[0] * mask.shape[1])) * 100
-
+    overlay_mask_info = "- {:.2f}%".format(porcentaje_cocodrilo)
     print(f"El cocodrilo esta compuesto por {pixeles_cocodrilo} pixeles, el {porcentaje_cocodrilo:.2f}% de la imagen")
 
 if args.get_overlay:
@@ -206,6 +207,6 @@ if args.get_overlay:
     masked = np.ma.masked_where(mask == 0, mask)  # Overlay mascara predecida
     ax3.imshow(img, cmap="gray")
     ax3.imshow(masked, 'jet', interpolation='bilinear', alpha=0.35)
-    ax3.set_title("Overlay Predicho")
-
-    plt.savefig("overlay_segmentacion.png")
+    ax3.set_title(f"Overlay Predicho{overlay_mask_info}")
+    os.makedirs("overlays", exist_ok=True)
+    plt.savefig(f"overlays/{os.path.splitext(os.path.basename(args.img_sample))[0]}_overlay_segmentacion.png")
