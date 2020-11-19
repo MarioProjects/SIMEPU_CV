@@ -24,15 +24,14 @@ train_dataset, train_loader, val_dataset, val_loader, num_classes = dataset_sele
     train_aug, train_albumentation, val_aug, val_albumentation, args
 )
 
-print("Hay {} clases!".format(num_classes))
-print("[Train] {} muestras".format(len(train_dataset)))
-print("[Validacion] {} muestras".format(len(val_dataset)))
+print("There are {} classes!".format(num_classes))
+print("[Train fold] {} samples".format(len(train_dataset)))
+print("[Validation fold] {} samples".format(len(val_dataset)))
 
 model = model_selector(args.model_name, num_classes=num_classes, pretrained=args.pretrained)
 model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
 
-progress_train_loss, progress_val_loss, = np.array([]), np.array([])
-progress_train_metric, progress_val_metric = np.array([]), np.array([])
+max_metric, max_metric_epoch = 0, 0
 best_model = None
 
 # if args.binary_problem and args.cutmix:
@@ -60,11 +59,6 @@ for argument in args.__dict__:
     print("{}: {}".format(argument, args.__dict__[argument]))
 writer = SummaryWriter(log_dir='results/logs/{}'.format(args.output_dir[args.output_dir.find("results/") + 8:-1]))
 
-if args.segmentation_problem:
-    metric_str = "IOU"
-else:
-    metric_str = "Accuracy"
-
 print("\n-------------- START TRAINING --------------")
 for epoch in range(args.epochs):
 
@@ -72,30 +66,35 @@ for epoch in range(args.epochs):
         train_loader, model, criterion, optimizer,
         binary_problem=args.binary_problem, segmentation_problem=args.segmentation_problem, cutmix=args.cutmix
     )
-    current_val_loss, current_val_metric = val_step(
+    current_val_loss, current_val_metric, val_precision_score, val_recall_score, val_f1_score, val_balanced_accuracy_score, val_dice = val_step(
         val_loader, model, criterion, args.binary_problem, args.segmentation_problem,
         selected_class=args.selected_class, masks_overlays=args.masks_overlays, epoch=(epoch+1), lr=args.learning_rate
     )
 
-    progress_train_loss = np.append(progress_train_loss, current_train_loss)
-    progress_val_loss = np.append(progress_val_loss, current_val_loss)
-    progress_train_metric = np.append(progress_train_metric, current_train_metric)
-    progress_val_metric = np.append(progress_val_metric, current_val_metric)
-
-    save_progress(
-        epoch, progress_train_loss, progress_val_loss,
-        progress_train_metric, progress_val_metric, model, writer, args.output_dir
-    )
-
-    if current_val_metric >= progress_val_metric.max():
+    if current_val_metric >= max_metric:
         torch.save(model.state_dict(), args.output_dir + "/model_best_metric.pt")
+        max_metric = current_val_metric
+        max_metric_epoch = epoch
 
-    # Print training logs
-    current_time = "[" + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + "]"
-    print("{} Epoch: {}, LR: {:.8f}, Train {}: {:.4f}, Val {}: {:.4f}".format(
-        current_time, epoch + 1, get_current_lr(optimizer),
-        metric_str, current_train_metric, metric_str, current_val_metric
-    ))
+    # -- Print training logs --
+    if args.binary_problem:
+        current_time = "[" + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + "]"
+        print("{} Epoch: {}, LR: {:.8f}, Train Accuracy: {:.4f}, Val Accuracy: {:.4f}, Val Precision: {:.4f}, Val Recall: {:.4f}, Val F1: {:.4f}".format(
+            current_time, epoch + 1, get_current_lr(optimizer),
+            current_train_metric, current_val_metric, val_precision_score, val_recall_score, val_f1_score
+        ))
+    elif args.segmentation_problem:
+        current_time = "[" + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + "]"
+        print("{} Epoch: {}, LR: {:.8f}, Train IOU: {:.4f}, Val IOU: {:.4f}, Val DICE: {:.4f}".format(
+            current_time, epoch + 1, get_current_lr(optimizer),
+            current_train_metric, current_val_metric, val_dice
+        ))
+    else:  # Damage classification case
+        current_time = "[" + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + "]"
+        print("{} Epoch: {}, LR: {:.8f}, Train Accuracy: {:.4f}, Val Accuracy: {:.4f}, Val Balanced Accuracy: {:.4f}".format(
+            current_time, epoch + 1, get_current_lr(optimizer),
+            current_train_metric, current_val_metric, val_balanced_accuracy_score
+        ))
 
     if args.steps_scheduler:
         scheduler.step()
@@ -104,7 +103,7 @@ for epoch in range(args.epochs):
 
 print("\n------------------------------------------------")
 print("Best Validation {} {:.4f} at epoch {}".format(
-    metric_str, progress_val_metric.max(), progress_val_metric.argmax() + 1)
+    "IOU" if args.segmentation_problem else "Accuracy", max_metric, max_metric_epoch)
 )
 print("------------------------------------------------\n")
 

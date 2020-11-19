@@ -11,8 +11,9 @@ import torch.nn as nn
 import matplotlib.gridspec as gridspec
 import albumentations
 from cutmix.cutmix import CutMix
+from sklearn.metrics import precision_score, recall_score, f1_score, balanced_accuracy_score
 
-from utils.metrics import jaccard_coef
+from utils.metrics import jaccard_coef, dice_coef
 from utils.utils_data import SIMEPU_Dataset
 
 
@@ -192,6 +193,7 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
     model.eval()
     if not segmentation_problem:
         val_loss, correct, total = 0, 0, 0
+        y_true, y_pred = [], []
         with torch.no_grad():
             for batch_idx, (inputs, targets) in enumerate(val_loader):
                 if binary_problem:
@@ -211,16 +213,24 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
                     loss = criterion(outputs, targets)
 
                     val_loss += loss.item()
-                    _, predicted = outputs.max(1)
+                    _, outputs = outputs.max(1)
                     total += targets.size(0)
-                    correct += predicted.eq(targets).sum().item()
+                    correct += outputs.eq(targets).sum().item()
+
+                y_true.append(outputs)
+                y_pred.append(targets)
 
             val_loss = (val_loss / (batch_idx + 1))
             val_accuracy = 100. * correct / total
-        return val_loss, val_accuracy
+            val_precision_score = precision_score(y_true, y_pred)
+            val_recall_score = recall_score(y_true, y_pred)
+            val_f1_score = f1_score(y_true, y_pred)
+            val_balanced_accuracy_score = balanced_accuracy_score(y_true, y_pred)
+        # To generalize, as segmentation same number of outputs
+        return val_loss, val_accuracy, val_precision_score, val_recall_score, val_f1_score, val_balanced_accuracy_score, _
 
     else:  # Segmentation problem
-        val_loss, val_iou, generated_masks, = 0, [], 0
+        val_loss, val_iou, val_dice, generated_masks, = 0, [], [], 0
         with torch.no_grad():
             for batch_idx, (inputs, _, masks, original_imgs, original_masks, inputs_names) in enumerate(val_loader):
                 inputs, masks = inputs.cuda(), masks.cuda()
@@ -239,6 +249,8 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
 
                     tmp_iou = jaccard_coef(binary_ground_truth, binary_pred_mask)
                     val_iou.append(tmp_iou)
+                    tmp_dice = dice_coef(binary_ground_truth, binary_pred_mask)
+                    val_dice.append(tmp_dice)
 
                     if generated_masks < masks_overlays:
                         save_overlays(
@@ -251,7 +263,8 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
                         generated_masks += 1
 
             val_loss = (val_loss / (batch_idx + 1))
-        return val_loss, np.array(val_iou).mean()
+        # To generalize, as classification same number of outputs
+        return val_loss, np.array(val_iou).mean(), _, _, _, _, np.array(val_dice).mean()
 
 
 def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS, nb_classes):
@@ -330,7 +343,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
     if args.segmentation_problem and args.selected_class == "Grietas":
 
         train_dataset_longitudinales = SIMEPU_Dataset(
-            data_partition='train', transform=train_aug, validation_size=args.validation_size,
+            data_partition='train', transform=train_aug, fold=args.fold,
             binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
             augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
             selected_class="Grietas longitudinales"
@@ -338,7 +351,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
 
         train_albumentation.append(albumentations.Rotate(limit=(90, 90), p=1))
         train_dataset_transversales = SIMEPU_Dataset(
-            data_partition='train', transform=train_aug, validation_size=args.validation_size,
+            data_partition='train', transform=train_aug, fold=args.fold,
             binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
             augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
             selected_class="Grietas transversales", rotate=True
@@ -350,7 +363,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
 
         val_dataset_longitudinales = SIMEPU_Dataset(
             data_partition='validation', transform=val_aug,
-            validation_size=args.validation_size, binary_problem=args.binary_problem,
+            fold=args.fold, binary_problem=args.binary_problem,
             damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
             augmentation=val_albumentation, selected_class="Grietas longitudinales"
         )
@@ -358,7 +371,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
         val_albumentation.append(albumentations.Rotate(limit=(90, 90), p=1))
         val_dataset_transversales = SIMEPU_Dataset(
             data_partition='validation', transform=val_aug,
-            validation_size=args.validation_size, binary_problem=args.binary_problem,
+            fold=args.fold, binary_problem=args.binary_problem,
             damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
             augmentation=val_albumentation, selected_class="Grietas transversales", rotate=True
         )
@@ -376,7 +389,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
 
     else:
         train_dataset = SIMEPU_Dataset(
-            data_partition='train', transform=train_aug, validation_size=args.validation_size,
+            data_partition='train', transform=train_aug, fold=args.fold,
             binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
             augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
             selected_class=args.selected_class
@@ -391,7 +404,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
 
         val_dataset = SIMEPU_Dataset(
             data_partition='validation', transform=val_aug,
-            validation_size=args.validation_size, binary_problem=args.binary_problem,
+            fold=args.fold, binary_problem=args.binary_problem,
             damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
             augmentation=val_albumentation, selected_class=args.selected_class
         )

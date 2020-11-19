@@ -47,7 +47,7 @@ parser.add_argument('--crop_size', type=int, default=128, help='Center crop squa
 
 parser.add_argument('--model_name', type=str, default='resnet18', help='Model name for training')
 parser.add_argument('--pretrained', action='store_true', help='Use Imagenet Pretrained model')
-parser.add_argument('--validation_size', type=float, default=0.15, help='Validation set size (Over 1)')
+parser.add_argument('--fold', type=int, default=0, help='Fold for cross validation from 0 to 4')
 
 parser.add_argument('--output_dir', type=str, default='results/new_logs+train_info',
                     help='Where progress will be saved')

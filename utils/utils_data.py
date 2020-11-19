@@ -9,6 +9,7 @@ import copy
 from torch.utils import data
 from torch.utils.data import DataLoader
 from torchvision import transforms
+from sklearn.model_selection import KFold
 
 # echo "export SIMEPU_DATA='/home/maparla/DeepLearning/Datasets/SIMEPU'" >> ~/.bashrc
 if os.environ.get('SIMEPU_DATA') is not None:
@@ -76,17 +77,18 @@ def apply_normalization(image, normalization_type):
 
 
 class SIMEPU_Dataset(data.Dataset):
-    def __init__(self, data_partition='', transform=None, augmentation=None, validation_size=0.15, selected_class="",
+    def __init__(self, data_partition='', transform=None, augmentation=None, fold=0, selected_class="",
                  get_path=False, binary_problem=False, damaged_problem=False, segmentation_problem=False,
                  rotate=False, seed=42):
         """
           - data_partition:
-             -> Si esta vacio ("") devuelve todas las muestras del TRAIN set
-             -> Si es "train" devuelve '1-validation_size' muestras del TRAIN set
-             -> Si es "validation" devuelve 'validation_size' muestras del TRAIN set
-         - get_path: Si queremos devolver el path de la imagen (True) o no (False), tipicamente depuracion
-         - dano_no_dano: Para separa las muestras en daño / no daño
+             -> If empty ("") returns all samples from TRAIN set
+             -> If "train" returns corresponding 'fold' TRAIN set
+             -> If "validation" returns corresponding  'fold' VALIDATION set
+         - get_path: If we want to return image path (True) or not (False), debug purposes
         """
+        if (fold+1) > 5:
+            assert False, f"Only 5 folds used on training (0,1,2,3,4), yours '{fold}'"
         if data_partition not in ["", "train", "validation", "segmentation_test"]:
             assert False, "Wrong data partition: {}".format(data_partition)
         if binary_problem and damaged_problem:
@@ -107,29 +109,34 @@ class SIMEPU_Dataset(data.Dataset):
             self.num_classes = 1
 
         if segmentation_problem:
-            if selected_class == "": assert False, "You need select a class for segmentation problem"
+            if selected_class == "":
+                assert False, "You need select a class for segmentation problem"
             if os.path.isdir(os.path.join(SIMEPU_DATA_PATH, "Mascaras", selected_class)):
                 masks_paths = os.listdir(os.path.join(SIMEPU_DATA_PATH, "Mascaras", selected_class))
             else: 
                 masks_paths = []
             for index, row in data_paths.iterrows():
-                if data_partition == "segmentation_test": # Aquellas imagenes que no tenemos etiquetadas
+                if data_partition == "segmentation_test":  # Not labeled images
                     if row['path'].split("/")[1] in masks_paths:
                         data_paths.drop(index, inplace=True)
                 elif row['path'].split("/")[1] not in masks_paths:
                     data_paths.drop(index, inplace=True)
 
-        np.random.seed(seed=seed)
         if data_partition == "" or data_partition == "segmentation_test":
             self.data_paths = data_paths
         else:
-            msk = np.random.rand(len(data_paths)) < validation_size
-            if data_partition == "train":
-                self.data_paths = data_paths[~msk]
-            elif data_partition == "validation":
-                self.data_paths = data_paths[msk]
-            else:
-                assert False, "Wrong data partition: {}".format(data_partition)
+            np.random.seed(seed)
+            np.random.shuffle(data_paths)
+            kf = KFold(n_splits=5, random_state=seed, shuffle=True)
+            for fold_number, (train_index, val_index) in enumerate(kf.split(data_paths)):
+                if fold_number == fold:
+                    if data_partition == "train":
+                        self.data_paths = data_paths.iloc[train_index]
+                    elif data_partition == "validation":
+                        self.data_paths = data_paths.iloc[val_index]
+                    else:
+                        assert False, "Wrong data partition: {}".format(data_partition)
+                    break
 
         self.data_paths = self.data_paths.reset_index(drop=True)
         self.data_partition = data_partition
