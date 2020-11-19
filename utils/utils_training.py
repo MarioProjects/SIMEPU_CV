@@ -10,7 +10,6 @@ import torch
 import torch.nn as nn
 import matplotlib.gridspec as gridspec
 import albumentations
-from cutmix.cutmix import CutMix
 from sklearn.metrics import precision_score, recall_score, f1_score, balanced_accuracy_score
 
 from utils.metrics import jaccard_coef, dice_coef
@@ -134,8 +133,7 @@ def reshape_masks(ndarray, to_shape):
     return ndarray  # reshaped
 
 
-def train_step(train_loader, model, criterion, optimizer, binary_problem=False, segmentation_problem=False,
-               cutmix=False):
+def train_step(train_loader, model, criterion, optimizer, binary_problem=False, segmentation_problem=False):
     model.train()
     if not segmentation_problem:
         train_loss, correct, total = 0, 0, 0
@@ -143,7 +141,7 @@ def train_step(train_loader, model, criterion, optimizer, binary_problem=False, 
             inputs, targets = inputs.cuda(), targets.cuda()
             optimizer.zero_grad()
             outputs = model(inputs)
-            if binary_problem and not cutmix:
+            if binary_problem:
                 targets = targets.unsqueeze(1).type_as(outputs)
             loss = criterion(outputs, targets)
             loss.backward()
@@ -152,10 +150,7 @@ def train_step(train_loader, model, criterion, optimizer, binary_problem=False, 
             train_loss += loss.item()
             _, predicted = outputs.max(1)
             total += targets.size(0)
-            if cutmix:  # Using cutmix transforms targets to one hot so we have to take it right
-                correct += predicted.eq(torch.argmax(targets, 1)).sum().item()
-            else:
-                correct += predicted.eq(targets).sum().item()
+            correct += predicted.eq(targets).sum().item()
 
         train_loss = (train_loss / (batch_idx + 1))
         train_accuracy = 100. * correct / total
@@ -396,11 +391,6 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
         )
 
         num_classes = train_dataset.num_classes
-
-        if args.cutmix:
-            train_dataset = CutMix(
-                train_dataset, num_class=num_classes if not args.binary_problem else 2, beta=1.0, prob=0.65, num_mix=1
-            )
 
         val_dataset = SIMEPU_Dataset(
             data_partition='validation', transform=val_aug,

@@ -37,9 +37,6 @@ parser.add_argument('--damaged_problem', action='store_true', help='Only damaged
 parser.add_argument('--segmentation_problem', action='store_true', help='Segmentation problem.')
 parser.add_argument('--masks_overlays', type=int, default=0, help='Save overlays each epoch on segmentation problem')
 
-# https://github.com/ildoonet/cutmix
-parser.add_argument('--cutmix', action='store_true', help='Use cutmix Data Augmentation?')
-
 parser.add_argument('--selected_class', type=str, default='', help='Train specific class')
 
 parser.add_argument('--img_size', type=int, default=150, help='Final img squared size')

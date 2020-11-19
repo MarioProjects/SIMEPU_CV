@@ -6,7 +6,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
-from cutmix.utils import CutMixCrossEntropyLoss
 
 # ---- My utils ----
 from models import *
@@ -34,12 +33,7 @@ model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count())
 max_metric, max_metric_epoch = 0, 0
 best_model = None
 
-# if args.binary_problem and args.cutmix:
-#     assert False, "Not implemented binary problem with cutmix!"
-
-if args.cutmix:
-    criterion = CutMixCrossEntropyLoss(True)
-elif args.binary_problem or args.segmentation_problem:
+if args.binary_problem or args.segmentation_problem:
     criterion = nn.BCEWithLogitsLoss()
 elif args.weighted_loss:
     print("Loaded Class weights!")
@@ -64,7 +58,7 @@ for epoch in range(args.epochs):
 
     current_train_loss, current_train_metric = train_step(
         train_loader, model, criterion, optimizer,
-        binary_problem=args.binary_problem, segmentation_problem=args.segmentation_problem, cutmix=args.cutmix
+        binary_problem=args.binary_problem, segmentation_problem=args.segmentation_problem
     )
     current_val_loss, current_val_metric, val_precision_score, val_recall_score, val_f1_score, val_balanced_accuracy_score, val_dice = val_step(
         val_loader, model, criterion, args.binary_problem, args.segmentation_problem,
