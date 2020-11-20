@@ -125,8 +125,6 @@ class SIMEPU_Dataset(data.Dataset):
         if data_partition == "" or data_partition == "segmentation_test":
             self.data_paths = data_paths
         else:
-            np.random.seed(seed)
-            np.random.shuffle(data_paths)
             kf = KFold(n_splits=5, random_state=seed, shuffle=True)
             for fold_number, (train_index, val_index) in enumerate(kf.split(data_paths)):
                 if fold_number == fold:

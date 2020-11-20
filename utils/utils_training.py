@@ -32,7 +32,7 @@ def get_optimizer(optmizer_type, model, lr=0.1):
 
 def get_scheduler(optimizer, steps, plateau):
     if steps:
-        return torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[50, 80, 110], gamma=0.1)
+        return torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[40, 60], gamma=0.1)
     elif plateau:
         return torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, cooldown=6, factor=0.1, patience=12)
     else:
@@ -153,7 +153,7 @@ def train_step(train_loader, model, criterion, optimizer, binary_problem=False, 
             correct += predicted.eq(targets).sum().item()
 
         train_loss = (train_loss / (batch_idx + 1))
-        train_accuracy = 100. * correct / total
+        train_accuracy = correct / total
         return train_loss, train_accuracy
 
     else:  # Segmentation problem / metrics
@@ -212,15 +212,16 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
                     total += targets.size(0)
                     correct += outputs.eq(targets).sum().item()
 
-                y_true.append(outputs)
-                y_pred.append(targets)
+                y_true.extend(outputs.tolist())
+                y_pred.extend(targets.tolist())
 
+            avg = "binary" if binary_problem else "micro"
             val_loss = (val_loss / (batch_idx + 1))
-            val_accuracy = 100. * correct / total
-            val_precision_score = precision_score(y_true, y_pred)
-            val_recall_score = recall_score(y_true, y_pred)
-            val_f1_score = f1_score(y_true, y_pred)
-            val_balanced_accuracy_score = balanced_accuracy_score(y_true, y_pred)
+            val_accuracy = correct / total
+            val_precision_score = precision_score(y_true, y_pred, average=avg)
+            val_recall_score = recall_score(y_true, y_pred, average=avg)
+            val_f1_score = f1_score(y_true, y_pred, average=avg)
+            val_balanced_accuracy_score = 0 if binary_problem else balanced_accuracy_score(y_true, y_pred)
         # To generalize, as segmentation same number of outputs
         return val_loss, val_accuracy, val_precision_score, val_recall_score, val_f1_score, val_balanced_accuracy_score, _
 

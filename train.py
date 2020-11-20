@@ -14,7 +14,6 @@ from utils.utils_data import *
 from utils.utils_training import *
 from utils.data_augmentation import get_augmentations
 
-
 train_aug, val_aug, train_albumentation, val_albumentation = get_augmentations(
     args.data_augmentation, args.pretrained, args.img_size, args.crop_size, args.segmentation_problem
 )
@@ -85,9 +84,9 @@ for epoch in range(args.epochs):
         ))
     else:  # Damage classification case
         current_time = "[" + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + "]"
-        print("{} Epoch: {}, LR: {:.8f}, Train Accuracy: {:.4f}, Val Accuracy: {:.4f}, Val Balanced Accuracy: {:.4f}".format(
+        print("{} Epoch: {}, LR: {:.8f}, Train Accuracy: {:.4f}, Val Accuracy: {:.4f}, Val Balanced Accuracy: {:.4f}, Val Precision: {:.4f}, Val Recall: {:.4f}, Val F1: {:.4f}".format(
             current_time, epoch + 1, get_current_lr(optimizer),
-            current_train_metric, current_val_metric, val_balanced_accuracy_score
+            current_train_metric, current_val_metric, val_balanced_accuracy_score, val_precision_score, val_recall_score, val_f1_score
         ))
 
     if args.steps_scheduler:
