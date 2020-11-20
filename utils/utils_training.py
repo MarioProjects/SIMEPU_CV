@@ -223,7 +223,7 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
             val_f1_score = f1_score(y_true, y_pred, average=avg)
             val_balanced_accuracy_score = 0 if binary_problem else balanced_accuracy_score(y_true, y_pred)
         # To generalize, as segmentation same number of outputs
-        return val_loss, val_accuracy, val_precision_score, val_recall_score, val_f1_score, val_balanced_accuracy_score, _
+        return val_loss, val_accuracy, val_precision_score, val_recall_score, val_f1_score, val_balanced_accuracy_score, None
 
     else:  # Segmentation problem
         val_loss, val_iou, val_dice, generated_masks, = 0, [], [], 0
@@ -260,7 +260,7 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
 
             val_loss = (val_loss / (batch_idx + 1))
         # To generalize, as classification same number of outputs
-        return val_loss, np.array(val_iou).mean(), _, _, _, _, np.array(val_dice).mean()
+        return val_loss, np.array(val_iou).mean(), None, None, None, None, np.array(val_dice).mean()
 
 
 def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS, nb_classes):
