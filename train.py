@@ -29,7 +29,7 @@ print("[Validation fold] {} samples".format(len(val_dataset)))
 model = model_selector(args.model_name, num_classes=num_classes, pretrained=args.pretrained)
 model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
 
-max_metric, max_metric_epoch = 0, 0
+max_metric, max_metric_epoch, max_metric_str_logline = 0, 0, ""
 best_model = None
 
 if args.binary_problem or args.segmentation_problem:
@@ -64,30 +64,33 @@ for epoch in range(args.epochs):
         selected_class=args.selected_class, masks_overlays=args.masks_overlays, epoch=(epoch+1), lr=args.learning_rate
     )
 
-    if current_val_metric >= max_metric:
-        torch.save(model.state_dict(), args.output_dir + "/model_best_metric.pt")
-        max_metric = current_val_metric
-        max_metric_epoch = epoch
-
     # -- Print training logs --
     if args.binary_problem:
         current_time = "[" + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + "]"
-        print("{} Epoch: {}, LR: {:.8f}, Train Accuracy: {:.4f}, Val Accuracy: {:.4f}, Val Precision: {:.4f}, Val Recall: {:.4f}, Val F1: {:.4f}".format(
+        str_logline = "{} Epoch: {}, LR: {:.8f}, Train Accuracy: {:.4f}, Val Accuracy: {:.4f}, Val Precision: {:.4f}, Val Recall: {:.4f}, Val F1: {:.4f}".format(
             current_time, epoch + 1, get_current_lr(optimizer),
             current_train_metric, current_val_metric, val_precision_score, val_recall_score, val_f1_score
-        ))
+        )
+
     elif args.segmentation_problem:
         current_time = "[" + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + "]"
-        print("{} Epoch: {}, LR: {:.8f}, Train IOU: {:.4f}, Val IOU: {:.4f}, Val DICE: {:.4f}".format(
+        str_logline = "{} Epoch: {}, LR: {:.8f}, Train IOU: {:.4f}, Val IOU: {:.4f}, Val DICE: {:.4f}".format(
             current_time, epoch + 1, get_current_lr(optimizer),
             current_train_metric, current_val_metric, val_dice
-        ))
+        )
     else:  # Damage classification case
         current_time = "[" + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + "]"
-        print("{} Epoch: {}, LR: {:.8f}, Train Accuracy: {:.4f}, Val Accuracy: {:.4f}, Val Balanced Accuracy: {:.4f}, Val Precision: {:.4f}, Val Recall: {:.4f}, Val F1: {:.4f}".format(
+        str_logline = "{} Epoch: {}, LR: {:.8f}, Train Accuracy: {:.4f}, Val Accuracy: {:.4f}, Val Balanced Accuracy: {:.4f}, Val Precision: {:.4f}, Val Recall: {:.4f}, Val F1: {:.4f}".format(
             current_time, epoch + 1, get_current_lr(optimizer),
             current_train_metric, current_val_metric, val_balanced_accuracy_score, val_precision_score, val_recall_score, val_f1_score
-        ))
+        )
+
+    print(str_logline)
+    if current_val_metric >= max_metric:
+        torch.save(model.state_dict(), args.output_dir + "/model_best_metric.pt")
+        max_metric = current_val_metric
+        max_metric_epoch = epoch + 1
+        max_metric_str_logline = str_logline
 
     if args.steps_scheduler:
         scheduler.step()
@@ -95,9 +98,7 @@ for epoch in range(args.epochs):
         scheduler.step(current_val_metric)
 
 print("\n------------------------------------------------")
-print("Best Validation {} {:.4f} at epoch {}".format(
-    "IOU" if args.segmentation_problem else "Accuracy", max_metric, max_metric_epoch)
-)
+print(f"Best Validation:\n\t{max_metric_str_logline}")
 print("------------------------------------------------\n")
 
 if not args.binary_problem and not args.segmentation_problem:

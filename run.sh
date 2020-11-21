@@ -5,11 +5,43 @@ echo -e "\n---- Start ----\n"
 ################################### (BINARY / DAMAGE / FULL) CLASSIFICATION ##########################################
 ######################################################################################################################
 
+model="resnet50"
+optimizer="adam"
+min_lr=0.0000001
+epochs=130
+batch_size=128
+img_size=256
+crop_size=224
+lr=0.0001
+for fold in 0 1 2 3 4
+do
+
+model_path="results/classification/fold"$fold"/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"_DA_pretrained_Binary/"
+CUDA_VISIBLE_DEVICES=0,1 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
+                                       --min_learning_rate $min_lr --batch_size $batch_size --epochs $epochs \
+                                       --img_size $img_size --crop_size $crop_size --output_dir $model_path \
+                                       --steps_scheduler --pretrained --data_augmentation --binary_problem --fold $fold
+
+model_path="results/classification/fold"$fold"/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"_DA_pretrained_OnlyDamaged/"
+#### --steps_scheduler / --plateau_scheduler / --pretrained / --weighted_loss / --binary_problem / --damaged_problem
+CUDA_VISIBLE_DEVICES=0,1 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
+                                       --min_learning_rate $min_lr --batch_size $batch_size --epochs $epochs \
+                                       --img_size $img_size --crop_size $crop_size --output_dir $model_path \
+                                       --steps_scheduler --pretrained --data_augmentation --damaged_problem --fold $fold
+
+model_path="results/classification/fold"$fold"/"$model"_"$optimizer"_"$img_size"to"$crop_size"_lr"$lr"_DA_pretrained_Full/"
+CUDA_VISIBLE_DEVICES=0 python train.py --model_name $model --optimizer $optimizer --learning_rate $lr \
+                                       --min_learning_rate $min_lr --batch_size $batch_size --epochs $epochs \
+                                       --img_size $img_size --crop_size $crop_size --output_dir $model_path \
+                                       --steps_scheduler --pretrained --data_augmentation --fold $fold
+
+done
+
 model="resnet34"
 optimizer="adam"
 min_lr=0.0000001
-epochs=80
-batch_size=24
+epochs=120
+batch_size=256
 img_size=256
 crop_size=224
 lr=0.0001
@@ -42,6 +74,7 @@ done
 ############################################### SEGMENTATION #########################################################
 ######################################################################################################################
 # Segmentation models -> unet unet_small unet_extra_small unet_nano
+: '
 lr=0.01 # learning_rate
 
 for fold in 0 1 2 3 4
@@ -98,3 +131,4 @@ CUDA_VISIBLE_DEVICES=0,1 python train.py --model_name $model --optimizer $optimi
                                        --selected_class "$selected_class" --masks_overlays 40 --fold $fold
 
 done
+'
