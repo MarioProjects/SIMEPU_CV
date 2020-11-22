@@ -1,5 +1,5 @@
 # SIMEPU
-## SISTEMA INTEGRAL DE MANTENIMIENTO EFICIENTE DE PAVIMENTOS URBANOS
+## AUTOMATIC IDENTIFICATION AND CLASSIFICATION OF URBAN PAVEMENT DISTRESSES THROUGH CONVOLUTIONAL NEURAL NETWORKS
 
 The road network is one of the largest assets of a country and provides a fundamental basis
 for its economic and social development. At the same time, its construction, maintenance, and use produce a
