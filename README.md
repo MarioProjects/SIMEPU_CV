@@ -17,6 +17,23 @@ in which we can find the pavement. How the project can move towards classifying 
 
 ## Results Replication and Model Usage
 
+Data has not been released but you can download our pretrained models and test them in your system. It is recommended to follow
+our guidelines to get proper results. First download our models. 
+
+```shell script
+cd simepu_script
+./get_models.sh
+```
+
+Next, you can use your own data calling the prediction script.
+
+```shell script
+# at simepu_script folder
+python predict.py --img_sample samples/your_sample.jpg --get_overlay
+```
+
+With `get_overlay` parameter you will get for Cracks / Transverse cracks / Potholes / Patches classes the mask overlay too.
+
 ## Classification
 
 ### Binary: Distresses vs No Distresses
