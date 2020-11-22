@@ -72,22 +72,22 @@ def save_overlays(img, mask, predicted_mask, save_path="", display=False):
     ax4.axis('off')
     ax5.axis('off')
     ax1.imshow(img)  # Imagen normal
-    ax1.set_title("Imagen Original")
+    ax1.set_title("Original Image")
     ax2.imshow(mask, cmap="gray")  # Mascara original
-    ax2.set_title("Mascara Objetivo")
+    ax2.set_title("Original Mask")
 
     masked = np.ma.masked_where(mask == 0, mask)  # Overlay mascara original
     ax3.imshow(img, cmap="gray")
     ax3.imshow(masked, 'jet', interpolation='bilinear', alpha=0.25)
-    ax3.set_title("Overlay Objetivo")
+    ax3.set_title("Original Overlay")
 
     ax4.imshow(predicted_mask, cmap="gray")  # Mascara predecida
-    ax4.set_title("Mascara Predicha")
+    ax4.set_title("Predicted Mask")
 
     masked = np.ma.masked_where(predicted_mask == 0, predicted_mask)  # Overlay mascara predecida
     ax5.imshow(img, cmap="gray")
     ax5.imshow(masked, 'jet', interpolation='bilinear', alpha=0.25)
-    ax5.set_title("Overlay Predicho")
+    ax5.set_title("Predicted Overlay")
 
     if save_path != "":
         os.makedirs(os.path.dirname(save_path), exist_ok=True)

@@ -79,3 +79,57 @@ We want compare our proposed 2 network framework with only 1 model that classifi
 | Resnet34 |   4  |  0.9861  |       0.9797      |
 | Resnet34 | Mean |  0.9809  |       0.9769      |
 
+
+## Segmentation
+
+### Longitudinal cracks
+
+Training time per fold: 2 hours. 767 train samples / 192 validation samples.
+
+|       Model      | Fold |    IOU   |       DICE        |
+|:----------------:|:----:|:--------:|:-----------------:|
+| unet_extra_small |   0  |  0.6682  |       0.7950      |
+| unet_extra_small |   1  |  0.6725  |       0.8000      |
+| unet_extra_small |   2  |  0.6904  |       0.8140      |
+| unet_extra_small |   3  |  0.6912  |       0.8149      |
+| unet_extra_small |   4  |  0.6884  |       0.8074      |
+| unet_extra_small | Mean |  0.6821  |       0.8062      |
+
+### Transverse cracks
+
+Training time per fold: 1 hour. 456 train samples / 114 validation samples.
+
+|       Model      | Fold |    IOU   |       DICE        |
+|:----------------:|:----:|:--------:|:-----------------:|
+| unet_extra_small |   0  |  0.6692  |       0.7948      |
+| unet_extra_small |   1  |  0.6608  |       0.7887      |
+| unet_extra_small |   2  |  0.6666  |       0.7966      |
+| unet_extra_small |   3  |  0.6863  |       0.8111      |
+| unet_extra_small |   4  |  0.6717  |       0.8002      |
+| unet_extra_small | Mean |  0.6709  |       0.7982      |
+
+### Patches
+
+Training time per fold: 1 hour. 295 train samples / 74 validation samples.
+
+|       Model      | Fold |    IOU   |       DICE        |
+|:----------------:|:----:|:--------:|:-----------------:|
+| unet_extra_small |   0  |  0.8652  |       0.9029      |
+| unet_extra_small |   1  |  0.8789  |       0.9244      |
+| unet_extra_small |   2  |  0.9118  |       0.9435      |
+| unet_extra_small |   3  |  0.8533  |       0.8920      |
+| unet_extra_small |   4  |  0.8713  |       0.9206      |
+| unet_extra_small | Mean |  0.8760  |       0.9166      |
+
+### Potholes
+
+Training time per fold: 1 hour. 320 train samples / 81 validation samples.
+
+|       Model      | Fold |    IOU   |       DICE        |
+|:----------------:|:----:|:--------:|:-----------------:|
+| unet_extra_small |   0  |  0.5828  |       0.7162      |
+| unet_extra_small |   1  |  0.6363  |       0.7515      |
+| unet_extra_small |   2  |  0.6094  |       0.7424      |
+| unet_extra_small |   3  |  0.6136  |       0.7486      |
+| unet_extra_small |   4  |  0.6016  |       0.7322      |
+| unet_extra_small | Mean |  0.6087  |       0.7381      |

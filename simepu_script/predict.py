@@ -199,14 +199,14 @@ if args.get_overlay:
     ax2.axis('off')
     ax3.axis('off')
     ax1.imshow(img)  # Imagen normal
-    ax1.set_title("Imagen Original")
+    ax1.set_title("Original Image")
 
     ax2.imshow(mask, cmap="gray")  # Mascara predecida
-    ax2.set_title("Mascara Predicha")
+    ax2.set_title("Predicted Mask")
 
     masked = np.ma.masked_where(mask == 0, mask)  # Overlay mascara predecida
     ax3.imshow(img, cmap="gray")
     ax3.imshow(masked, 'jet', interpolation='bilinear', alpha=0.35)
-    ax3.set_title(f"Overlay Predicho{overlay_mask_info}")
+    ax3.set_title(f"Predicted Overlay{overlay_mask_info}")
     os.makedirs("overlays", exist_ok=True)
     plt.savefig(f"overlays/{os.path.splitext(os.path.basename(args.img_sample))[0]}_overlay_segmentacion.png")
