@@ -36,9 +36,11 @@ With `get_overlay` parameter you will get for Cracks / Transverse cracks / Potho
 
 ## Classification
 
+Average Resnet34 Inference time: 0.005 seconds.
+
 ### Binary: Distresses vs No Distresses
 
-In this stage, we want perform 'Damage' vs 'No Damage' binary classification. Models were pretrained with Imagenet. 
+In this stage, we want perform 'Damage' vs 'No Damage' binary classification. Training time per fold: 2 hours 30 minutes. Models were pretrained with Imagenet. 6351 train samples / 1588 validation samples. Time per epoch: 1'30''.
 
 |   Model  | Fold | Accuracy | Precision | Recall |   F1   |
 |:--------:|:----:|:--------:|:---------:|:------:|:------:|
@@ -53,7 +55,7 @@ In this stage, we want perform 'Damage' vs 'No Damage' binary classification. Mo
 
 ### Distresses
 
-In this stage, we want classify only the distresses. 
+In this stage, we want classify only the distresses. Training time per fold: 1 hour 15 minutes. 3020 train samples / 755 validation samples. Time per epoch: 45''.
   
 |   Model  | Fold | Accuracy | Balanced Accuracy |
 |:--------:|:----:|:--------:|:-----------------:|
@@ -68,7 +70,7 @@ In this stage, we want classify only the distresses.
 
 ### All classes
 
-We want compare our proposed 2 network framework with only 1 model that classifies all 9 different classes.
+We want compare our proposed 2 network framework with only 1 model that classifies all 9 different classes. Training time per fold: 2 hours 30 minutes. 6351 train samples / 1588 validation samples. Time per epoch: 1'35''
 
 |   Model  | Fold | Accuracy | Balanced Accuracy |
 |:--------:|:----:|:--------:|:-----------------:|
@@ -82,9 +84,11 @@ We want compare our proposed 2 network framework with only 1 model that classifi
 
 ## Segmentation
 
+All distresses share same network. Inference time 0.025 seconds.
+
 ### Longitudinal cracks
 
-Training time per fold: 2 hours. 767 train samples / 192 validation samples.
+Training time per fold: 2 hours. 767 train samples / 192 validation samples. Time per epoch: 1'20''. 
 
 |       Model      | Fold |    IOU   |       DICE        |
 |:----------------:|:----:|:--------:|:-----------------:|
@@ -97,7 +101,7 @@ Training time per fold: 2 hours. 767 train samples / 192 validation samples.
 
 ### Transverse cracks
 
-Training time per fold: 1 hour. 456 train samples / 114 validation samples.
+Training time per fold: 1 hour. 456 train samples / 114 validation samples. Time per epoch: 50''.
 
 |       Model      | Fold |    IOU   |       DICE        |
 |:----------------:|:----:|:--------:|:-----------------:|
@@ -110,7 +114,7 @@ Training time per fold: 1 hour. 456 train samples / 114 validation samples.
 
 ### Patches
 
-Training time per fold: 1 hour. 295 train samples / 74 validation samples.
+Training time per fold: 1 hour. 295 train samples / 74 validation samples. Time per epoch: 35''.
 
 |       Model      | Fold |    IOU   |       DICE        |
 |:----------------:|:----:|:--------:|:-----------------:|
@@ -123,7 +127,7 @@ Training time per fold: 1 hour. 295 train samples / 74 validation samples.
 
 ### Potholes
 
-Training time per fold: 1 hour. 320 train samples / 81 validation samples.
+Training time per fold: 1 hour. 320 train samples / 81 validation samples. Time per epoch: 40''.
 
 |       Model      | Fold |    IOU   |       DICE        |
 |:----------------:|:----:|:--------:|:-----------------:|
