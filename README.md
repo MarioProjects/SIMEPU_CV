@@ -83,6 +83,7 @@ We want compare our proposed 2 network framework with only 1 model that classifi
 | Resnet34 |   4  |  0.9861  |       0.9797      |
 | Resnet34 | Mean |  0.9809  |       0.9769      |
 
+![Full Confusion Matrix](results/full_confusion_matrix.png "Full Confusion Matrix")
 
 ## Segmentation
 
