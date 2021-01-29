@@ -33,6 +33,7 @@ parser.add_argument('--steps_scheduler', action='store_true',
                     help='Use a LR Steps scheduler to control LR based on epochs')
 
 parser.add_argument('--binary_problem', action='store_true', help='Binary classification problem: Damage / No Damage')
+parser.add_argument('--multilabel_problem', action='store_true', help='Multi label classification problem')
 parser.add_argument('--damaged_problem', action='store_true', help='Only damaged classification problem.')
 parser.add_argument('--segmentation_problem', action='store_true', help='Segmentation problem.')
 parser.add_argument('--masks_overlays', type=int, default=0, help='Save overlays each epoch on segmentation problem')
@@ -43,6 +44,8 @@ parser.add_argument('--img_size', type=int, default=150, help='Final img squared
 parser.add_argument('--crop_size', type=int, default=128, help='Center crop squared size')
 
 parser.add_argument('--model_name', type=str, default='resnet18', help='Model name for training')
+parser.add_argument('--checkpoint', type=str, default='', help='Model checkpoint to load')
+parser.add_argument('--data_mod', type=str, default='', help='Data modificator (retrain purposes)')
 parser.add_argument('--pretrained', action='store_true', help='Use Imagenet Pretrained model')
 parser.add_argument('--fold', type=int, default=0, help='Fold for cross validation from 0 to 4')
 
@@ -50,6 +53,8 @@ parser.add_argument('--output_dir', type=str, default='results/new_logs+train_in
                     help='Where progress will be saved')
 
 parser.add_argument('--data_augmentation', action='store_true', help='Apply data augmentations at train time')
+
+parser.add_argument('--histogram_matching', action='store_true', help='Perform histogram matching between oiriginal and new samples')
 
 try:
     args = parser.parse_args()

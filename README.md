@@ -68,7 +68,20 @@ In this stage, we want classify only the distresses. Training time per fold: 1 h
 
 ![Distresses Confusion Matrix](results/distresses_confusion_matrix.png "Distresses Confusion Matrix")
 
- 
+
+#### Distresses Retrain v1
+
+Using Histogram Matching
+
+|   Model  | Fold | Accuracy | Balanced Accuracy |
+|:--------:|:----:|:--------:|:-----------------:|
+| Resnet34 |   0  |  0.9586  |       0.9591      |
+| Resnet34 |   1  |  0.9680  |       0.9683      |
+| Resnet34 |   2  |  0.9728  |       0.9752      |
+| Resnet34 |   3  |  0.9751  |       0.9734      |
+| Resnet34 |   4  |  0.9645  |       0.9558      |
+| Resnet34 | Mean |  0.9659  |       0.9663      |
+
 
 ### All classes
 

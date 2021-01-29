@@ -8,12 +8,11 @@ import numpy as np
 import seaborn as sns
 import torch
 import torch.nn as nn
-import matplotlib.gridspec as gridspec
 import albumentations
 from sklearn.metrics import precision_score, recall_score, f1_score, balanced_accuracy_score
 
 from utils.metrics import jaccard_coef, dice_coef
-from utils.utils_data import SIMEPU_Dataset
+from utils.utils_data import SIMEPU_Dataset, SIMEPU_Dataset_MultiLabel
 
 
 def get_optimizer(optmizer_type, model, lr=0.1):
@@ -32,7 +31,7 @@ def get_optimizer(optmizer_type, model, lr=0.1):
 
 def get_scheduler(optimizer, steps, plateau):
     if steps:
-        return torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 100], gamma=0.1)
+        return torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 80], gamma=0.1)
     elif plateau:
         return torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, cooldown=6, factor=0.1, patience=12)
     else:
@@ -136,25 +135,25 @@ def reshape_masks(ndarray, to_shape):
 def train_step(train_loader, model, criterion, optimizer, binary_problem=False, segmentation_problem=False):
     model.train()
     if not segmentation_problem:
-        train_loss, correct, total = 0, 0, 0
+        train_loss, train_recall = 0, []
         for batch_idx, (inputs, targets) in enumerate(train_loader):
             inputs, targets = inputs.cuda(), targets.cuda()
             optimizer.zero_grad()
             outputs = model(inputs)
-            if binary_problem:
-                targets = targets.unsqueeze(1).type_as(outputs)
+
+            targets = targets.squeeze().type_as(outputs)
             loss = criterion(outputs, targets)
             loss.backward()
             optimizer.step()
 
             train_loss += loss.item()
-            _, predicted = outputs.max(1)
-            total += targets.size(0)
-            correct += predicted.eq(targets).sum().item()
+
+            outputs = (nn.Sigmoid()(outputs) > 0.5).float()
+            train_recall.append(recall_score(targets.cpu().numpy(), outputs.cpu().numpy(), average="micro"))
 
         train_loss = (train_loss / (batch_idx + 1))
-        train_accuracy = correct / total
-        return train_loss, train_accuracy
+        train_recall = np.array(train_recall).mean()
+        return train_loss, train_recall
 
     else:  # Segmentation problem / metrics
         train_loss, train_iou = 0, []
@@ -183,7 +182,7 @@ def train_step(train_loader, model, criterion, optimizer, binary_problem=False, 
         return train_loss, np.array(train_iou).mean()
 
 
-def val_step(val_loader, model, criterion, binary_problem=False, segmentation_problem=False,
+def val_step(val_loader, model, criterion,  segmentation_problem=False,
              masks_overlays=0, overlays_path="overlays", selected_class="", epoch=-1, lr=0):
     model.eval()
     if not segmentation_problem:
@@ -191,39 +190,24 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
         y_true, y_pred = [], []
         with torch.no_grad():
             for batch_idx, (inputs, targets) in enumerate(val_loader):
-                if binary_problem:
-                    inputs, targets = inputs.cuda(), targets.cuda()
-                    outputs = model(inputs)
-                    outputs = (nn.Sigmoid()(outputs) > 0.5).float()
-                    targets = targets.unsqueeze(1).type_as(outputs)
-                    loss = criterion(outputs, targets)
+                inputs, targets = inputs.cuda(), targets.cuda()
+                outputs = model(inputs)
+                outputs = (nn.Sigmoid()(outputs) > 0.5).float()
+                targets = targets.squeeze().type_as(outputs)
+                loss = criterion(outputs, targets)
 
-                    val_loss += loss.item()
-                    total += targets.size(0)
-                    correct += (outputs == targets).float().sum().item()
+                val_loss += loss.item()
 
-                else:
-                    inputs, targets = inputs.cuda(), targets.cuda()
-                    outputs = model(inputs)
-                    loss = criterion(outputs, targets)
+                y_true.extend(targets.tolist())
+                y_pred.extend(outputs.tolist())
 
-                    val_loss += loss.item()
-                    _, outputs = outputs.max(1)
-                    total += targets.size(0)
-                    correct += outputs.eq(targets).sum().item()
-
-                y_true.extend(outputs.tolist())
-                y_pred.extend(targets.tolist())
-
-            avg = "binary" if binary_problem else "micro"
+            avg = "micro"
             val_loss = (val_loss / (batch_idx + 1))
-            val_accuracy = correct / total
             val_precision_score = precision_score(y_true, y_pred, average=avg)
             val_recall_score = recall_score(y_true, y_pred, average=avg)
             val_f1_score = f1_score(y_true, y_pred, average=avg)
-            val_balanced_accuracy_score = 0 if binary_problem else balanced_accuracy_score(y_true, y_pred)
         # To generalize, as segmentation same number of outputs
-        return val_loss, val_accuracy, val_precision_score, val_recall_score, val_f1_score, val_balanced_accuracy_score, None
+        return val_loss, val_recall_score, val_precision_score, val_recall_score, val_f1_score, None
 
     else:  # Segmentation problem
         val_loss, val_iou, val_dice, generated_masks, = 0, [], [], 0
@@ -253,14 +237,15 @@ def val_step(val_loader, model, criterion, binary_problem=False, segmentation_pr
                             original_imgs[indx],
                             binary_ground_truth, binary_pred_mask,
                             os.path.join(
-                                overlays_path, selected_class, f"{lr}", f"epoch{epoch}", f"{inputs_names[indx].split('/')[-1]}"
+                                overlays_path, selected_class, f"{lr}", f"epoch{epoch}",
+                                f"{inputs_names[indx].split('/')[-1]}"
                             )
                         )
                         generated_masks += 1
 
             val_loss = (val_loss / (batch_idx + 1))
         # To generalize, as classification same number of outputs
-        return val_loss, np.array(val_iou).mean(), None, None, None, None, np.array(val_dice).mean()
+        return val_loss, np.array(val_iou).mean(), None, None, None, np.array(val_dice).mean()
 
 
 def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS, nb_classes):
@@ -335,14 +320,14 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
 
 
 def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation, args):
-
     if args.segmentation_problem and args.selected_class == "Grietas":
 
         train_dataset_longitudinales = SIMEPU_Dataset(
             data_partition='train', transform=train_aug, fold=args.fold,
             binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
             augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
-            selected_class="Grietas longitudinales"
+            selected_class="Grietas longitudinales", data_mod=args.data_mod,
+            histogram_matching=args.histogram_matching
         )
 
         train_albumentation.append(albumentations.Rotate(limit=(90, 90), p=1))
@@ -350,7 +335,8 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
             data_partition='train', transform=train_aug, fold=args.fold,
             binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
             augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
-            selected_class="Grietas transversales", rotate=True
+            selected_class="Grietas transversales", rotate=True, data_mod=args.data_mod,
+            histogram_matching=args.histogram_matching
         )
 
         train_dataset = torch.utils.data.ConcatDataset([train_dataset_longitudinales, train_dataset_transversales])
@@ -361,7 +347,8 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
             data_partition='validation', transform=val_aug,
             fold=args.fold, binary_problem=args.binary_problem,
             damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
-            augmentation=val_albumentation, selected_class="Grietas longitudinales"
+            augmentation=val_albumentation, selected_class="Grietas longitudinales", data_mod=args.data_mod,
+            histogram_matching=args.histogram_matching
         )
 
         val_albumentation.append(albumentations.Rotate(limit=(90, 90), p=1))
@@ -369,7 +356,8 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
             data_partition='validation', transform=val_aug,
             fold=args.fold, binary_problem=args.binary_problem,
             damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
-            augmentation=val_albumentation, selected_class="Grietas transversales", rotate=True
+            augmentation=val_albumentation, selected_class="Grietas transversales", rotate=True, data_mod=args.data_mod,
+            histogram_matching=args.histogram_matching
         )
 
         val_dataset = torch.utils.data.ConcatDataset([val_dataset_longitudinales, val_dataset_transversales])
@@ -384,20 +372,18 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
         )
 
     else:
-        train_dataset = SIMEPU_Dataset(
+        train_dataset = SIMEPU_Dataset_MultiLabel(
             data_partition='train', transform=train_aug, fold=args.fold,
-            binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
             augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
             selected_class=args.selected_class
         )
 
         num_classes = train_dataset.num_classes
 
-        val_dataset = SIMEPU_Dataset(
-            data_partition='validation', transform=val_aug,
-            fold=args.fold, binary_problem=args.binary_problem,
-            damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
-            augmentation=val_albumentation, selected_class=args.selected_class
+        val_dataset = SIMEPU_Dataset_MultiLabel(
+            data_partition='validation', transform=val_aug, fold=args.fold,
+            segmentation_problem=args.segmentation_problem,
+            augmentation=val_albumentation, selected_class=args.selected_class,
         )
 
         if not args.segmentation_problem:
@@ -406,6 +392,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
                 shuffle=True,
             )
             val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
+
         else:
             train_loader = DataLoader(
                 train_dataset, batch_size=args.batch_size, pin_memory=True,

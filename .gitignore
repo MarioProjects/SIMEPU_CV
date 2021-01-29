@@ -131,3 +131,9 @@ dmypy.json
 # pytorch checkpoints
 *.pt
 !results/mobilenetwd4_adam_256to224_lr0.001_DA_pretrained_Full/model_best_accuracy.pt
+
+*.tar.gz
+
+data/SIMEPU/
+classification_preds/
+segmentation_preds/
