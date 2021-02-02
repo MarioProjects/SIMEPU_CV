@@ -153,3 +153,17 @@ Training time per fold: 1 hour. 320 train samples / 81 validation samples. Time 
 | unet_extra_small |   3  |  0.6136  |       0.7486      |
 | unet_extra_small |   4  |  0.6016  |       0.7322      |
 | unet_extra_small | Mean |  0.6087  |       0.7381      |
+
+
+## MultiLabel Classification
+
+Training time per fold: 3 hours. 7640 train samples / 1910 validation samples. Time per epoch: 1'25''.
+
+|   Model  | Fold | Precision | Recall |   F1   |
+|:--------:|:----:|:---------:|:------:|:------:|
+| Resnet34 |   0  |   0.9295  | 0.9295 | 0.9295 |
+| Resnet34 |   1  |   0.9114  | 0.9160 | 0.9160 |
+| Resnet34 |   2  |   0.9413  | 0.9177 | 0.9177 |
+| Resnet34 |   3  |   0.9419  | 0.9262 | 0.9262 |
+| Resnet34 |   4  |   0.9347  | 0.9369 | 0.9369 |
+| Resnet34 | Mean |   0.9317  | 0.9252 | 0.9252 |
