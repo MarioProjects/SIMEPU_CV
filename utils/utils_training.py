@@ -12,7 +12,7 @@ import albumentations
 from sklearn.metrics import precision_score, recall_score, f1_score, balanced_accuracy_score
 
 from utils.metrics import jaccard_coef, dice_coef
-from utils.utils_data import SIMEPU_Dataset, SIMEPU_Dataset_MultiLabel
+from utils.utils_data import SIMEPU_Dataset, SIMEPU_Dataset_MultiLabel, SIMEPU_Segmentation_Dataset
 
 
 def get_optimizer(optmizer_type, model, lr=0.1):
@@ -370,7 +370,39 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
             val_dataset, batch_size=args.batch_size, pin_memory=True,
             shuffle=False, collate_fn=val_dataset_longitudinales.segmentation_collate
         )
+    elif args.segmentation_problem:
 
+        train_dataset = SIMEPU_Segmentation_Dataset(
+            data_partition='train', transform=train_aug, fold=args.fold,
+            augmentation=train_albumentation,
+            selected_class=args.selected_class
+        )
+
+        num_classes = train_dataset.num_classes
+
+        val_dataset = SIMEPU_Segmentation_Dataset(
+            data_partition='validation', transform=val_aug, fold=args.fold,
+            augmentation=val_albumentation, selected_class=args.selected_class,
+        )
+
+        if not args.segmentation_problem:
+            train_loader = DataLoader(
+                train_dataset, batch_size=args.batch_size, pin_memory=True,
+                shuffle=True,
+            )
+            val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
+
+        else:
+            train_loader = DataLoader(
+                train_dataset, batch_size=args.batch_size, pin_memory=True,
+                shuffle=True, collate_fn=train_dataset.segmentation_collate
+            )
+            val_loader = DataLoader(
+                val_dataset, batch_size=args.batch_size, pin_memory=True,
+                shuffle=False, collate_fn=val_dataset.segmentation_collate
+            )
+
+        return train_dataset, train_loader, val_dataset, val_loader, num_classes
     else:
         train_dataset = SIMEPU_Dataset_MultiLabel(
             data_partition='train', transform=train_aug, fold=args.fold,

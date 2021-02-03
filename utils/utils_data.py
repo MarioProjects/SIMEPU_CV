@@ -221,6 +221,117 @@ class SIMEPU_Dataset(data.Dataset):
         return img, target, mask, original_img, original_mask, img_path
 
 
+class SIMEPU_Segmentation_Dataset(data.Dataset):
+    def __init__(self, data_partition='', transform=None, augmentation=None, fold=0, selected_class="",
+                 rotate=False, seed=2, data_mod="", normalization="reescale"):
+        """
+          - data_partition:
+             -> If empty ("") returns all samples from TRAIN set
+             -> If "train" returns corresponding 'fold' TRAIN set
+             -> If "validation" returns corresponding  'fold' VALIDATION set
+         - get_path: If we want to return image path (True) or not (False), debug purposes
+        """
+        if (fold + 1) > 5:
+            assert False, f"Only 5 folds used on training (0,1,2,3,4), yours '{fold}'"
+        if data_partition not in ["", "train", "validation", "segmentation_test"]:
+            assert False, "Wrong data partition: {}".format(data_partition)
+
+        self.SIMEPU_DATA_PATH = f"data/SIMEPU/{data_mod}"
+        self.num_classes = 1
+
+        if selected_class == "":
+            assert False, "You need select a class for segmentation problem"
+
+        data_paths = []
+        for subdir, dirs, files in os.walk(self.SIMEPU_DATA_PATH):
+            for file in files:
+                file_path = os.path.join(subdir, file)
+                if f"/masks/{selected_class}" in file_path:
+                    data_paths.append(file_path)
+
+        self.data_paths = np.array(data_paths)
+        if data_partition == "" or data_partition == "segmentation_test":
+            self.data_paths = self.data_paths
+        elif fold != -1:
+            kf = KFold(n_splits=5, random_state=seed, shuffle=True)
+            for fold_number, (train_index, val_index) in enumerate(kf.split(data_paths)):
+                if fold_number == fold:
+                    if data_partition == "train":
+                        self.data_paths = self.data_paths[train_index]
+                    elif data_partition == "validation":
+                        self.data_paths = self.data_paths[val_index]
+                    else:
+                        assert False, "Wrong data partition: {}".format(data_partition)
+                    break
+
+        self.data_partition = data_partition
+        self.transform = transform
+        self.augmentation = augmentation
+        self.selected_class = selected_class
+        self.rotate = rotate
+        self.normalization = normalization
+
+    def __getitem__(self, idx):
+
+        img_path = self.data_paths[idx]
+        img_path = img_path[:img_path.find("masks")] + "images" + img_path[img_path.find("/VIRB"):][:-3] + "jpg"
+        img = io.imread(img_path)
+        target = 0  # Unnecesary
+        original_img = copy.deepcopy(img)
+        mask, original_mask = None, None
+
+        if self.transform is not None:
+            img = transforms.Compose(self.transform)(img)
+        elif self.augmentation is not None:
+            if self.data_partition == "segmentation_test":
+                img, mask = apply_augmentations(img, albumentations.Compose(self.augmentation), None, None)
+                img = apply_normalization(img, self.normalization)
+                img = torch.from_numpy(img.transpose(2, 0, 1)).float()  # Transpose == Channels first
+            else:
+                mask_path = self.data_paths[idx]
+                mask = np.where(io.imread(mask_path)[..., 0] > 0.5, 1, 0).astype(np.int32)
+                original_mask = copy.deepcopy(mask)
+                if self.rotate:
+                    # Debemos voltear la mascara de grietas transversales ya que la imagen es rotada
+                    original_img = albumentations.Rotate(limit=(90, 90), p=1)(image=original_img)["image"]
+                    original_mask = albumentations.Rotate(limit=(90, 90), p=1)(image=original_mask.astype(np.uint8))[
+                        "image"]
+                img, mask = apply_augmentations(img, albumentations.Compose(self.augmentation), None, mask)
+                img = apply_normalization(img, self.normalization)
+                img = torch.from_numpy(img.transpose(2, 0, 1)).float()  # Transpose == Channels first
+                mask = torch.from_numpy(np.expand_dims(mask, 0)).float()
+
+        res = [img, target]
+
+        if self.data_partition != "segmentation_test":
+            res = res + [mask, original_img, original_mask]
+        else:
+            res = res + [original_img]
+
+        res.append(img_path)
+
+        return res
+
+    def __len__(self):
+        return len(self.data_paths)
+
+    def segmentation_collate(self, batch):
+        """
+        Necesitamos un collate ya que las imagenes 'originales' pueden venir con distinto tamaño y no le gusta a Pytorch
+        """
+        img, target, mask, original_img, original_mask, img_path = [], [], [], [], [], []
+        for item in batch:
+            img.append(item[0])
+            target.append(item[1])
+            mask.append(item[2])
+            original_img.append(item[3])
+            original_mask.append(item[4])
+            img_path.append(item[5])
+        img = torch.stack(img)
+        mask = torch.stack(mask)
+        return img, target, mask, original_img, original_mask, img_path
+
+
 class SIMEPU_Dataset_MultiLabel(data.Dataset):
     def __init__(self, data_partition='', transform=None, augmentation=None, fold=0, selected_class="",
                  get_path=False, segmentation_problem=False, rotate=False, seed=42,

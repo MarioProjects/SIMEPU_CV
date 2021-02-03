@@ -3,6 +3,8 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/data/SIMEPU" />
+      <excludeFolder url="file://$MODULE_DIR$/streamlit/data" />
+      <excludeFolder url="file://$MODULE_DIR$/data" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.8 (gvenv) (2)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
