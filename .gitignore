@@ -135,5 +135,6 @@ dmypy.json
 *.tar.gz
 
 data/SIMEPU/
+streamlit/data/SIMEPU/
 classification_preds/
 segmentation_preds/

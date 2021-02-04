@@ -322,42 +322,30 @@ def train_analysis(model, val_loader, output_dir, LABELS2TARGETS, TARGETS2LABELS
 def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation, args):
     if args.segmentation_problem and args.selected_class == "Grietas":
 
-        train_dataset_longitudinales = SIMEPU_Dataset(
-            data_partition='train', transform=train_aug, fold=args.fold,
-            binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
-            augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
+        train_dataset_longitudinales = SIMEPU_Segmentation_Dataset(
+            data_partition='train', transform=train_aug, fold=args.fold, augmentation=train_albumentation,
             selected_class="Grietas longitudinales", data_mod=args.data_mod,
-            histogram_matching=args.histogram_matching
         )
 
         train_albumentation.append(albumentations.Rotate(limit=(90, 90), p=1))
-        train_dataset_transversales = SIMEPU_Dataset(
-            data_partition='train', transform=train_aug, fold=args.fold,
-            binary_problem=args.binary_problem, damaged_problem=args.damaged_problem,
-            augmentation=train_albumentation, segmentation_problem=args.segmentation_problem,
+        train_dataset_transversales = SIMEPU_Segmentation_Dataset(
+            data_partition='train', transform=train_aug, fold=args.fold, augmentation=train_albumentation,
             selected_class="Grietas transversales", rotate=True, data_mod=args.data_mod,
-            histogram_matching=args.histogram_matching
         )
 
         train_dataset = torch.utils.data.ConcatDataset([train_dataset_longitudinales, train_dataset_transversales])
 
         num_classes = 1
 
-        val_dataset_longitudinales = SIMEPU_Dataset(
-            data_partition='validation', transform=val_aug,
-            fold=args.fold, binary_problem=args.binary_problem,
-            damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
-            augmentation=val_albumentation, selected_class="Grietas longitudinales", data_mod=args.data_mod,
-            histogram_matching=args.histogram_matching
+        val_dataset_longitudinales = SIMEPU_Segmentation_Dataset(
+            data_partition='validation', transform=val_aug, fold=args.fold, augmentation=val_albumentation,
+            selected_class="Grietas longitudinales", data_mod=args.data_mod,
         )
 
         val_albumentation.append(albumentations.Rotate(limit=(90, 90), p=1))
-        val_dataset_transversales = SIMEPU_Dataset(
-            data_partition='validation', transform=val_aug,
-            fold=args.fold, binary_problem=args.binary_problem,
-            damaged_problem=args.damaged_problem, segmentation_problem=args.segmentation_problem,
-            augmentation=val_albumentation, selected_class="Grietas transversales", rotate=True, data_mod=args.data_mod,
-            histogram_matching=args.histogram_matching
+        val_dataset_transversales = SIMEPU_Segmentation_Dataset(
+            data_partition='validation', transform=val_aug, fold=args.fold, augmentation=val_albumentation,
+            selected_class="Grietas transversales", rotate=True, data_mod=args.data_mod,
         )
 
         val_dataset = torch.utils.data.ConcatDataset([val_dataset_longitudinales, val_dataset_transversales])
@@ -374,8 +362,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
 
         train_dataset = SIMEPU_Segmentation_Dataset(
             data_partition='train', transform=train_aug, fold=args.fold,
-            augmentation=train_albumentation,
-            selected_class=args.selected_class
+            augmentation=train_albumentation, selected_class=args.selected_class
         )
 
         num_classes = train_dataset.num_classes
@@ -387,8 +374,7 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
 
         if not args.segmentation_problem:
             train_loader = DataLoader(
-                train_dataset, batch_size=args.batch_size, pin_memory=True,
-                shuffle=True,
+                train_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=True,
             )
             val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
 

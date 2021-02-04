@@ -13,7 +13,6 @@ from sklearn.model_selection import KFold
 from skimage.exposure import match_histograms
 import random
 
-
 with open("utils/labels2targets.pkl", 'rb') as f:
     LABELS2TARGETS = pickle.load(f)
 with open("utils/targets2labels.pkl", 'rb') as f:
@@ -264,6 +263,7 @@ class SIMEPU_Segmentation_Dataset(data.Dataset):
                         assert False, "Wrong data partition: {}".format(data_partition)
                     break
 
+        torch.save({"data_paths": self.data_paths}, f"fold{fold}_{data_partition}_{selected_class}_data_paths.pt")
         self.data_partition = data_partition
         self.transform = transform
         self.augmentation = augmentation
