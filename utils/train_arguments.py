@@ -44,6 +44,7 @@ parser.add_argument('--img_size', type=int, default=150, help='Final img squared
 parser.add_argument('--crop_size', type=int, default=128, help='Center crop squared size')
 
 parser.add_argument('--model_name', type=str, default='resnet18', help='Model name for training')
+parser.add_argument('--unet_scale_factor', type=int, default=6, help='Scale factor for small segmentation models')
 parser.add_argument('--checkpoint', type=str, default='', help='Model checkpoint to load')
 parser.add_argument('--data_mod', type=str, default='', help='Data modificator (retrain purposes)')
 parser.add_argument('--pretrained', action='store_true', help='Use Imagenet Pretrained model')

@@ -24,7 +24,9 @@ print("There are {} classes!".format(num_classes))
 print("[Train fold] {} samples".format(len(train_dataset)))
 print("[Validation fold] {} samples".format(len(val_dataset)))
 
-model = model_selector(args.model_name, num_classes=num_classes, pretrained=args.pretrained)
+model = model_selector(
+    args.model_name, num_classes=num_classes, pretrained=args.pretrained, scale_factor=args.unet_scale_factor
+)
 model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
 
 if args.checkpoint != "":

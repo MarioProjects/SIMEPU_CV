@@ -8,7 +8,7 @@ from .small_segmentation_models import small_segmentation_model_selector
 from .resnet_segmentation import resnet_model_selector
 
 
-def model_selector(model_name, num_classes=9, pretrained=False):
+def model_selector(model_name, num_classes=9, pretrained=False, scale_factor=6):
     if pretrained:
         print("Pretrained-> Remember at end: {}".format(
             "transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])"))
@@ -66,10 +66,10 @@ def model_selector(model_name, num_classes=9, pretrained=False):
         return PretrainedSeresNext101(num_classes, pretrained=pretrained).cuda()
     elif model_name == "bam_resnet50":
         return bam_resnet50(num_classes, pretrained=pretrained).cuda()
-    elif "unet" in model_name:
-        return small_segmentation_model_selector(model_name, num_classes).cuda()
+    elif "unet" in model_name and "small" in model_name:
+        return small_segmentation_model_selector(model_name, num_classes, scale_factor).cuda()
     if "unet_resnet34_pretrained" == model_name:
-        return resnet_model_selector(model_name, num_classes, classification, in_channels)
+        return resnet_model_selector(model_name, num_classes)
     else:
         assert False, "Uknown model selected!"
 

@@ -30,10 +30,10 @@ class DoubleConv(nn.Module):
 class Down(nn.Module):
     """Downscaling with maxpool then double conv"""
 
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels, out_channels, pool_size=6):
         super().__init__()
         self.maxpool_conv = nn.Sequential(
-            nn.MaxPool2d(6),
+            nn.MaxPool2d(pool_size),
             DoubleConv(in_channels, out_channels)
         )
 
@@ -44,12 +44,12 @@ class Down(nn.Module):
 class Up(nn.Module):
     """Upscaling then double conv"""
 
-    def __init__(self, in_channels, out_channels, bilinear=True):
+    def __init__(self, in_channels, out_channels, bilinear=True, upsample_factor=6):
         super().__init__()
 
         # if bilinear, use the normal convolutions to reduce the number of channels
         if bilinear:
-            self.up = nn.Upsample(scale_factor=6, mode='bilinear', align_corners=True)
+            self.up = nn.Upsample(scale_factor=upsample_factor, mode='bilinear', align_corners=True)
             self.conv = DoubleConv(in_channels, out_channels, in_channels // 2)
         else:
             self.up = nn.ConvTranspose2d(in_channels, in_channels // 2, kernel_size=2, stride=2)
@@ -83,7 +83,7 @@ class OutConv(nn.Module):
 
 
 class UNet(nn.Module):
-    def __init__(self, n_channels, n_classes, bilinear=True):
+    def __init__(self, n_channels, n_classes, bilinear=True, scale_factor=6):
         super(UNet, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
@@ -91,14 +91,14 @@ class UNet(nn.Module):
         factor = 2 if bilinear else 1
 
         self.inc = DoubleConv(n_channels, 64)
-        self.down1 = Down(64, 128)
-        self.down2 = Down(128, 256)
-        self.down3 = Down(256, 512)
-        self.down4 = Down(512, 1024 // factor)
-        self.up1 = Up(1024, 512 // factor, bilinear)
-        self.up2 = Up(512, 256 // factor, bilinear)
-        self.up3 = Up(256, 128 // factor, bilinear)
-        self.up4 = Up(128, 64, bilinear)
+        self.down1 = Down(64, 128, pool_size=scale_factor)
+        self.down2 = Down(128, 256, pool_size=scale_factor)
+        self.down3 = Down(256, 512, pool_size=scale_factor)
+        self.down4 = Down(512, 1024 // factor, pool_size=scale_factor)
+        self.up1 = Up(1024, 512 // factor, bilinear, upsample_factor=scale_factor)
+        self.up2 = Up(512, 256 // factor, bilinear, upsample_factor=scale_factor)
+        self.up3 = Up(256, 128 // factor, bilinear, upsample_factor=scale_factor)
+        self.up4 = Up(128, 64, bilinear, upsample_factor=scale_factor)
         self.outc = OutConv(64, n_classes)
 
     def forward(self, x):
@@ -116,7 +116,7 @@ class UNet(nn.Module):
 
 
 class SmallUNet(nn.Module):
-    def __init__(self, n_channels, n_classes, bilinear=True):
+    def __init__(self, n_channels, n_classes, bilinear=True, scale_factor=6):
         super(SmallUNet, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
@@ -124,13 +124,13 @@ class SmallUNet(nn.Module):
         factor = 2 if bilinear else 1
 
         self.inc = DoubleConv(n_channels, 32)
-        self.down1 = Down(32, 64)
-        self.down2 = Down(64, 128)
-        self.down3 = Down(128, 256)
-        self.down4 = Down(256, 512 // factor)
-        self.up1 = Up(512, 256 // factor, bilinear)
-        self.up2 = Up(256, 128 // factor, bilinear)
-        self.up3 = Up(128, 64 // factor, bilinear)
+        self.down1 = Down(32, 64, pool_size=scale_factor)
+        self.down2 = Down(64, 128, pool_size=scale_factor)
+        self.down3 = Down(128, 256, pool_size=scale_factor)
+        self.down4 = Down(256, 512 // factor, pool_size=scale_factor)
+        self.up1 = Up(512, 256 // factor, bilinear, upsample_factor=scale_factor)
+        self.up2 = Up(256, 128 // factor, bilinear, upsample_factor=scale_factor)
+        self.up3 = Up(128, 64 // factor, bilinear, upsample_factor=scale_factor)
         self.up4 = Up(64, 32, bilinear)
         self.outc = OutConv(32, n_classes)
 
@@ -150,7 +150,7 @@ class SmallUNet(nn.Module):
 
 
 class ExtraSmallUNet(nn.Module):
-    def __init__(self, n_channels, n_classes, bilinear=True):
+    def __init__(self, n_channels, n_classes, bilinear=True, scale_factor=6):
         super(ExtraSmallUNet, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
@@ -158,12 +158,12 @@ class ExtraSmallUNet(nn.Module):
         factor = 2 if bilinear else 1
 
         self.inc = DoubleConv(n_channels, 32)
-        self.down1 = Down(32, 64)
-        self.down2 = Down(64, 128)
-        self.down3 = Down(128, 256 // factor)
-        self.up1 = Up(256, 128 // factor, bilinear)
-        self.up2 = Up(128, 64 // factor, bilinear)
-        self.up3 = Up(64, 32, bilinear)
+        self.down1 = Down(32, 64, pool_size=scale_factor)
+        self.down2 = Down(64, 128, pool_size=scale_factor)
+        self.down3 = Down(128, 256 // factor, pool_size=scale_factor)
+        self.up1 = Up(256, 128 // factor, bilinear, upsample_factor=scale_factor)
+        self.up2 = Up(128, 64 // factor, bilinear, upsample_factor=scale_factor)
+        self.up3 = Up(64, 32, bilinear, upsample_factor=scale_factor)
         self.outc = OutConv(32, n_classes)
 
     def forward(self, x):
@@ -180,7 +180,7 @@ class ExtraSmallUNet(nn.Module):
 
 
 class NanoUNet(nn.Module):
-    def __init__(self, n_channels, n_classes, bilinear=True):
+    def __init__(self, n_channels, n_classes, bilinear=True, scale_factor=6):
         super(NanoUNet, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
@@ -188,12 +188,12 @@ class NanoUNet(nn.Module):
         factor = 2 if bilinear else 1
 
         self.inc = DoubleConv(n_channels, 16)
-        self.down1 = Down(16, 32)
-        self.down2 = Down(32, 64)
-        self.down3 = Down(64, 128 // factor)
-        self.up1 = Up(128, 64 // factor, bilinear)
-        self.up2 = Up(64, 32 // factor, bilinear)
-        self.up3 = Up(32, 16, bilinear)
+        self.down1 = Down(16, 32, pool_size=scale_factor)
+        self.down2 = Down(32, 64, pool_size=scale_factor)
+        self.down3 = Down(64, 128 // factor, pool_size=scale_factor)
+        self.up1 = Up(128, 64 // factor, bilinear, upsample_factor=scale_factor)
+        self.up2 = Up(64, 32 // factor, bilinear, upsample_factor=scale_factor)
+        self.up3 = Up(32, 16, bilinear, upsample_factor=scale_factor)
         self.outc = OutConv(16, n_classes)
 
     def forward(self, x):
@@ -208,15 +208,15 @@ class NanoUNet(nn.Module):
         return logits
 
 
-def small_segmentation_model_selector(model_name, n_classes):
+def small_segmentation_model_selector(model_name, n_classes, scale_factor):
     if "nano" in model_name:
-        model = NanoUNet(n_channels=3, n_classes=n_classes)
+        model = NanoUNet(n_channels=3, n_classes=n_classes, scale_factor=scale_factor)
     elif "extra_small" in model_name:
-        model = ExtraSmallUNet(n_channels=3, n_classes=n_classes)
+        model = ExtraSmallUNet(n_channels=3, n_classes=n_classes, scale_factor=scale_factor)
     elif "small" in model_name:
-        model = SmallUNet(n_channels=3, n_classes=n_classes)
+        model = SmallUNet(n_channels=3, n_classes=n_classes, scale_factor=scale_factor)
     elif "unet" in model_name:
-        model = UNet(n_channels=3, n_classes=n_classes)
+        model = UNet(n_channels=3, n_classes=n_classes, scale_factor=scale_factor)
     else:
         assert False, f"Unknown model name: '{model_name}'"
     return model.cuda()
