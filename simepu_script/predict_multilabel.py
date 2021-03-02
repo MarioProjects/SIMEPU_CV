@@ -3,13 +3,13 @@
 
 """
 ```
-python predict.py --img_sample samples/grieta1.jpg --download_models
-python predict.py --img_sample samples/grieta1.jpg
-python predict.py --img_sample samples/cocodrilo2.jpg --get_overlay
+python predict_multilabel.py --img_sample samples/grieta1.jpg --download_models
+python predict_multilabel.py --img_sample samples/grieta1.jpg
+python predict_multilabel.py --img_sample samples/cocodrilo2.jpg --get_overlay
+python predict_multilabel.py --img_sample samples/multiple1.jpg download_models --get_overlay
 ```
 """
 
-import sys
 import os
 import argparse
 import warnings
@@ -26,14 +26,12 @@ warnings.filterwarnings('ignore')
 
 
 def set_args():
-    parser = argparse.ArgumentParser(description='SIMEPU Single Image prediction')
+    parser = argparse.ArgumentParser(description='SIMEPU Single Image Multilabel prediction')
     parser.add_argument('--download_models', action='store_true', help='If used, download pretrained models')
-    parser.add_argument("--binary_checkpoint", type=str, default="checkpoints/resnet34_binary.pt",
+    parser.add_argument("--multilabel_checkpoint", type=str, default="checkpoints/resnet34_multilabel.pt",
                         help="Checkpoint of model trained in damage vs. no damage case")
-    parser.add_argument("--binary_threshold", type=float, default=0.8,
-                        help="Binary to set samples as damage in the binary damages vs. no damages case")
-    parser.add_argument("--damages_checkpoint", type=str, default="checkpoints/resnet34_damages.pt",
-                        help="Checkpoint of model trained using only damages")
+    parser.add_argument("--multilabel_threshold", type=float, default=0.83,
+                        help="Threshold for multilabel classification")
     parser.add_argument("--huecos_segmentation_checkpoint", type=str, default="checkpoints/huecos_segmentation.pt",
                         help="Checkpoint of model trained using segmentation of huecos")
     parser.add_argument("--parcheo_segmentation_checkpoint", type=str, default="checkpoints/parcheo_segmentation.pt",
@@ -58,12 +56,24 @@ for argument in args.__dict__:
 
 if args.download_models:
     print("\nDownloading models...")
-    os.system("chmod +x get_models.sh")
-    os.system("bash get_models.sh")
+    os.system("chmod +x get_multilabel_models.sh")
+    os.system("bash get_multilabel_models.sh")
     print("\nDone!")
 
-if not os.path.isfile(args.binary_checkpoint) or not os.path.isfile(args.damages_checkpoint):
+if not os.path.isfile(args.multilabel_checkpoint):
     assert False, "Unable to find model checkpoints. You can use pretrained models with --download_models"
+
+
+CLASSES = [
+    "Alcantarillado", "Marca vial", "Hueco", "Parcheo", "Grietas longitudinales",
+    "Grietas en forma de piel de cocodrilo", "Grietas transversales",
+    "Meteorización y desprendimiento"
+]
+
+
+##########################################################################################
+# -------------------------- MULTILABEL CLASSIFICATION CASE ------------------------------
+##########################################################################################
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 img_transforms = [
@@ -74,52 +84,32 @@ img_transforms = [
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ]
 
+num_classes = len(CLASSES)
+multilabel_resnet34 = models.resnet34(pretrained=False)
+multilabel_resnet34.fc = torch.nn.Linear(multilabel_resnet34.fc.in_features, num_classes)
+multilabel_resnet34 = load_dataparallel_model(multilabel_resnet34, torch.load(args.multilabel_checkpoint))
+multilabel_resnet34.to(DEVICE)
+multilabel_resnet34.eval()
 
-num_classes = 1
-binary_resnet34 = models.resnet34(pretrained=False)
-binary_resnet34.fc = torch.nn.Linear(binary_resnet34.fc.in_features, num_classes)
-binary_resnet34 = load_dataparallel_model(binary_resnet34, torch.load(args.binary_checkpoint))
-binary_resnet34.to(DEVICE)
-binary_resnet34.eval()
 
 img = io.imread(args.img_sample)
 img_t = transforms.Compose(img_transforms)(copy.deepcopy(img))
 batch = torch.unsqueeze(img_t, 0)
 
 with torch.no_grad():
-    y = torch.nn.Sigmoid()(binary_resnet34(batch.to(DEVICE)))[0]  # Only 1 sample, take it by index
-    binary_out = (y > args.binary_threshold).int()
+    y = torch.nn.Sigmoid()(multilabel_resnet34(batch.to(DEVICE)))[0]  # Only 1 sample, take it by index
+    multilabel_out = (y > args.multilabel_threshold).int()
 
-print("\n-> Probabilidad de daño en la imagen: {:.2f}%".format(y.item() * 100))
+str_res = ""
+for pred_index, pred in enumerate(multilabel_out):
+    str_res = f"{str_res}\n{CLASSES[pred_index]}" if pred else str_res
 
-if binary_out == 0:
-    print("\n-- No presenta daño la imagen --\n")
-    sys.exit()
+print(f"Clasificado como: {str_res}")
 
-# Damage case
-num_classes = 6
-damages_resnet34 = models.resnet34(pretrained=False)
-damages_resnet34.fc = torch.nn.Linear(damages_resnet34.fc.in_features, num_classes)
-damages_resnet34 = load_dataparallel_model(damages_resnet34, torch.load(args.damages_checkpoint))
-damages_resnet34.to(DEVICE)
-damages_resnet34.eval()
 
-with torch.no_grad():
-    y = damages_resnet34(batch.to(DEVICE))[0]  # Only 1 sample, take it by index
-
-TARGETS2LABELSDAMAGED = {
-    0: 'Parcheo', 1: 'Grietas transversales', 2: 'Huecos', 3: 'Grietas longitudinales',
-    4: 'Meteorización y desprendimiento', 5: 'Grietas en forma de piel de cocodrilo'
-}
-
-_, indices = torch.sort(y, descending=True)
-class_indx = int(indices[0].item())
-
-print("Clasificado como: {}\n".format(TARGETS2LABELSDAMAGED[class_indx]))
-
-if class_indx == 4:  # Meteorización y desprendimiento
-    print("Consideramos toda la imagen como dañada")
-    sys.exit()
+##########################################################################################
+# ------------------------------- SEGMENTATION CASE --------------------------------------
+##########################################################################################
 
 img_size = 512
 val_albumentation = [
@@ -134,15 +124,23 @@ batch = torch.unsqueeze(img_t, 0)
 num_classes = 1
 model = ExtraSmallUNet(n_channels=3, n_classes=num_classes)
 
+final_mask = np.zeros(img_t.shape[1:])
+
 overlay_mask_info = ""
-if class_indx == 0:  # Parcheo
+# Parcheo
+parcheo_index = CLASSES.index("Parcheo")
+if multilabel_out[parcheo_index]:
     mask = load_predict_segmentation(model, args.parcheo_segmentation_checkpoint, img, batch, DEVICE)
     pixeles_parcheo = mask.sum()
     porcentaje_parcheo = (pixeles_parcheo / (mask.shape[0] * mask.shape[1])) * 100
     overlay_mask_info = "- {:.2f}%".format(porcentaje_parcheo)
     print(f"El parcheo esta compuesto por {pixeles_parcheo} pixeles, el {porcentaje_parcheo:.2f}% de la imagen")
 
-if class_indx == 1:  # Transversales
+    final_mask = np.logical_or(final_mask, mask) * 1
+
+# Grietas transversales
+transversales_index = CLASSES.index("Grietas transversales")
+if multilabel_out[transversales_index]:
     mask = load_predict_segmentation(model, args.transversales_segmentation_checkpoint, img, batch, DEVICE)
 
     columns_indices = np.where(np.any(mask, axis=0))[0]
@@ -156,15 +154,24 @@ if class_indx == 1:  # Transversales
     overlay_mask_info = f" - Longitud {longitud} y Anchura {anchura}"
     print(f"La grieta tiene una longitud de {longitud} pixeles y abarca {anchura} pixeles de ancho")
 
-if class_indx == 2:  # Huecos
+    final_mask = np.logical_or(final_mask, mask) * 1
+
+# Hueco
+hueco_index = CLASSES.index("Hueco")
+if multilabel_out[hueco_index]:
+
     mask = load_predict_segmentation(model, args.huecos_segmentation_checkpoint, img, batch, DEVICE)
     pixeles_hueco = mask.sum()
     porcentaje_hueco = (pixeles_hueco / (mask.shape[0] * mask.shape[1])) * 100
     overlay_mask_info = "- {:.2f}%".format(porcentaje_hueco)
     print(f"El hueco esta compuesto por {pixeles_hueco} pixeles, el {porcentaje_hueco:.2f}% de la imagen")
 
+    final_mask = np.logical_or(final_mask, mask) * 1
 
-if class_indx == 3:  # Longitudinales
+
+# Grietas longitudinales
+longitudinales_index = CLASSES.index("Grietas longitudinales")
+if multilabel_out[longitudinales_index]:
 
     mask = load_predict_segmentation(model, args.longitudinales_segmentation_checkpoint, img, batch, DEVICE)
 
@@ -179,7 +186,11 @@ if class_indx == 3:  # Longitudinales
     overlay_mask_info = f" - Longitud {longitud} y Anchura {anchura}"
     print(f"La grieta tiene una longitud de {longitud} pixeles y abarca {anchura} pixeles de ancho")
 
-if class_indx == 5:  # Grietas en forma de piel de cocodrilo
+    final_mask = np.logical_or(final_mask, mask) * 1
+
+# Grietas en forma de piel de cocodrilo
+cocodrilo_index = CLASSES.index("Grietas en forma de piel de cocodrilo")
+if multilabel_out[cocodrilo_index]:
     mask_l = mask = load_predict_segmentation(model, args.longitudinales_segmentation_checkpoint, img, batch, DEVICE)
     mask_t = mask = load_predict_segmentation(model, args.transversales_segmentation_checkpoint, img, batch, DEVICE)
     mask = np.logical_or(mask_l, mask_t) * 1
@@ -189,6 +200,8 @@ if class_indx == 5:  # Grietas en forma de piel de cocodrilo
     overlay_mask_info = "- {:.2f}%".format(porcentaje_cocodrilo)
     print(f"El cocodrilo esta compuesto por {pixeles_cocodrilo} pixeles, el {porcentaje_cocodrilo:.2f}% de la imagen")
 
+    final_mask = np.logical_or(final_mask, mask) * 1
+
 if args.get_overlay:
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5))
     ax1.axis('off')
@@ -197,12 +210,14 @@ if args.get_overlay:
     ax1.imshow(img)  # Imagen normal
     ax1.set_title("Original Image")
 
-    ax2.imshow(mask, cmap="gray")  # Mascara predicha
+    ax2.imshow(final_mask, cmap="gray")  # Mascara predicha
     ax2.set_title("Predicted Mask")
 
-    masked = np.ma.masked_where(mask == 0, mask)  # Overlay mascara predicha
+    masked = np.ma.masked_where(final_mask == 0, final_mask)  # Overlay mascara predicha
     ax3.imshow(img, cmap="gray")
     ax3.imshow(masked, 'jet', interpolation='bilinear', alpha=0.35)
     ax3.set_title(f"Predicted Overlay{overlay_mask_info}")
     os.makedirs("overlays", exist_ok=True)
-    plt.savefig(f"overlays/{os.path.splitext(os.path.basename(args.img_sample))[0]}_overlay_segmentacion.png")
+    plt.savefig(
+        f"overlays/{os.path.splitext(os.path.basename(args.img_sample))[0]}_overlay_segmentacion_multilabel.png"
+    )
