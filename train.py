@@ -13,7 +13,8 @@ from utils.data_augmentation import get_augmentations
 pretty_errors.mono()
 
 train_aug, val_aug, train_albumentation, val_albumentation = get_augmentations(
-    args.data_augmentation, args.pretrained, args.img_size, args.crop_size, args.segmentation_problem
+    args.pretrained, args.img_size, args.segmentation_problem,
+    args.randaug_n, args.randaug_m, args.cutout_size
 )
 
 train_dataset, train_loader, val_dataset, val_loader, num_classes = dataset_selector(

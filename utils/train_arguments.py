@@ -43,6 +43,10 @@ parser.add_argument('--selected_class', type=str, default='', help='Train specif
 parser.add_argument('--img_size', type=int, default=150, help='Final img squared size')
 parser.add_argument('--crop_size', type=int, default=128, help='Center crop squared size')
 
+parser.add_argument('--randaug_n', type=int, default=0, help='RandAugmentation N')
+parser.add_argument('--randaug_m', type=int, default=0, help='RandAugmentation M')
+parser.add_argument('--cutout_size', type=int, default=0, help='Cutout Size')
+
 parser.add_argument('--model_name', type=str, default='resnet18', help='Model name for training')
 parser.add_argument('--unet_scale_factor', type=int, default=6, help='Scale factor for small segmentation models')
 parser.add_argument('--checkpoint', type=str, default='', help='Model checkpoint to load')
