@@ -22,6 +22,8 @@ from models import ExtraSmallUNet
 from utils import *
 import matplotlib.pyplot as plt
 
+import ttach as tta
+
 warnings.filterwarnings('ignore')
 
 
@@ -30,8 +32,6 @@ def set_args():
     parser.add_argument('--download_models', action='store_true', help='If used, download pretrained models')
     parser.add_argument("--multilabel_checkpoint", type=str, default="checkpoints/resnet34_multilabel.pt",
                         help="Checkpoint of model trained in damage vs. no damage case")
-    parser.add_argument("--multilabel_threshold", type=float, default=0.83,
-                        help="Threshold for multilabel classification")
     parser.add_argument("--huecos_segmentation_checkpoint", type=str, default="checkpoints/huecos_segmentation.pt",
                         help="Checkpoint of model trained using segmentation of huecos")
     parser.add_argument("--parcheo_segmentation_checkpoint", type=str, default="checkpoints/parcheo_segmentation.pt",
@@ -78,8 +78,7 @@ CLASSES = [
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 img_transforms = [
     transforms.ToPILImage(),
-    transforms.Resize(256),
-    transforms.CenterCrop(224),
+    transforms.Resize(224),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ]
@@ -88,6 +87,11 @@ num_classes = len(CLASSES)
 multilabel_resnet34 = models.resnet34(pretrained=False)
 multilabel_resnet34.fc = torch.nn.Linear(multilabel_resnet34.fc.in_features, num_classes)
 multilabel_resnet34 = load_dataparallel_model(multilabel_resnet34, torch.load(args.multilabel_checkpoint))
+
+multilabel_resnet34 = tta.ClassificationTTAWrapper(multilabel_resnet34, tta.Compose([
+    tta.HorizontalFlip(), tta.VerticalFlip(), tta.Scale([0.85, 1.15]),
+]), merge_mode="mean")
+
 multilabel_resnet34.to(DEVICE)
 multilabel_resnet34.eval()
 
@@ -96,9 +100,11 @@ img = io.imread(args.img_sample)
 img_t = transforms.Compose(img_transforms)(copy.deepcopy(img))
 batch = torch.unsqueeze(img_t, 0)
 
+class_th = torch.tensor([0.05, 0.15, 0.05, 0.1, 0.05, 0.1, 0.05, 0.25]).to(DEVICE)
+
 with torch.no_grad():
     y = torch.nn.Sigmoid()(multilabel_resnet34(batch.to(DEVICE)))[0]  # Only 1 sample, take it by index
-    multilabel_out = (y > args.multilabel_threshold).int()
+    multilabel_out = (y > class_th).int()
 
 str_res = ""
 for pred_index, pred in enumerate(multilabel_out):
