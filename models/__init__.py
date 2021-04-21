@@ -2,6 +2,7 @@ import torchvision.models as models
 import torch.nn as nn
 from .resnet import *
 from .pytorchcv_seresnext import *
+from .pytorchcv_resnext import *
 from .pytorchcv_mobilenet import *
 from .pytorchcv_bam_resnet import *
 from .small_segmentation_models import small_segmentation_model_selector
@@ -62,6 +63,10 @@ def model_selector(model_name, num_classes=9, pretrained=False, scale_factor=6):
         return PretrainedSeresNext50(num_classes, pretrained=pretrained).cuda()
     elif model_name == "mobilenetwd4":
         return PretrainedMobilenetWD4(num_classes, pretrained=pretrained).cuda()
+    elif model_name == "resnext50_32":
+        return PretrainedResNext50_32(num_classes, pretrained=pretrained).cuda()
+    elif model_name == "resnext101_32":
+        return PretrainedResNext101_32(num_classes, pretrained=pretrained).cuda()
     elif model_name == "seresnext101":
         return PretrainedSeresNext101(num_classes, pretrained=pretrained).cuda()
     elif model_name == "bam_resnet50":

@@ -167,3 +167,13 @@ Training time per fold: 3 hours. 7640 train samples / 1910 validation samples. T
 | Resnet34 |   3  |   0.9419  | 0.9262 | 0.9262 |
 | Resnet34 |   4  |   0.9347  | 0.9369 | 0.9369 |
 | Resnet34 | Mean |   0.9317  | 0.9252 | 0.9252 |
+
+## Info
+
+```python
+CLASSES = [
+    "Alcantarillado", "Marca vial", "Hueco", "Parcheo", "Grietas longitudinales",
+    "Grietas en forma de piel de cocodrilo", "Grietas transversales",
+    "Meteorización y desprendimiento"
+]
+```

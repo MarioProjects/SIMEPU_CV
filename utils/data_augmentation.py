@@ -22,19 +22,14 @@ def get_augmentations(pretrained, img_size, segmentation_problem, randaug_n, ran
     if not segmentation_problem:
         train_aug = transforms.Compose([
             transforms.ToPILImage(),  # because the input dtype is numpy.ndarray
-            transforms.RandomResizedCrop(512, scale=(0.85, 1.0), interpolation=Image.BICUBIC),
+            transforms.Resize(img_size, interpolation=Image.BICUBIC),
             transforms.RandomHorizontalFlip(),
-            transforms.ColorJitter(
-                brightness=0.4,
-                contrast=0.4,
-                saturation=0.4,
-            ),
             transforms.ToTensor()
         ])
 
         val_aug = transforms.Compose([
             transforms.ToPILImage(),  # because the input dtype is numpy.ndarray
-            transforms.Resize(512, interpolation=Image.BICUBIC),
+            transforms.Resize(img_size, interpolation=Image.BICUBIC),
             transforms.ToTensor(),
         ])
 

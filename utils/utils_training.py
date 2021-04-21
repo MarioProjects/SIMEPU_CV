@@ -10,6 +10,7 @@ import torch
 import torch.nn as nn
 import albumentations
 from sklearn.metrics import precision_score, recall_score, f1_score, balanced_accuracy_score
+import sklearn.metrics as metrics
 
 from utils.metrics import jaccard_coef, dice_coef
 from utils.utils_data import SIMEPU_Dataset, SIMEPU_Dataset_MultiLabel, SIMEPU_Segmentation_Dataset
@@ -132,7 +133,7 @@ def reshape_masks(ndarray, to_shape):
     return ndarray  # reshaped
 
 
-def train_step(train_loader, model, criterion, optimizer, binary_problem=False, segmentation_problem=False):
+def train_step(train_loader, model, criterion, optimizer, segmentation_problem=False):
     model.train()
     if not segmentation_problem:
         train_loss, train_recall = 0, []
@@ -182,7 +183,7 @@ def train_step(train_loader, model, criterion, optimizer, binary_problem=False, 
         return train_loss, np.array(train_iou).mean()
 
 
-def val_step(val_loader, model, criterion,  segmentation_problem=False,
+def val_step(val_loader, model, criterion, segmentation_problem=False,
              masks_overlays=0, overlays_path="overlays", selected_class="", epoch=-1, lr=0):
     model.eval()
     if not segmentation_problem:
@@ -192,7 +193,7 @@ def val_step(val_loader, model, criterion,  segmentation_problem=False,
             for batch_idx, (inputs, targets) in enumerate(val_loader):
                 inputs, targets = inputs.cuda(), targets.cuda()
                 outputs = model(inputs)
-                outputs = (nn.Sigmoid()(outputs) > 0.5).float()
+                # outputs = (nn.Sigmoid()(outputs) > 0.5).float()
                 targets = targets.squeeze().type_as(outputs)
                 loss = criterion(outputs, targets)
 
@@ -201,13 +202,23 @@ def val_step(val_loader, model, criterion,  segmentation_problem=False,
                 y_true.extend(targets.tolist())
                 y_pred.extend(outputs.tolist())
 
-            avg = "micro"
+            # avg = "micro"
             val_loss = (val_loss / (batch_idx + 1))
-            val_precision_score = precision_score(y_true, y_pred, average=avg)
-            val_recall_score = recall_score(y_true, y_pred, average=avg)
-            val_f1_score = f1_score(y_true, y_pred, average=avg)
+
+            y_true = np.stack(y_true)  # (batch, classes)
+            y_pred = np.stack(y_pred)  # (batch, classes)
+
+            # global_auc = metrics.roc_auc_score(y_true, y_pred)
+            auc_per_class = []
+            for c in range(y_true.shape[1]):
+                auc_per_class.append(metrics.roc_auc_score(y_true[:, c], y_pred[:, c]))
+
+            # val_precision_score = precision_score(y_true, y_pred, average=avg)
+            # val_recall_score = recall_score(y_true, y_pred, average=avg)
+            # val_f1_score = f1_score(y_true, y_pred, average=avg)
         # To generalize, as segmentation same number of outputs
-        return val_loss, val_recall_score, val_precision_score, val_recall_score, val_f1_score, None
+        return val_loss, auc_per_class, None
+        # return val_loss, val_recall_score, val_precision_score, val_recall_score, val_f1_score, None
 
     else:  # Segmentation problem
         val_loss, val_iou, val_dice, generated_masks, = 0, [], [], 0
@@ -223,7 +234,8 @@ def val_step(val_loader, model, criterion,  segmentation_problem=False,
                     original_mask = original_masks[indx]
                     original_h, original_w = original_mask.shape
                     resize_transform = albumentations.Resize(original_h, original_w)
-                    pred_mask = resize_transform(image=torch.sigmoid(single_pred).squeeze(0).data.cpu().numpy())["image"]
+                    pred_mask = resize_transform(image=torch.sigmoid(single_pred).squeeze(0).data.cpu().numpy())[
+                        "image"]
                     binary_ground_truth = np.where(original_mask > 0.5, 1, 0).astype(np.int32)
                     binary_pred_mask = np.where(pred_mask > 0.5, 1, 0).astype(np.int32)
 

@@ -335,7 +335,7 @@ class SIMEPU_Segmentation_Dataset(data.Dataset):
 class SIMEPU_Dataset_MultiLabel(data.Dataset):
     def __init__(self, data_partition='', transform=None, augmentation=None, fold=0, selected_class="",
                  get_path=False, segmentation_problem=False, rotate=False, seed=42,
-                 normalization="reescale", data_version=-1):
+                 normalization="reescale"):
         """
           - data_partition:
              -> If empty ("") returns all samples from TRAIN set
@@ -350,20 +350,8 @@ class SIMEPU_Dataset_MultiLabel(data.Dataset):
 
         self.SIMEPU_DATA_PATH = "data/SIMEPU/"
 
-        if data_version == -1:
-            df0 = pd.read_csv(os.path.join(self.SIMEPU_DATA_PATH, "v0", "info.csv"))
-            df0['Image'] = 'v0/images/' + df0['Image'].astype(str)
-            df1 = pd.read_csv(os.path.join(self.SIMEPU_DATA_PATH, "v1", "info.csv"))
-            df1['Image'] = 'v1/images/' + df1['Image'].astype(str)
-            df2 = pd.read_csv(os.path.join(self.SIMEPU_DATA_PATH, "v2", "info.csv"))
-            df2['Image'] = 'v2/images/' + df2['Image'].astype(str)
-            df3 = pd.read_csv(os.path.join(self.SIMEPU_DATA_PATH, "v3", "info.csv"))
-            df3['Image'] = 'v3/images/' + df3['Image'].astype(str)
-            df = [df0, df1, df2, df3]
-            df = pd.concat(df)
-        else:
-            df = pd.read_csv(os.path.join(self.SIMEPU_DATA_PATH, f"v{data_version}", "info.csv"))
-            df['Image'] = f'v{data_version}/images/' + df['Image'].astype(str)
+        df = pd.read_csv(os.path.join(self.SIMEPU_DATA_PATH, "info.csv"))
+        df['Image'] = 'images/' + df['Image'].astype(str)
 
         df = df.reset_index(drop=True)
         initial_df = df.copy()
@@ -414,7 +402,6 @@ class SIMEPU_Dataset_MultiLabel(data.Dataset):
     def __getitem__(self, idx):
 
         img_path = os.path.join(self.SIMEPU_DATA_PATH, self.data_paths.iloc[idx]["Image"])
-        version = self.data_paths.iloc[idx]["Image"][0:2]
         img = io.imread(img_path)
         original_img = copy.deepcopy(img)
         target = np.expand_dims(np.array(self.data_paths.iloc[idx][self.classes].tolist()), axis=0)
@@ -425,7 +412,7 @@ class SIMEPU_Dataset_MultiLabel(data.Dataset):
         elif self.augmentation is not None:
 
             if self.segmentation_problem and self.data_partition != "segmentation_test":
-                mask_path = os.path.join(self.SIMEPU_DATA_PATH, version,
+                mask_path = os.path.join(self.SIMEPU_DATA_PATH, "masks",
                                          self.data_paths.iloc[idx][f"Mask {self.selected_class}"])
                 mask = np.where(io.imread(mask_path)[..., 0] > 0.5, 1, 0).astype(np.int32)
                 original_mask = copy.deepcopy(mask)

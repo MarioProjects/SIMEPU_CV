@@ -63,9 +63,11 @@ for epoch in range(args.epochs):
 
     current_train_loss, current_train_metric = train_step(
         train_loader, model, criterion, optimizer,
-        binary_problem=args.binary_problem, segmentation_problem=args.segmentation_problem
+        segmentation_problem=args.segmentation_problem
     )
-    current_val_loss, current_val_metric, val_precision_score, val_recall_score, val_f1_score, val_dice = val_step(
+
+    # current_val_metric, val_precision_score, val_recall_score, val_f1_score
+    current_val_loss, auc_per_class, val_dice = val_step(
         val_loader, model, criterion, args.segmentation_problem,
         selected_class=args.selected_class, masks_overlays=args.masks_overlays, epoch=(epoch+1), lr=args.learning_rate
     )
@@ -75,12 +77,22 @@ for epoch in range(args.epochs):
     str_epoch = epoch + 1
     str_logline = f"{current_time} Epoch: {str_epoch}"
     if args.binary_problem or args.multilabel_problem:
-        str_logline = "{} Epoch: {}, LR: {:.8f}, Train Recall: {:.4f}, Val Recall: {:.4f}, Val Precision: {:.4f}, Val F1: {:.4f}".format(
-            current_time, str_epoch, get_current_lr(optimizer),
-            current_train_metric, val_recall_score, val_precision_score, val_recall_score, val_f1_score
+
+        str_logline = "{} Epoch: {}, LR: {:.8f}, Train Recall: {:.4f}".format(
+            current_time, str_epoch, get_current_lr(optimizer), current_train_metric
         )
 
+        # val_metrics = ", Val Recall: {:.4f}, Val Precision: {:.4f}, Val F1: {:.4f}".format(
+        #     val_recall_score, val_precision_score, val_f1_score
+        # )
+
+        current_val_metric = np.array(auc_per_class).mean()
+        val_metrics = " ".join([f"{a}: {b:.4f}" for a, b in [x for x in zip(train_dataset.classes, auc_per_class)]])
+
+        str_logline += f", {val_metrics}"
+
     elif args.segmentation_problem:
+        current_val_metric = val_dice
         str_logline = "{} Epoch: {}, LR: {:.8f}, Train IOU: {:.4f}, Val IOU: {:.4f}, Val DICE: {:.4f}".format(
             current_time, str_epoch, get_current_lr(optimizer), current_train_metric, current_val_metric, val_dice
         )
@@ -97,6 +109,8 @@ for epoch in range(args.epochs):
         scheduler.step()
     elif args.plateau_scheduler:
         scheduler.step(current_val_metric)
+
+    torch.save(model.state_dict(), args.output_dir + "/model_last.pt")
 
 print("\n------------------------------------------------")
 print(f"Best Validation:\n\t{max_metric_str_logline}")
