@@ -12,6 +12,7 @@ from torchvision import transforms
 from sklearn.model_selection import KFold
 from skimage.exposure import match_histograms
 import random
+import glob
 
 with open("utils/labels2targets.pkl", 'rb') as f:
     LABELS2TARGETS = pickle.load(f)
@@ -241,19 +242,15 @@ class SIMEPU_Segmentation_Dataset(data.Dataset):
         if selected_class == "":
             assert False, "You need select a class for segmentation problem"
 
-        data_paths = []
-        for subdir, dirs, files in os.walk(self.SIMEPU_DATA_PATH):
-            for file in files:
-                file_path = os.path.join(subdir, file)
-                if f"/masks/{selected_class}" in file_path:
-                    data_paths.append(file_path)
+        self.data_paths = glob.glob(os.path.join(self.SIMEPU_DATA_PATH, "masks", selected_class) + "/*.png")
+        self.data_paths.extend(glob.glob(os.path.join(self.SIMEPU_DATA_PATH, "masks", selected_class) + "/*.jpg"))
+        self.data_paths = np.array(self.data_paths)
 
-        self.data_paths = np.array(data_paths)
         if data_partition == "" or data_partition == "segmentation_test":
-            self.data_paths = self.data_paths
+            pass
         elif fold != -1:
             kf = KFold(n_splits=5, random_state=seed, shuffle=True)
-            for fold_number, (train_index, val_index) in enumerate(kf.split(data_paths)):
+            for fold_number, (train_index, val_index) in enumerate(kf.split(self.data_paths)):
                 if fold_number == fold:
                     if data_partition == "train":
                         self.data_paths = self.data_paths[train_index]
