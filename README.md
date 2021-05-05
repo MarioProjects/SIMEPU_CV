@@ -1,4 +1,6 @@
 # SIMEPU
+[![DOI](https://zenodo.org/badge/208792804.svg)](https://zenodo.org/badge/latestdoi/208792804)
+
 ## AUTOMATIC IDENTIFICATION AND CLASSIFICATION OF URBAN PAVEMENT DISTRESSES THROUGH CONVOLUTIONAL NEURAL NETWORKS
 
 The road network is one of the largest assets of a country and provides a fundamental basis
@@ -34,53 +36,6 @@ python predict.py --img_sample samples/your_sample.jpg --get_overlay
 
 With `get_overlay` parameter you will get for Cracks / Transverse cracks / Potholes / Patches classes the mask overlay too.
 
-## Classification
-
-Average Resnet34 Inference time: 0.005 seconds.
-
-### Binary: Distresses vs No Distresses
-
-In this stage, we want perform 'Damage' vs 'No Damage' binary classification. Training time per fold: 2 hours 30 minutes. Models were pretrained with Imagenet. 6351 train samples / 1588 validation samples. Time per epoch: 1'30''.
-
-|   Model  | Fold | Accuracy | Precision | Recall |   F1   |
-|:--------:|:----:|:--------:|:---------:|:------:|:------:|
-| Resnet34 |   0  |  0.9950  |   0.9948  | 0.9948 | 0.9948 |
-| Resnet34 |   1  |  0.9918  |   0.9895  | 0.9934 | 0.9915 |
-| Resnet34 |   2  |  0.9899  |   0.9883  | 0.9908 | 0.9895 |
-| Resnet34 |   3  |  0.9924  |   0.9905  | 0.9932 | 0.9918 |
-| Resnet34 |   4  |  0.9943  |   0.9947  | 0.9933 | 0.9940 |
-| Resnet34 | Mean |  0.9926  |   0.9915  | 0.9930 | 0.9923 |
-
-
-
-### Distresses
-
-In this stage, we want classify only the distresses. Training time per fold: 1 hour 15 minutes. 3020 train samples / 755 validation samples. Time per epoch: 45''.
-  
-|   Model  | Fold | Accuracy | Balanced Accuracy |
-|:--------:|:----:|:--------:|:-----------------:|
-| Resnet34 |   0  |  0.9762  |       0.9759      |
-| Resnet34 |   1  |  0.9836  |       0.9798      |
-| Resnet34 |   2  |  0.9775  |       0.9804      |
-| Resnet34 |   3  |  0.9828  |       0.9746      |
-| Resnet34 |   4  |  0.9801  |       0.9747      |
-| Resnet34 | Mean |  0.9804  |       0.9770      |
-
-![Distresses Confusion Matrix](results/distresses_confusion_matrix.png "Distresses Confusion Matrix")
-
-
-#### Distresses Retrain v1
-
-Using Histogram Matching
-
-|   Model  | Fold | Accuracy | Balanced Accuracy |
-|:--------:|:----:|:--------:|:-----------------:|
-| Resnet34 |   0  |  0.9586  |       0.9591      |
-| Resnet34 |   1  |  0.9680  |       0.9683      |
-| Resnet34 |   2  |  0.9728  |       0.9752      |
-| Resnet34 |   3  |  0.9751  |       0.9734      |
-| Resnet34 |   4  |  0.9645  |       0.9558      |
-| Resnet34 | Mean |  0.9659  |       0.9663      |
 
 
 ### All classes
@@ -95,8 +50,6 @@ We want compare our proposed 2 network framework with only 1 model that classifi
 | Resnet34 |   3  |  0.9798  |       0.9713      |
 | Resnet34 |   4  |  0.9861  |       0.9797      |
 | Resnet34 | Mean |  0.9809  |       0.9769      |
-
-![Full Confusion Matrix](results/full_confusion_matrix.png "Full Confusion Matrix")
 
 ## Segmentation
 
