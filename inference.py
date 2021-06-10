@@ -23,7 +23,7 @@ muestras_procesar = 200  # Para procesar todas las muestras de DATA_DIR dejar a 
 # No tocar lo siguiente :)
 img_size_multilabel = 224
 img_size_severidades = 512
-area = 512 * 512
+area_img = 512 * 512
 pretrained = True
 
 CLASSES = [
@@ -188,7 +188,7 @@ with torch.no_grad():
         masks = (y > 0.5).int()
 
         total_paths.extend(paths)
-        total_areas.extend([(mask.sum() / area).item() for mask in masks])
+        total_areas.extend([(mask.sum().item() / area_img) for mask in masks])
 
 for path, area in zip(total_paths, total_areas):
     labels_preds.loc[labels_preds["Image"] == path.split("/")[-1], "area_severidad_hueco"] = area
@@ -228,7 +228,7 @@ with torch.no_grad():
         masks = (y > 0.5).int()
 
         total_paths.extend(paths)
-        total_areas.extend([(mask.sum() / area).item() for mask in masks])
+        total_areas.extend([(mask.sum().item() / area_img) for mask in masks])
 
 for path, area in zip(total_paths, total_areas):
     labels_preds.loc[labels_preds["Image"] == path.split("/")[-1], "area_severidad_parcheo"] = area
@@ -349,7 +349,7 @@ with torch.no_grad():
         masks = (torch.logical_or(masks_l, masks_t) * 1)
 
         total_paths.extend(paths)
-        total_areas.extend([(mask.sum() / area).item() for mask in masks])
+        total_areas.extend([(mask.sum().item() / area_img) for mask in masks])
 
 for path, area in zip(total_paths, total_areas):
     labels_preds.loc[labels_preds["Image"] == path.split("/")[-1], "area_severidad_cocodrilo"] = area
