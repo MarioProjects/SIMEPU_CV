@@ -332,7 +332,7 @@ class SIMEPU_Segmentation_Dataset(data.Dataset):
 class SIMEPU_Dataset_MultiLabel(data.Dataset):
     def __init__(self, data_partition='', transform=None, augmentation=None, fold=0, selected_class="",
                  get_path=False, segmentation_problem=False, rotate=False, seed=42,
-                 normalization="reescale"):
+                 normalization="reescale", from_folder="", from_df=None):
         """
           - data_partition:
              -> If empty ("") returns all samples from TRAIN set
@@ -345,10 +345,18 @@ class SIMEPU_Dataset_MultiLabel(data.Dataset):
         if data_partition not in ["", "train", "validation", "segmentation_test"]:
             assert False, "Wrong data partition: {}".format(data_partition)
 
-        self.SIMEPU_DATA_PATH = "data/SIMEPU/"
+        self.from_folder = from_folder
+        if from_folder == "":
+            self.SIMEPU_DATA_PATH = "data/SIMEPU/"
 
-        df = pd.read_csv(os.path.join(self.SIMEPU_DATA_PATH, "info.csv"))
-        df['Image'] = 'images/' + df['Image'].astype(str)
+            df = pd.read_csv(os.path.join(self.SIMEPU_DATA_PATH, "info.csv"))
+            df['Image'] = 'images/' + df['Image'].astype(str)
+        elif from_df is not None:
+            df = from_df
+            self.SIMEPU_DATA_PATH = from_folder
+        else:
+            self.SIMEPU_DATA_PATH = from_folder
+            df = pd.DataFrame({"Image": os.listdir(from_folder)})
 
         df = df.reset_index(drop=True)
         initial_df = df.copy()
@@ -401,7 +409,10 @@ class SIMEPU_Dataset_MultiLabel(data.Dataset):
         img_path = os.path.join(self.SIMEPU_DATA_PATH, self.data_paths.iloc[idx]["Image"])
         img = io.imread(img_path)
         original_img = copy.deepcopy(img)
-        target = np.expand_dims(np.array(self.data_paths.iloc[idx][self.classes].tolist()), axis=0)
+        if self.from_folder != "":
+            target = 0
+        else:
+            target = np.expand_dims(np.array(self.data_paths.iloc[idx][self.classes].tolist()), axis=0)
         mask = None
 
         if self.transform is not None:

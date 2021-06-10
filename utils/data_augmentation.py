@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 import torch
 
-from RandAugment.augmentations import Lighting, RandAugment
+from RandAugment.augmentations import RandAugment
 
 _IMAGENET_PCA = {
     'eigval': [0.2175, 0.0188, 0.0045],

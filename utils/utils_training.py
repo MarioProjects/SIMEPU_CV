@@ -9,11 +9,11 @@ import seaborn as sns
 import torch
 import torch.nn as nn
 import albumentations
-from sklearn.metrics import precision_score, recall_score, f1_score, balanced_accuracy_score
+from sklearn.metrics import recall_score
 import sklearn.metrics as metrics
 
 from utils.metrics import jaccard_coef, dice_coef
-from utils.utils_data import SIMEPU_Dataset, SIMEPU_Dataset_MultiLabel, SIMEPU_Segmentation_Dataset
+from utils.utils_data import SIMEPU_Dataset_MultiLabel, SIMEPU_Segmentation_Dataset
 
 
 def get_optimizer(optmizer_type, model, lr=0.1):
@@ -409,21 +409,10 @@ def dataset_selector(train_aug, train_albumentation, val_aug, val_albumentation,
             augmentation=val_albumentation, selected_class=args.selected_class,
         )
 
-        if not args.segmentation_problem:
-            train_loader = DataLoader(
-                train_dataset, batch_size=args.batch_size, pin_memory=True,
-                shuffle=True,
-            )
-            val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
-
-        else:
-            train_loader = DataLoader(
-                train_dataset, batch_size=args.batch_size, pin_memory=True,
-                shuffle=True, collate_fn=train_dataset.segmentation_collate
-            )
-            val_loader = DataLoader(
-                val_dataset, batch_size=args.batch_size, pin_memory=True,
-                shuffle=False, collate_fn=val_dataset.segmentation_collate
-            )
+        train_loader = DataLoader(
+            train_dataset, batch_size=args.batch_size, pin_memory=True,
+            shuffle=True,
+        )
+        val_loader = DataLoader(val_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
 
     return train_dataset, train_loader, val_dataset, val_loader, num_classes

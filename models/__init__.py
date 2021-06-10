@@ -10,9 +10,9 @@ from .resnet_segmentation import resnet_model_selector
 
 
 def model_selector(model_name, num_classes=9, pretrained=False, scale_factor=6):
-    if pretrained:
-        print("Pretrained-> Remember at end: {}".format(
-            "transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])"))
+    # if pretrained:
+    #     print("Pretrained-> Remember at end: {}".format(
+    #         "transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])"))
 
     if model_name == "resnet18":
         if not pretrained:
