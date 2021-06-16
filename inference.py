@@ -8,6 +8,8 @@ from PIL import Image
 
 import ttach as tta
 
+from toma import toma
+
 # ---- My utils ----
 from simepu_script.utils import *
 from simepu_script.models import *
@@ -18,7 +20,7 @@ DATA_DIR = '/home/maparla/SIMEPU_JUN_2021/all/images'
 batch_size_multilabel = 512
 batch_size_severidades = 32
 
-muestras_procesar = 200  # Para procesar todas las muestras de DATA_DIR dejar a -1
+muestras_procesar = 1000  # Para procesar todas las muestras de DATA_DIR dejar a -1
 
 # No tocar lo siguiente :)
 img_size_multilabel = 224
@@ -44,6 +46,8 @@ val_albumentation_severidades = [
 ]
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+if DEVICE == "cpu":
+    assert False, "CPU MODE NOT AVAILABLE!"
 
 
 def get_severidad_grieta(mask):
@@ -88,8 +92,6 @@ inference_dataset = SIMEPU_Dataset_MultiLabel(
     from_folder=DATA_DIR, transform=val_aug_multilabel, fold=-1, get_path=True
 )
 
-inference_loader = DataLoader(inference_dataset, batch_size=batch_size_multilabel, pin_memory=True, shuffle=False)
-
 # #### Load model
 multilabel_resnet34 = models.resnet34(pretrained=False)
 multilabel_resnet34.fc = torch.nn.Linear(multilabel_resnet34.fc.in_features, len(CLASSES))
@@ -106,24 +108,33 @@ multilabel_resnet34 = tta.ClassificationTTAWrapper(multilabel_resnet34, tta.Comp
 
 # #### Inference
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-class_th = torch.tensor([0.05, 0.15, 0.05, 0.1, 0.05, 0.1, 0.05, 0.25]).to(DEVICE)
+class_th = torch.tensor([0.0005, 0.2, 0.005, 0.02, 0.005, 0.005, 0.008, 0.005]).to(DEVICE)
 
 total_preds, total_paths = [], []
+
+
+@toma.batch(initial_batchsize=batch_size_multilabel)
+def run_multilabel(batch_size):
+    inference_loader = DataLoader(inference_dataset, batch_size=batch_size, pin_memory=True, shuffle=False)
+    with torch.no_grad():
+        for batch_idx, (inputs, _, paths) in enumerate(inference_loader):
+            inputs = inputs.cuda()
+            outputs = multilabel_resnet34(inputs)
+
+            y = torch.nn.Sigmoid()(outputs)
+            multilabel_out = (y > class_th).int()
+
+            total_paths.extend(paths)
+            total_preds.extend(multilabel_out.tolist())
+
+            if muestras_procesar != -1 and muestras_procesar < (batch_idx + 1) * batch_size_multilabel:
+                break
+
+
+print("-- START MULTILABEL PREDICTION --")
 start_total_time = time.time()
 start_time = time.time()
-with torch.no_grad():
-    for batch_idx, (inputs, _, paths) in enumerate(inference_loader):
-        inputs = inputs.cuda()
-        outputs = multilabel_resnet34(inputs)
-
-        y = torch.nn.Sigmoid()(outputs)
-        multilabel_out = (y > class_th).int()
-
-        total_paths.extend(paths)
-        total_preds.extend(multilabel_out.tolist())
-
-        if muestras_procesar != -1 and muestras_procesar < (batch_idx + 1) * batch_size_multilabel:
-            break
+run_multilabel()
 
 multilabel_end = time.time()
 preds_info = {"Image": [p.split("/")[-1] for p in total_paths]}
@@ -155,6 +166,9 @@ labels_preds["area_daño_longitudinales"] = 0
 print(f"Han sido clasificadas {len(labels_preds)} muestras")
 print("--- INFERENCIA MULTIETIQUETA %s seconds ---" % (multilabel_end - start_time))
 
+# labels_preds.to_csv("multilabel_inference.csv", index=None)
+# sys.exit()
+
 # ## Huecos
 
 # #### Load Data
@@ -164,8 +178,6 @@ huecos_dataset = SIMEPU_Dataset_MultiLabel(
     from_df=huecos_cases, from_folder=DATA_DIR,
     augmentation=val_albumentation_severidades, fold=-1, get_path=True
 )
-
-huecos_loader = DataLoader(huecos_dataset, batch_size=batch_size_severidades, pin_memory=True, shuffle=False)
 
 # #### Load model
 huecos_model = ExtraSmallUNet(n_channels=3, n_classes=1)
@@ -179,16 +191,24 @@ huecos_model.eval()
 
 total_paths, total_areas = [], []
 start_time = time.time()
-with torch.no_grad():
-    for batch_idx, (inputs, _, paths) in enumerate(huecos_loader):
-        inputs = inputs.cuda()
-        outputs = huecos_model(inputs)
 
-        y = torch.nn.Sigmoid()(outputs)
-        masks = (y > 0.5).int()
 
-        total_paths.extend(paths)
-        total_areas.extend([(mask.sum().item() / area_img) for mask in masks])
+@toma.batch(initial_batchsize=batch_size_severidades)
+def run_huecos(batch_size):
+    huecos_loader = DataLoader(huecos_dataset, batch_size=batch_size, pin_memory=True, shuffle=False)
+    with torch.no_grad():
+        for batch_idx, (inputs, _, paths) in enumerate(huecos_loader):
+            inputs = inputs.cuda()
+            outputs = huecos_model(inputs)
+
+            y = torch.nn.Sigmoid()(outputs)
+            masks = (y > 0.5).int()
+
+            total_paths.extend(paths)
+            total_areas.extend([(mask.sum().item() / area_img) for mask in masks])
+
+
+run_huecos()
 
 for path, area in zip(total_paths, total_areas):
     labels_preds.loc[labels_preds["Image"] == path.split("/")[-1], "area_severidad_hueco"] = area
@@ -206,8 +226,6 @@ parcheos_dataset = SIMEPU_Dataset_MultiLabel(
     augmentation=val_albumentation_severidades, fold=-1, get_path=True
 )
 
-parcheos_loader = DataLoader(parcheos_dataset, batch_size=batch_size_severidades, pin_memory=True, shuffle=False)
-
 # #### Load model
 parcheos_model = ExtraSmallUNet(n_channels=3, n_classes=1)
 parcheos_model = torch.nn.DataParallel(parcheos_model, device_ids=range(torch.cuda.device_count()))
@@ -219,16 +237,24 @@ parcheos_model.eval()
 
 total_paths, total_areas = [], []
 start_time = time.time()
-with torch.no_grad():
-    for batch_idx, (inputs, _, paths) in enumerate(parcheos_loader):
-        inputs = inputs.cuda()
-        outputs = parcheos_model(inputs)
 
-        y = torch.nn.Sigmoid()(outputs)
-        masks = (y > 0.5).int()
 
-        total_paths.extend(paths)
-        total_areas.extend([(mask.sum().item() / area_img) for mask in masks])
+@toma.batch(initial_batchsize=batch_size_severidades)
+def run_parcheos(batch_size):
+    parcheos_loader = DataLoader(parcheos_dataset, batch_size=batch_size, pin_memory=True, shuffle=False)
+    with torch.no_grad():
+        for batch_idx, (inputs, _, paths) in enumerate(parcheos_loader):
+            inputs = inputs.cuda()
+            outputs = parcheos_model(inputs)
+
+            y = torch.nn.Sigmoid()(outputs)
+            masks = (y > 0.5).int()
+
+            total_paths.extend(paths)
+            total_areas.extend([(mask.sum().item() / area_img) for mask in masks])
+
+
+run_parcheos()
 
 for path, area in zip(total_paths, total_areas):
     labels_preds.loc[labels_preds["Image"] == path.split("/")[-1], "area_severidad_parcheo"] = area
@@ -246,10 +272,6 @@ longitudinales_dataset = SIMEPU_Dataset_MultiLabel(
     augmentation=val_albumentation_severidades, fold=-1, get_path=True
 )
 
-longitudinales_loader = DataLoader(
-    longitudinales_dataset, batch_size=batch_size_severidades, pin_memory=True, shuffle=False
-)
-
 # #### Load model
 longitudinales_model = ExtraSmallUNet(n_channels=3, n_classes=1)
 longitudinales_model = torch.nn.DataParallel(longitudinales_model, device_ids=range(torch.cuda.device_count()))
@@ -259,22 +281,32 @@ longitudinales_model.eval()
 
 # #### Inference
 start_time = time.time()
-with torch.no_grad():
-    for batch_idx, (inputs, _, paths) in enumerate(longitudinales_loader):
-        inputs = inputs.cuda()
-        outputs = longitudinales_model(inputs)
 
-        y = torch.nn.Sigmoid()(outputs)
-        masks = (y > 0.5).int()
 
-        for indice, mask in enumerate(masks):
-            path = paths[indice].split("/")[-1]
-            mask = mask.cpu().numpy().squeeze()
-            severidad = get_severidad_grieta(mask)
+@toma.batch(initial_batchsize=batch_size_severidades)
+def run_longitudinales(batch_size):
+    longitudinales_loader = DataLoader(
+        longitudinales_dataset, batch_size=batch_size, pin_memory=True, shuffle=False
+    )
+    with torch.no_grad():
+        for batch_idx, (inputs, _, paths) in enumerate(longitudinales_loader):
+            inputs = inputs.cuda()
+            outputs = longitudinales_model(inputs)
 
-            labels_preds.loc[labels_preds["Image"] == path, "area_severidad_longitudinales"] = severidad["anchura_real"]
-            labels_preds.loc[labels_preds["Image"] == path, "area_daño_longitudinales"] = severidad["longitud_real"]
+            y = torch.nn.Sigmoid()(outputs)
+            masks = (y > 0.5).int()
 
+            for indice, mask in enumerate(masks):
+                path = paths[indice].split("/")[-1]
+                mask = mask.cpu().numpy().squeeze()
+                severidad = get_severidad_grieta(mask)
+
+                labels_preds.loc[labels_preds["Image"] == path, "area_severidad_longitudinales"] = severidad[
+                    "anchura_real"]
+                labels_preds.loc[labels_preds["Image"] == path, "area_daño_longitudinales"] = severidad["longitud_real"]
+
+
+run_longitudinales()
 print("--- INFERENCIA LONGITUDINALES %s seconds ---" % (time.time() - start_time))
 
 # ## Transversales
@@ -287,10 +319,6 @@ transversales_dataset = SIMEPU_Dataset_MultiLabel(
     augmentation=val_albumentation_severidades, fold=-1, get_path=True
 )
 
-transversales_loader = DataLoader(
-    transversales_dataset, batch_size=batch_size_severidades, pin_memory=True, shuffle=False
-)
-
 # #### Load model
 transversales_model = ExtraSmallUNet(n_channels=3, n_classes=1)
 transversales_model = torch.nn.DataParallel(transversales_model, device_ids=range(torch.cuda.device_count()))
@@ -300,21 +328,32 @@ transversales_model.eval()
 
 # #### Inference
 start_time = time.time()
-with torch.no_grad():
-    for batch_idx, (inputs, _, paths) in enumerate(transversales_loader):
-        inputs = inputs.cuda()
-        outputs = transversales_model(inputs)
 
-        y = torch.nn.Sigmoid()(outputs)
-        masks = (y > 0.5).int()
 
-        for indice, mask in enumerate(masks):
-            path = paths[indice].split("/")[-1]
-            mask = mask.cpu().numpy().squeeze()
-            severidad = get_severidad_grieta(mask)
+@toma.batch(initial_batchsize=batch_size_severidades)
+def run_transversales(batch_size):
+    transversales_loader = DataLoader(
+        transversales_dataset, batch_size=batch_size, pin_memory=True, shuffle=False
+    )
+    with torch.no_grad():
+        for batch_idx, (inputs, _, paths) in enumerate(transversales_loader):
+            inputs = inputs.cuda()
+            outputs = transversales_model(inputs)
 
-            labels_preds.loc[labels_preds["Image"] == path, "area_severidad_transversales"] = severidad["anchura_real"]
-            labels_preds.loc[labels_preds["Image"] == path, "area_daño_transversales"] = severidad["longitud_real"]
+            y = torch.nn.Sigmoid()(outputs)
+            masks = (y > 0.5).int()
+
+            for indice, mask in enumerate(masks):
+                path = paths[indice].split("/")[-1]
+                mask = mask.cpu().numpy().squeeze()
+                severidad = get_severidad_grieta(mask)
+
+                labels_preds.loc[labels_preds["Image"] == path, "area_severidad_transversales"] = severidad[
+                    "anchura_real"]
+                labels_preds.loc[labels_preds["Image"] == path, "area_daño_transversales"] = severidad["longitud_real"]
+
+
+run_transversales()
 
 print("--- INFERENCIA TRANSVERSALES %s seconds ---" % (time.time() - start_time))
 
@@ -328,28 +367,34 @@ cocodrilo_dataset = SIMEPU_Dataset_MultiLabel(
     augmentation=val_albumentation_severidades, fold=-1, get_path=True
 )
 
-cocodrilo_loader = DataLoader(
-    cocodrilo_dataset, batch_size=batch_size_severidades, pin_memory=True, shuffle=False
-)
-
 # #### Inference
 total_paths, total_areas = [], []
 start_time = time.time()
-with torch.no_grad():
-    for batch_idx, (inputs, _, paths) in enumerate(cocodrilo_loader):
-        inputs = inputs.cuda()
-        outputs_l = longitudinales_model(inputs)
-        outputs_t = transversales_model(inputs)
 
-        y_l = torch.nn.Sigmoid()(outputs_l)
-        y_t = torch.nn.Sigmoid()(outputs_t)
-        masks_l = (y_l > 0.5).int()
-        masks_t = (y_t > 0.5).int()
 
-        masks = (torch.logical_or(masks_l, masks_t) * 1)
+@toma.batch(initial_batchsize=batch_size_severidades)
+def run_cocodrilo(batch_size):
+    cocodrilo_loader = DataLoader(
+        cocodrilo_dataset, batch_size=batch_size, pin_memory=True, shuffle=False
+    )
+    with torch.no_grad():
+        for batch_idx, (inputs, _, paths) in enumerate(cocodrilo_loader):
+            inputs = inputs.cuda()
+            outputs_l = longitudinales_model(inputs)
+            outputs_t = transversales_model(inputs)
 
-        total_paths.extend(paths)
-        total_areas.extend([(mask.sum().item() / area_img) for mask in masks])
+            y_l = torch.nn.Sigmoid()(outputs_l)
+            y_t = torch.nn.Sigmoid()(outputs_t)
+            masks_l = (y_l > 0.5).int()
+            masks_t = (y_t > 0.5).int()
+
+            masks = (torch.logical_or(masks_l, masks_t) * 1)
+
+            total_paths.extend(paths)
+            total_areas.extend([(mask.sum().item() / area_img) for mask in masks])
+
+
+run_cocodrilo()
 
 for path, area in zip(total_paths, total_areas):
     labels_preds.loc[labels_preds["Image"] == path.split("/")[-1], "area_severidad_cocodrilo"] = area
