@@ -22,6 +22,12 @@ batch_size_severidades = 32
 
 muestras_procesar = 1000  # Para procesar todas las muestras de DATA_DIR dejar a -1
 
+model_multilabel_path = os.path.join("checkpoints", "resnet34_multilabel.pt")
+model_parcheo_path = os.path.join("checkpoints", "parcheo_segmentation.pt")
+model_hueco_path = os.path.join("checkpoints", "huecos_segmentation.pt")
+model_transversales_path = os.path.join("checkpoints", "transversales_segmentation.pt")
+model_longitudinales_path = os.path.join("checkpoints", "longitudinales_segmentation.pt")
+
 # No tocar lo siguiente :)
 img_size_multilabel = 224
 img_size_severidades = 512
@@ -96,7 +102,7 @@ inference_dataset = SIMEPU_Dataset_MultiLabel(
 multilabel_resnet34 = models.resnet34(pretrained=False)
 multilabel_resnet34.fc = torch.nn.Linear(multilabel_resnet34.fc.in_features, len(CLASSES))
 multilabel_resnet34 = load_dataparallel_model(
-    multilabel_resnet34, torch.load(os.path.join("checkpoints", "resnet34_multilabel.pt"))
+    multilabel_resnet34, torch.load(model_multilabel_path)
 )
 multilabel_resnet34 = torch.nn.DataParallel(multilabel_resnet34, device_ids=range(torch.cuda.device_count()))
 multilabel_resnet34.to(DEVICE)
@@ -182,7 +188,7 @@ huecos_dataset = SIMEPU_Dataset_MultiLabel(
 # #### Load model
 huecos_model = ExtraSmallUNet(n_channels=3, n_classes=1)
 huecos_model = torch.nn.DataParallel(huecos_model, device_ids=range(torch.cuda.device_count()))
-huecos_model.load_state_dict(torch.load(os.path.join("checkpoints", "huecos_segmentation.pt")))
+huecos_model.load_state_dict(torch.load(model_hueco_path))
 huecos_model.to(DEVICE)
 huecos_model.eval()
 
@@ -229,7 +235,7 @@ parcheos_dataset = SIMEPU_Dataset_MultiLabel(
 # #### Load model
 parcheos_model = ExtraSmallUNet(n_channels=3, n_classes=1)
 parcheos_model = torch.nn.DataParallel(parcheos_model, device_ids=range(torch.cuda.device_count()))
-parcheos_model.load_state_dict(torch.load(os.path.join("checkpoints", "parcheo_segmentation.pt")))
+parcheos_model.load_state_dict(torch.load(model_parcheo_path))
 parcheos_model.to(DEVICE)
 parcheos_model.eval()
 
@@ -275,7 +281,7 @@ longitudinales_dataset = SIMEPU_Dataset_MultiLabel(
 # #### Load model
 longitudinales_model = ExtraSmallUNet(n_channels=3, n_classes=1)
 longitudinales_model = torch.nn.DataParallel(longitudinales_model, device_ids=range(torch.cuda.device_count()))
-longitudinales_model.load_state_dict(torch.load(os.path.join("checkpoints", "longitudinales_segmentation.pt")))
+longitudinales_model.load_state_dict(torch.load(model_longitudinales_path))
 longitudinales_model.to(DEVICE)
 longitudinales_model.eval()
 
@@ -322,7 +328,7 @@ transversales_dataset = SIMEPU_Dataset_MultiLabel(
 # #### Load model
 transversales_model = ExtraSmallUNet(n_channels=3, n_classes=1)
 transversales_model = torch.nn.DataParallel(transversales_model, device_ids=range(torch.cuda.device_count()))
-transversales_model.load_state_dict(torch.load(os.path.join("checkpoints", "transversales_segmentation.pt")))
+transversales_model.load_state_dict(torch.load(model_transversales_path))
 transversales_model.to(DEVICE)
 transversales_model.eval()
 
